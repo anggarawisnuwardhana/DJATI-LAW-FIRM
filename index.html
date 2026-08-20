@@ -3,46 +3,85 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Firma Hukum & Manajemen Kasus</title>
+  <title>Firma Hukum & Manajemen Berkas</title>
   <style>
-    body { font-family: Arial, sans-serif; margin: 0; padding: 20px; line-height: 1.6; }
-    header { background: #1a252f; color: white; padding: 20px; text-align: center; }
-    .auth-box { max-width: 400px; margin: 20px auto; padding: 20px; border: 1px solid #ccc; border-radius: 8px; }
-    input, button { width: 100%; padding: 10px; margin: 8px 0; box-sizing: border-box; }
-    button { background: #2c3e50; color: white; border: none; cursor: pointer; }
-    .dashboard { display: none; margin-top: 20px; padding: 20px; background: #f4f4f4; }
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; background: #f8f9fa; }
+    header { background: #1a252f; color: white; padding: 30px; text-align: center; }
+    .container { max-width: 900px; margin: 20px auto; padding: 20px; }
+    .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); margin-bottom: 20px; }
+    .auth-box { max-width: 400px; margin: 40px auto; }
+    input, select, button { width: 100%; padding: 12px; margin: 8px 0; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; }
+    button { background: #2c3e50; color: white; border: none; cursor: pointer; font-weight: bold; }
+    button:hover { background: #34495e; }
+    .btn-danger { background: #e74c3c; }
+    .btn-danger:hover { background: #c0392b; }
+    .dashboard { display: none; }
+    table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+    th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+    th { background-color: #f2f2f2; }
   </style>
 </head>
 <body>
 
-  <!-- 1. Halaman Profil Publik -->
   <header>
-    <h1>Kantor Pengacara & Konsultan Hukum</h1>
-    <p>Layanan Profesional & Pengarsipan Berkas Aman</p>
+    <h1>Firma Hukum & Manajemen Kasus</h1>
+    <p>Portal Sistem Informasi & Pengarsipan Berkas Digital</p>
   </header>
 
-  <!-- 2. Form Login -->
-  <div class="auth-box" id="authBox">
-    <h3>Login Sistem</h3>
-    <input type="email" id="email" placeholder="Email">
-    <input type="password" id="password" placeholder="Password">
-    <button onclick="login()">Login</button>
+  <div class="container">
+    <!-- Form Login -->
+    <div class="card auth-box" id="authBox">
+      <h3>Login Sistem</h3>
+      <input type="email" id="email" placeholder="Email Pengguna">
+      <input type="password" id="password" placeholder="Kata Sandi">
+      <button onclick="login()">Masuk</button>
+    </div>
+
+    <!-- Halaman Utama Dashboard -->
+    <div class="dashboard" id="dashboard">
+      <div class="card">
+        <h2>Selamat Datang, <span id="userName"></span></h2>
+        <p><strong>Akses Kelas:</strong> <span id="userRole" style="color: #27ae60;"></span></p>
+        <button onclick="logout()" class="btn-danger" style="width: auto; padding: 8px 20px;">Keluar</button>
+      </div>
+
+      <!-- Form Unggah Berkas (Hanya Tampil untuk Master & Pengacara) -->
+      <div class="card" id="uploadSection" style="display: none;">
+        <h3>Unggah Salinan / Arsip Berkas Klien</h3>
+        <input type="text" id="docName" placeholder="Nama / Judul Berkas (misal: BAP Perdata Ahlis Waris)">
+        <input type="text" id="clientId" placeholder="UID Klien / ID Pemilik Berkas">
+        <input type="file" id="fileInput" accept=".pdf,.doc,.docx,.jpg,.png">
+        <button onclick="uploadFile()">Unggah Berkas ke Firebase Storage</button>
+        <p id="uploadStatus" style="color: blue;"></p>
+      </div>
+
+      <!-- Daftar Berkas Terarsip -->
+      <div class="card">
+        <h3>Daftar Salinan Dokumen / Berkas</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Judul Berkas</th>
+              <th>Tanggal Upload</th>
+              <th>Tindakan</th>
+            </tr>
+          </thead>
+          <tbody id="fileTableBody">
+            <tr><td colspan="3">Memuat data...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
   </div>
 
-  <!-- 3. Halaman Dashboard (Berubah sesuai Role) -->
-  <div class="dashboard" id="dashboard">
-    <h2>Selamat Datang, <span id="userRole"></span></h2>
-    <div id="contentArea"></div>
-    <button onclick="logout()">Logout</button>
-  </div>
-
-  <!-- SDK Firebase versi Web -->
+  <!-- Firebase SDK versi Module -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getFirestore, doc, getDoc, collection, addDoc, query, where, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
-    // PASTE KODE KONFIGURASI FIREBASE ANDA DI SINI
+    // 1. PASTE KODE FIREBASE CONFIG ANDA DI SINI
 const firebaseConfig = {
   apiKey: "AIzaSyAjkJPfk4hQrPUjOgANu_ir2Q2Cuko-g9Q",
   authDomain: "djati-law-firm.firebaseapp.com",
@@ -55,48 +94,131 @@ const firebaseConfig = {
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
+    const storage = getStorage(app);
 
-    // Fungsi Login
+    let currentUserData = null;
+
+    // Login
     window.login = async () => {
       const email = document.getElementById('email').value;
       const pass = document.getElementById('password').value;
       try {
         await signInWithEmailAndPassword(auth, email, pass);
       } catch (err) {
-        alert("Login Gagal: " + err.message);
+        alert("Gagal Login: " + err.message);
       }
     };
 
-    // Fungsi Logout
+    // Logout
     window.logout = () => signOut(auth);
 
-    // Pengecekan Akses Pengguna (Role Control)
+    // Cek Status Auth Pengguna
     onAuthStateChanged(auth, async (user) => {
       if (user) {
         document.getElementById('authBox').style.display = 'none';
         document.getElementById('dashboard').style.display = 'block';
 
-        // Ambil Data Role Pengguna dari Database Firestore
+        // Ambil Data Profil Pengguna dari Firestore
         const userDoc = await getDoc(doc(db, "users", user.uid));
-        const role = userDoc.exists() ? userDoc.data().role : "client";
+        if (userDoc.exists()) {
+          currentUserData = { uid: user.uid, ...userDoc.data() };
+        } else {
+          // Default role jika dokumen belum dibuat di Firestore
+          currentUserData = { uid: user.uid, role: 'client', nama: user.email };
+        }
 
-        document.getElementById('userRole').innerText = role.toUpperCase();
-        renderDashboard(role);
+        document.getElementById('userName').innerText = currentUserData.nama || user.email;
+        document.getElementById('userRole').innerText = currentUserData.role.toUpperCase();
+
+        // Atur Tampilan berdasarkan Hak Akses (Role)
+        if (currentUserData.role === 'master' || currentUserData.role === 'pengacara') {
+          document.getElementById('uploadSection').style.display = 'block';
+        } else {
+          document.getElementById('uploadSection').style.display = 'none';
+        }
+
+        // Muat Berkas
+        loadFiles();
       } else {
         document.getElementById('authBox').style.display = 'block';
         document.getElementById('dashboard').style.display = 'none';
       }
     });
 
-    // Menampilkan Tampilan Berdasarkan Hak Akses
-    function renderDashboard(role) {
-      const area = document.getElementById('contentArea');
-      if (role === 'master') {
-        area.innerHTML = "<p><b>Fitur Master:</b> Akses ke seluruh data pengacara, klien, dan arsip berkas.</p>";
-      } else if (role === 'pengacara') {
-        area.innerHTML = "<p><b>Fitur Pengacara:</b> Manajemen data & berkas klien yang Anda tangani.</p>";
-      } else {
-        area.innerHTML = "<p><b>Fitur Klien:</b> Profil pribadi & riwayat/salinan berkas Anda.</p>";
+    // Fungsi Unggah File ke Storage & Simpan Metadata ke Firestore
+    window.uploadFile = async () => {
+      const docName = document.getElementById('docName').value;
+      const targetClientId = document.getElementById('clientId').value;
+      const file = document.getElementById('fileInput').files[0];
+      const statusText = document.getElementById('uploadStatus');
+
+      if (!docName || !targetClientId || !file) {
+        alert("Harap isi Judul, ID Klien, dan Pilih File!");
+        return;
+      }
+
+      try {
+        statusText.innerText = "Mengunggah berkas ke server...";
+        
+        // 1. Upload File Ke Firebase Cloud Storage
+        const fileRef = ref(storage, `arsip_berkas/${Date.now()}_${file.name}`);
+        const snapshot = await uploadBytes(fileRef, file);
+        const downloadUrl = await getDownloadURL(snapshot.ref);
+
+        // 2. Simpan Informasi Berkas ke Firestore
+        await addDoc(collection(db, "berkas"), {
+          namaBerkas: docName,
+          clientId: targetClientId,
+          uploadedBy: currentUserData.uid,
+          fileUrl: downloadUrl,
+          createdAt: serverTimestamp()
+        });
+
+        statusText.innerText = "Berkas berhasil diunggah!";
+        document.getElementById('docName').value = '';
+        document.getElementById('clientId').value = '';
+        document.getElementById('fileInput').value = '';
+        
+        loadFiles(); // Refresh daftar file
+      } catch (err) {
+        statusText.innerText = "Gagal mengunggah: " + err.message;
+      }
+    };
+
+    // Fungsi Mengambil Daftar File dari Firestore
+    async function loadFiles() {
+      const tableBody = document.getElementById('fileTableBody');
+      tableBody.innerHTML = '<tr><td colspan="3">Memuat data...</td></tr>';
+
+      try {
+        let q;
+        // Jika Master/Pengacara, ambil semua berkas. Jika Klien, hanya ambil berkas miliknya.
+        if (currentUserData.role === 'master' || currentUserData.role === 'pengacara') {
+          q = collection(db, "berkas");
+        } else {
+          q = query(collection(db, "berkas"), where("clientId", "==", currentUserData.uid));
+        }
+
+        const querySnapshot = await getDocs(q);
+        tableBody.innerHTML = '';
+
+        if (querySnapshot.empty) {
+          tableBody.innerHTML = '<tr><td colspan="3">Belum ada dokumen/arsip berkas.</td></tr>';
+          return;
+        }
+
+        querySnapshot.forEach((docSnap) => {
+          const data = docSnap.data();
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${data.namaBerkas}</td>
+            <td>${data.createdAt ? new Date(data.createdAt.seconds * 1000).toLocaleDateString('id-ID') : 'Baru saja'}</td>
+            <td><a href="${data.fileUrl}" target="_blank" rel="noopener noreferrer"><button style="padding: 5px 10px; margin: 0;">Buka / Unduh Berkas</button></a></td>
+          `;
+          tableBody.appendChild(row);
+        });
+      } catch (err) {
+        tableBody.innerHTML = `<tr><td colspan="3" style="color:red;">Error: ${err.message}</td></tr>`;
       }
     }
   </script>
