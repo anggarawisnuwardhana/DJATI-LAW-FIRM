@@ -112,14 +112,18 @@
         <h2 class="text-2xl font-bold text-white mb-6">Profil Pengguna</h2>
         <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div><label class="block text-xs font-semibold text-slate-400 mb-1">NAMA LENGKAP</label><input type="text" id="profName" class="w-full bg-slate-950 border border-slate-800 rounded-lg py-2 px-4 text-white text-sm"></div>
-            <div><label class="block text-xs font-semibold text-slate-400 mb-1">NOMOR HP</label><input type="tel" id="profPhone" class="w-full bg-slate-950 border border-slate-800 rounded-lg py-2 px-4 text-white text-sm"></div>
-            <div class="md:col-span-2"><label class="block text-xs font-semibold text-slate-400 mb-1">ALAMAT</label><textarea id="profAddress" class="w-full bg-slate-950 border border-slate-800 rounded-lg py-2 px-4 text-white text-sm resize-none" rows="2"></textarea></div>
+            <!-- Menambahkan tag disabled sebagai default -->
+            <div><label class="block text-xs font-semibold text-slate-400 mb-1">NAMA LENGKAP</label><input type="text" id="profName" disabled class="w-full bg-slate-950 border border-slate-800 rounded-lg py-2 px-4 text-white text-sm disabled:opacity-50"></div>
+            <div><label class="block text-xs font-semibold text-slate-400 mb-1">NOMOR HP</label><input type="tel" id="profPhone" disabled class="w-full bg-slate-950 border border-slate-800 rounded-lg py-2 px-4 text-white text-sm disabled:opacity-50"></div>
+            <div class="md:col-span-2"><label class="block text-xs font-semibold text-slate-400 mb-1">ALAMAT</label><textarea id="profAddress" disabled class="w-full bg-slate-950 border border-slate-800 rounded-lg py-2 px-4 text-white text-sm resize-none disabled:opacity-50" rows="2"></textarea></div>
             <div><label class="block text-xs font-semibold text-slate-400 mb-1">EMAIL</label><input type="email" id="profEmail" disabled class="w-full bg-slate-950/50 border border-slate-800/50 rounded-lg py-2 px-4 text-slate-500 text-sm"></div>
             <div><label class="block text-xs font-semibold text-slate-400 mb-1">ROLE</label><input type="text" id="profRole" disabled class="w-full bg-slate-950/50 border border-slate-800/50 rounded-lg py-2 px-4 text-blue-400 uppercase font-bold text-sm"></div>
           </div>
-          <div class="mt-6 flex gap-3">
-            <button onclick="updateProfile()" class="bg-blue-600 hover:bg-blue-500 text-white font-semibold py-2 px-6 rounded-lg text-sm transition">Simpan Pembaruan</button>
+          <!-- REVISI POIN 1: Edit & Simpan Informasi + Ganti Password -->
+          <div class="mt-6 flex flex-wrap gap-3">
+            <button id="btnEditProfile" onclick="toggleEditProfile(true)" class="bg-slate-700 hover:bg-slate-600 text-white font-semibold py-2 px-6 rounded-lg text-sm transition">Edit Informasi</button>
+            <button id="btnSimpanProfile" onclick="updateProfile()" class="hidden bg-blue-600 hover:bg-blue-500 text-white font-semibold py-2 px-6 rounded-lg text-sm transition">Simpan Informasi</button>
+            <button onclick="gantiPassword()" class="bg-red-600 hover:bg-red-500 text-white font-semibold py-2 px-6 rounded-lg text-sm transition">Ganti Password</button>
           </div>
           <p id="profMsg" class="mt-3 text-xs font-medium"></p>
         </div>
@@ -137,6 +141,8 @@
               <tr class="bg-slate-950/50 text-[11px] font-semibold text-slate-400 uppercase border-b border-slate-800">
                 <th class="py-3 px-4">Nama & Kontak</th>
                 <th class="py-3 px-4">Nomor Perkara</th>
+                <!-- REVISI POIN 3: Kolom pengacara handle -->
+                <th class="py-3 px-4">Pengacara</th> 
                 <th class="py-3 px-4 text-right">Aksi</th>
               </tr>
             </thead>
@@ -168,15 +174,22 @@
           <button onclick="hapusFilterArsip()" class="text-xs bg-blue-600 hover:bg-blue-500 px-3 py-1 rounded text-white">Tampilkan Semua</button>
         </div>
 
-        <div id="panelAdmin" class="hidden bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl mb-8">
-          <h3 class="text-base font-semibold text-white mb-4">Unggah Berkas Baru</h3>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-            <div><label class="block text-xs font-semibold text-slate-400 mb-1">Judul Dokumen</label><input type="text" id="docName" class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2 px-4 text-white text-sm"></div>
-            <div><label class="block text-xs font-semibold text-slate-400 mb-1">Pilih Klien</label><select id="docClientId" class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2 px-4 text-white text-sm"></select></div>
-          </div>
-          <div class="mb-4"><input type="file" id="fileInput" class="w-full text-sm file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-blue-600 file:text-white cursor-pointer text-slate-400"></div>
-          <button onclick="simpanDokumen()" id="btnUpload" class="bg-emerald-600 hover:bg-emerald-500 text-white font-semibold px-6 py-2.5 rounded-xl text-sm">Sinkronkan ke Drive</button>
-          <p id="statusSimpan" class="text-xs font-medium mt-3"></p>
+        <!-- REVISI POIN 2: Panel Informasi Klien (Hanya muncul jika di filter dari klik klien) -->
+        <div id="clientInfoPanel" class="hidden bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl mb-6">
+           <h3 class="text-base font-bold text-white mb-3 border-b border-slate-800 pb-2"><i data-lucide="user" class="inline w-4 h-4 mr-2"></i>Informasi Klien</h3>
+           <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+              <div><span class="text-slate-400 block text-xs">Nama Lengkap</span> <span id="ciName" class="text-white font-medium"></span></div>
+              <div><span class="text-slate-400 block text-xs">No HP</span> <span id="ciPhone" class="text-white font-medium"></span></div>
+              <div><span class="text-slate-400 block text-xs">Email</span> <span id="ciEmail" class="text-white font-medium"></span></div>
+              <div><span class="text-slate-400 block text-xs">Alamat</span> <span id="ciAddress" class="text-white font-medium"></span></div>
+           </div>
+        </div>
+
+        <!-- REVISI POIN 2: Tombol memunculkan Modal Upload (Bisa dilihat Master/Pengacara) -->
+        <div class="mb-4">
+          <button id="btnTampilUpload" onclick="bukaModalUpload()" class="hidden bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-2 px-4 rounded-xl text-sm transition">
+            + Unggah Berkas Baru
+          </button>
         </div>
 
         <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
@@ -195,6 +208,23 @@
     </main>
   </div>
 
+  <!-- REVISI POIN 2: MODAL UNGGAH BERKAS (Menggantikan Panel Admin langsung) -->
+  <div id="modalUploadBerkas" class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-700 rounded-2xl p-6 w-full max-w-md shadow-2xl relative">
+      <h3 class="text-lg font-bold text-white mb-4">Unggah Berkas Baru</h3>
+      <div class="grid grid-cols-1 gap-4 mb-4">
+        <div><label class="block text-xs font-semibold text-slate-400 mb-1">Judul Dokumen</label><input type="text" id="docName" class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2 px-4 text-white text-sm"></div>
+        <div><label class="block text-xs font-semibold text-slate-400 mb-1">Pilih Klien</label><select id="docClientId" class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2 px-4 text-white text-sm"></select></div>
+        <div><input type="file" id="fileInput" class="w-full text-sm file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-blue-600 file:text-white cursor-pointer text-slate-400 mt-2"></div>
+      </div>
+      <div class="mt-6 flex justify-end gap-3">
+        <button onclick="tutupModalUpload()" class="px-4 py-2 bg-slate-800 text-slate-300 rounded-lg text-sm hover:bg-slate-700">Batal</button>
+        <button onclick="simpanDokumen()" id="btnUpload" class="bg-emerald-600 hover:bg-emerald-500 text-white font-semibold px-4 py-2 rounded-lg text-sm">Sinkronkan ke Drive</button>
+      </div>
+      <p id="statusSimpan" class="text-xs font-medium mt-3 text-center"></p>
+    </div>
+  </div>
+
   <!-- MODAL: REGISTRASI PENGACARA BARU (MASTER ONLY) -->
   <div id="modalRegPengacara" class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
     <div class="bg-slate-900 border border-slate-700 rounded-2xl p-6 w-full max-w-md shadow-2xl relative">
@@ -202,6 +232,8 @@
       <form id="formRegPengacara" onsubmit="event.preventDefault(); submitRegPengacara();" class="space-y-3">
         <input type="text" id="rpName" required placeholder="Nama Lengkap Pengacara" class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2 px-4 text-sm text-white">
         <input type="tel" id="rpPhone" required placeholder="Nomor Handphone" class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2 px-4 text-sm text-white">
+        <!-- REVISI POIN 4: Tambahan field Alamat untuk Pengacara -->
+        <textarea id="rpAddress" required placeholder="Alamat Pengacara" class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2 px-4 text-sm text-white resize-none" rows="2"></textarea>
         <input type="email" id="rpEmail" required placeholder="Email Pengacara" class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2 px-4 text-sm text-white">
         <input type="password" id="rpPassword" required placeholder="Password Sementara" class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2 px-4 text-sm text-white">
         <div class="mt-6 flex justify-end gap-3">
@@ -275,7 +307,7 @@
   <!-- Firebase & Logic Scripts -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged, updatePassword } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
     import { getFirestore, doc, setDoc, getDoc, updateDoc, collection, addDoc, query, where, getDocs, orderBy, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     // Konfigurasi Utama
@@ -358,21 +390,26 @@
         document.getElementById('profEmail').value = currentUserData.email || '';
         document.getElementById('profRole').value = currentUserData.role;
 
+        // Pastikan input form profile non-editable saat load awal
+        toggleEditProfile(false);
+
         if (currentUserData.role === 'master' || currentUserData.role === 'pengacara') {
           document.getElementById('nav-clients').classList.remove('hidden');
-          document.getElementById('panelAdmin').classList.remove('hidden');
+          // REVISI POIN 2: Tombol upload muncul hanya di Master/Pengacara
+          document.getElementById('btnTampilUpload').classList.remove('hidden');
           document.getElementById('btnCreateThread').classList.remove('hidden');
+          
+          await ambilDaftarPengacara(); // Ambil list pengacara di awal untuk kebutuhan render tabel klien
           isiDropdownKlien();
           
           if(currentUserData.role === 'master') {
             document.getElementById('btnRegPengacara').classList.remove('hidden');
             document.getElementById('divEditPengacara').classList.remove('hidden');
-            ambilDaftarPengacara(); // Untuk render checkbox di modal edit klien
           }
         } else {
           // View untuk Klien biasa
           document.getElementById('nav-clients').classList.add('hidden');
-          document.getElementById('panelAdmin').classList.add('hidden');
+          document.getElementById('btnTampilUpload').classList.add('hidden');
           document.getElementById('tdUploadArea').classList.add('hidden'); // Klien tidak bisa upload di thread
         }
         switchView('profileView');
@@ -382,16 +419,43 @@
       }
     });
 
+    // --- REVISI POIN 1: Logika Edit Profile & Ganti Password ---
+    window.toggleEditProfile = (isEdit) => {
+      document.getElementById('profName').disabled = !isEdit;
+      document.getElementById('profPhone').disabled = !isEdit;
+      document.getElementById('profAddress').disabled = !isEdit;
+      
+      document.getElementById('btnEditProfile').classList.toggle('hidden', isEdit);
+      document.getElementById('btnSimpanProfile').classList.toggle('hidden', !isEdit);
+    };
+
     window.updateProfile = async () => {
       try {
         await updateDoc(doc(db, "users", currentUserData.uid), {
-          nama: document.getElementById('profName').value, noHp: document.getElementById('profPhone').value, alamat: document.getElementById('profAddress').value
+          nama: document.getElementById('profName').value, 
+          noHp: document.getElementById('profPhone').value, 
+          alamat: document.getElementById('profAddress').value
         });
-        alert("Tersimpan!");
+        alert("Informasi Berhasil Disimpan!");
+        toggleEditProfile(false); // Kembalikan ke mode readonly
       } catch (err) { alert(err.message); }
     };
 
-    // --- REGISTRASI PENGACARA (Req 1) ---
+    window.gantiPassword = async () => {
+      const newPassword = prompt("Masukkan password baru Anda (Minimal 6 karakter):");
+      if (newPassword && newPassword.length >= 6) {
+        try {
+          await updatePassword(auth.currentUser, newPassword);
+          alert("Password berhasil diubah!");
+        } catch (error) {
+          alert("Gagal merubah password. (Mungkin Anda perlu login ulang terlebih dahulu): " + error.message);
+        }
+      } else if (newPassword) {
+        alert("Password terlalu pendek!");
+      }
+    };
+
+    // --- REGISTRASI PENGACARA (Req 4) ---
     window.bukaModalRegPengacara = () => document.getElementById('modalRegPengacara').classList.remove('hidden');
     window.tutupModalRegPengacara = () => document.getElementById('modalRegPengacara').classList.add('hidden');
     window.submitRegPengacara = async () => {
@@ -403,7 +467,9 @@
         const cred = await createUserWithEmailAndPassword(secondaryAuth, document.getElementById('rpEmail').value, document.getElementById('rpPassword').value);
         
         await setDoc(doc(db, "users", cred.user.uid), {
-          nama: document.getElementById('rpName').value, noHp: document.getElementById('rpPhone').value,
+          nama: document.getElementById('rpName').value, 
+          noHp: document.getElementById('rpPhone').value,
+          alamat: document.getElementById('rpAddress').value, // REVISI POIN 4: Alamat masuk db
           email: cred.user.email, role: "pengacara"
         });
         // Logout instance secondary setelah berhasil buat
@@ -416,7 +482,7 @@
       }
     };
 
-    // --- KLIEN & FILTER ARSIP (Req 2 & Req 3) ---
+    // --- KLIEN & FILTER ARSIP ---
     async function ambilDaftarPengacara() {
       const q = query(collection(db, "users"), where("role", "==", "pengacara"));
       const snap = await getDocs(q);
@@ -435,18 +501,27 @@
         allClientsData = [];
         snapshot.forEach(d => allClientsData.push({ id: d.id, ...d.data() }));
         renderTabelKlien(allClientsData);
-      } catch (err) { tbody.innerHTML = '<tr><td colspan="3" class="py-4 text-center text-red-400">Gagal memuat</td></tr>'; }
+      } catch (err) { tbody.innerHTML = '<tr><td colspan="4" class="py-4 text-center text-red-400">Gagal memuat</td></tr>'; }
     }
 
     window.renderTabelKlien = (dataArray) => {
       const tbody = document.getElementById('clientListBody');
       tbody.innerHTML = '';
-      if (dataArray.length === 0) return tbody.innerHTML = '<tr><td colspan="3" class="py-4 text-center text-slate-500 text-xs">Kosong</td></tr>';
+      if (dataArray.length === 0) return tbody.innerHTML = '<tr><td colspan="4" class="py-4 text-center text-slate-500 text-xs">Kosong</td></tr>';
 
       dataArray.forEach(k => {
+        // REVISI POIN 3: Kumpulkan nama pengacara yg handle
+        let pengacaraNames = [];
+        if(k.pengacaraIds && k.pengacaraIds.length > 0) {
+            k.pengacaraIds.forEach(pid => {
+                let p = allPengacaraData.find(x => x.id === pid);
+                if(p) pengacaraNames.push(p.nama);
+            });
+        }
+        let pengacaraText = pengacaraNames.length > 0 ? pengacaraNames.join(', ') : '<span class="text-slate-500 italic">Belum diset</span>';
+
         let tr = document.createElement('tr');
         tr.className = "hover:bg-slate-800/40 transition";
-        // REQ 2: Nomor Perkara / Nama Klien bisa diklik mengarah ke Arsip Filter
         tr.innerHTML = `
           <td class="py-3 px-4">
             <a href="#" onclick="filterArsipKlien('${k.id}', '${k.nama}')" class="font-semibold text-blue-400 hover:underline text-sm block">${k.nama}</a>
@@ -455,8 +530,11 @@
           <td class="py-3 px-4 font-mono text-emerald-400 text-xs">
             <a href="#" onclick="filterArsipKlien('${k.id}', '${k.nomorPerkara}')" class="hover:underline">${k.nomorPerkara || '<span class="text-slate-500">Belum Ada</span>'}</a>
           </td>
+          <td class="py-3 px-4 text-xs text-slate-300">
+            ${pengacaraText}
+          </td>
           <td class="py-3 px-4 text-right">
-            <button onclick="bukaEditKlien('${k.id}', '${k.nomorPerkara || ''}', '${k.pengacaraIds || []}')" class="text-xs bg-slate-800 text-white px-3 py-1.5 rounded border border-slate-600">Atur Data</button>
+            <button onclick="bukaEditKlien('${k.id}', '${k.nomorPerkara || ''}', '${k.pengacaraIds || []}')" class="text-xs bg-slate-800 text-white px-3 py-1.5 rounded border border-slate-600 hover:bg-slate-700 transition">Atur Data</button>
           </td>
         `;
         tbody.appendChild(tr);
@@ -467,12 +545,24 @@
       currentArsipFilter = clientId;
       document.getElementById('filterInfo').classList.remove('hidden');
       document.getElementById('filterText').innerText = "Menampilkan arsip terkait: " + identifier;
+      
+      // REVISI POIN 2: Menampilkan Data Klien
+      let klienData = allClientsData.find(k => k.id === clientId);
+      if(klienData) {
+        document.getElementById('clientInfoPanel').classList.remove('hidden');
+        document.getElementById('ciName').innerText = klienData.nama || '-';
+        document.getElementById('ciPhone').innerText = klienData.noHp || '-';
+        document.getElementById('ciEmail').innerText = klienData.email || '-';
+        document.getElementById('ciAddress').innerText = klienData.alamat || '-';
+      }
+
       switchView('docView');
     };
 
     window.hapusFilterArsip = () => {
       currentArsipFilter = null;
       document.getElementById('filterInfo').classList.add('hidden');
+      document.getElementById('clientInfoPanel').classList.add('hidden'); // Sembunyikan panel info klien
       muatDataBerkas();
     };
 
@@ -480,7 +570,6 @@
       document.getElementById('editKlienId').value = id;
       document.getElementById('editNoPerkara').value = noPerk;
       
-      // REQ 3: Multiple Pengacara Dropdown/Checkbox
       if(currentUserData.role === 'master') {
         let assigned = pengacaraIdsStr.split(',');
         let listHtml = '';
@@ -511,6 +600,15 @@
     };
 
     // --- UPLOAD GLOBAL & ARSIP ---
+    // REVISI POIN 2: Fungsi Buka & Tutup Modal Upload
+    window.bukaModalUpload = () => document.getElementById('modalUploadBerkas').classList.remove('hidden');
+    window.tutupModalUpload = () => {
+      document.getElementById('modalUploadBerkas').classList.add('hidden');
+      document.getElementById('docName').value = '';
+      document.getElementById('fileInput').value = '';
+      document.getElementById('statusSimpan').innerText = '';
+    };
+
     async function isiDropdownKlien() {
       const select = document.getElementById('docClientId'); const selTh = document.getElementById('thKlien');
       select.innerHTML = '<option value="">-- Pilih Klien --</option>'; selTh.innerHTML = '<option value="">-- Pilih Klien untuk Thread --</option>';
@@ -551,7 +649,10 @@
             
             await addDoc(collection(db, "berkas"), dataBerkas);
             statusEl.className = "text-xs mt-2 text-emerald-400"; statusEl.innerText = "Berhasil!";
-            if(!isThread) { document.getElementById('docName').value = ''; document.getElementById('fileInput').value = ''; muatDataBerkas(currentArsipFilter); }
+            if(!isThread) { 
+               muatDataBerkas(currentArsipFilter); 
+               setTimeout(() => { tutupModalUpload(); }, 1500); // Tutup modal otomatis jika sukses
+            }
             else { document.getElementById('tdDocName').value = ''; document.getElementById('tdFileInput').value = ''; }
           } else throw new Error(result.message);
         } catch (err) { statusEl.className = "text-xs mt-2 text-red-400"; statusEl.innerText = err.message; }
@@ -576,13 +677,13 @@
           tbody.innerHTML += `<tr class="hover:bg-slate-800/40">
             <td class="py-3 px-4 font-semibold text-white text-sm">${data.namaBerkas}</td>
             <td class="py-3 px-4 text-xs text-slate-400">${data.folderName}</td>
-            <td class="py-3 px-4 text-right"><a href="${data.linkDrive}" target="_blank" class="px-3 py-1 bg-blue-600/20 text-blue-400 rounded text-xs font-semibold">Buka File</a></td>
+            <td class="py-3 px-4 text-right"><a href="${data.linkDrive}" target="_blank" class="px-3 py-1 bg-blue-600/20 text-blue-400 rounded text-xs font-semibold hover:bg-blue-600/40 transition">Buka File</a></td>
           </tr>`;
         });
       } catch(e){}
     };
 
-    // --- MANAJEMEN PERKARA / THREADS (Req 4) ---
+    // --- MANAJEMEN PERKARA / THREADS ---
     window.bukaModalThread = () => document.getElementById('modalThread').classList.remove('hidden');
     window.simpanThread = async () => {
       const judul = document.getElementById('thJudul').value;
@@ -606,8 +707,6 @@
       if (currentUserData.role === 'master') q = query(collection(db, "threads")); // Master lihat semua
       else if (currentUserData.role === 'client') q = query(collection(db, "threads"), where("clientId", "==", currentUserData.uid));
       else { 
-        // Pengacara - ini membutuhkan cloud function agar query dinamis untuk semua klien si pengacara, 
-        // Untuk penyederhanaan: jika dia pengacara, ambil semua thread, lalu filter manual di client (hanya menampilkan thread klien dia).
         q = query(collection(db, "threads")); 
       }
 
@@ -617,10 +716,9 @@
       snap.forEach(d => {
         let t = d.data();
         
-        // Filter manual untuk pengacara
         if (currentUserData.role === 'pengacara') {
           let relatedClient = allClientsData.find(c => c.id === t.clientId);
-          if(!relatedClient) return; // Skip jika thread ini milik klien yg bukan diassign ke pengacara ini
+          if(!relatedClient) return; 
         }
 
         div.innerHTML += `
@@ -644,15 +742,13 @@
       const msgDiv = document.getElementById('tdMessages');
       msgDiv.innerHTML = '<p class="text-center text-xs">Memuat berkas perkara...</p>';
       
-      if(unsubThread) unsubThread(); // Hentikan listener lama
+      if(unsubThread) unsubThread(); 
       
-      // Ambil berkas khusus thread ini
       const q = query(collection(db, "berkas"), where("threadId", "==", id));
       unsubThread = onSnapshot(q, (snap) => {
         msgDiv.innerHTML = '';
         if(snap.empty) msgDiv.innerHTML = '<p class="text-center text-xs text-slate-500">Belum ada dokumen yang diunggah ke ruang ini.</p>';
         
-        // Urutkan manual by waktu lokal karena firestore orderBy butuh index
         let docs = []; snap.forEach(d => docs.push(d.data()));
         docs.sort((a,b) => (a.createdAt?.seconds || 0) - (b.createdAt?.seconds || 0));
 
