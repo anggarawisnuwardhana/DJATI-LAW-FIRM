@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Firma Hukum & Manajemen Kasus</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; padding: 20px; line-height: 1.6; }
+    header { background: #1a252f; color: white; padding: 20px; text-align: center; }
+    .auth-box { max-width: 400px; margin: 20px auto; padding: 20px; border: 1px solid #ccc; border-radius: 8px; }
+    input, button { width: 100%; padding: 10px; margin: 8px 0; box-sizing: border-box; }
+    button { background: #2c3e50; color: white; border: none; cursor: pointer; }
+    .dashboard { display: none; margin-top: 20px; padding: 20px; background: #f4f4f4; }
+  </style>
+</head>
+<body>
+
+  <!-- 1. Halaman Profil Publik -->
+  <header>
+    <h1>Kantor Pengacara & Konsultan Hukum</h1>
+    <p>Layanan Profesional & Pengarsipan Berkas Aman</p>
+  </header>
+
+  <!-- 2. Form Login -->
+  <div class="auth-box" id="authBox">
+    <h3>Login Sistem</h3>
+    <input type="email" id="email" placeholder="Email">
+    <input type="password" id="password" placeholder="Password">
+    <button onclick="login()">Login</button>
+  </div>
+
+  <!-- 3. Halaman Dashboard (Berubah sesuai Role) -->
+  <div class="dashboard" id="dashboard">
+    <h2>Selamat Datang, <span id="userRole"></span></h2>
+    <div id="contentArea"></div>
+    <button onclick="logout()">Logout</button>
+  </div>
+
+  <!-- SDK Firebase versi Web -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    // PASTE KODE KONFIGURASI FIREBASE ANDA DI SINI
+const firebaseConfig = {
+  apiKey: "AIzaSyAjkJPfk4hQrPUjOgANu_ir2Q2Cuko-g9Q",
+  authDomain: "djati-law-firm.firebaseapp.com",
+  projectId: "djati-law-firm",
+  storageBucket: "djati-law-firm.firebasestorage.app",
+  messagingSenderId: "120872416118",
+  appId: "1:120872416118:web:101fda03908b9723aa4057"
+};
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // Fungsi Login
+    window.login = async () => {
+      const email = document.getElementById('email').value;
+      const pass = document.getElementById('password').value;
+      try {
+        await signInWithEmailAndPassword(auth, email, pass);
+      } catch (err) {
+        alert("Login Gagal: " + err.message);
+      }
+    };
+
+    // Fungsi Logout
+    window.logout = () => signOut(auth);
+
+    // Pengecekan Akses Pengguna (Role Control)
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        document.getElementById('authBox').style.display = 'none';
+        document.getElementById('dashboard').style.display = 'block';
+
+        // Ambil Data Role Pengguna dari Database Firestore
+        const userDoc = await getDoc(doc(db, "users", user.uid));
+        const role = userDoc.exists() ? userDoc.data().role : "client";
+
+        document.getElementById('userRole').innerText = role.toUpperCase();
+        renderDashboard(role);
+      } else {
+        document.getElementById('authBox').style.display = 'block';
+        document.getElementById('dashboard').style.display = 'none';
+      }
+    });
+
+    // Menampilkan Tampilan Berdasarkan Hak Akses
+    function renderDashboard(role) {
+      const area = document.getElementById('contentArea');
+      if (role === 'master') {
+        area.innerHTML = "<p><b>Fitur Master:</b> Akses ke seluruh data pengacara, klien, dan arsip berkas.</p>";
+      } else if (role === 'pengacara') {
+        area.innerHTML = "<p><b>Fitur Pengacara:</b> Manajemen data & berkas klien yang Anda tangani.</p>";
+      } else {
+        area.innerHTML = "<p><b>Fitur Klien:</b> Profil pribadi & riwayat/salinan berkas Anda.</p>";
+      }
+    }
+  </script>
+</body>
+</html>
