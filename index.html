@@ -3,172 +3,222 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DJATI LAW FIRM - Portal Manajemen</title>
+  <title>DJATI LAW FIRM - Enterprise Legal Portal</title>
+  <!-- Tailwind CSS & FontInter -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
-    
-    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-    body { background-color: #f3f4f6; color: #333; }
-    
-    /* --- Tampilan Publik & Auth --- */
-    .auth-container { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); padding: 20px; }
-    .auth-card { background: white; padding: 40px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); width: 100%; max-width: 400px; text-align: center; }
-    .auth-card h2 { color: #1e3c72; margin-bottom: 5px; }
-    .auth-card p { color: #666; margin-bottom: 20px; font-size: 14px; }
-    .auth-card input { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 6px; outline: none; }
-    .auth-card button { width: 100%; padding: 12px; margin-top: 15px; border: none; border-radius: 6px; background: #1e3c72; color: white; font-weight: bold; cursor: pointer; transition: 0.3s; }
-    .auth-card button:hover { background: #162c55; }
-    .toggle-auth { margin-top: 15px; font-size: 13px; color: #1e3c72; cursor: pointer; text-decoration: underline; }
-
-    /* --- Tampilan Dashboard Profesional --- */
-    #dashboard { display: none; display: flex; min-height: 100vh; }
-    
-    /* Sidebar */
-    .sidebar { width: 260px; background: #111827; color: white; display: flex; flex-direction: column; }
-    .sidebar-header { padding: 20px; background: #1f2937; text-align: center; border-bottom: 1px solid #374151; }
-    .sidebar-header h2 { font-size: 18px; font-weight: 700; letter-spacing: 1px; color: #e5e7eb; }
-    .sidebar-menu { flex: 1; padding: 20px 0; }
-    .menu-item { padding: 15px 20px; display: block; color: #9ca3af; text-decoration: none; cursor: pointer; border-left: 4px solid transparent; transition: 0.2s; }
-    .menu-item:hover, .menu-item.active { background: #1f2937; color: white; border-left-color: #3b82f6; }
-    .sidebar-footer { padding: 20px; border-top: 1px solid #374151; }
-    .btn-logout { width: 100%; padding: 10px; background: #ef4444; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; }
-    .btn-logout:hover { background: #dc2626; }
-
-    /* Konten Utama */
-    .main-content { flex: 1; display: flex; flex-direction: column; background: #f9fafb; }
-    .topbar { background: white; padding: 20px 30px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); display: flex; justify-content: space-between; align-items: center; }
-    .user-info { font-weight: 600; color: #374151; }
-    .badge-role { background: #dbeafe; color: #1e40af; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 700; margin-left: 10px; text-transform: uppercase; }
-    
-    .content-area { padding: 30px; }
-    .card { background: white; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); padding: 25px; margin-bottom: 25px; }
-    .card-title { font-size: 16px; font-weight: 700; color: #111827; margin-bottom: 15px; border-bottom: 2px solid #f3f4f6; padding-bottom: 10px; }
-    
-    /* Form & Tabel */
-    .form-group { margin-bottom: 15px; }
-    .form-group label { display: block; font-size: 13px; font-weight: 600; color: #4b5563; margin-bottom: 5px; }
-    .form-control { width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 6px; }
-    .btn-submit { padding: 10px 20px; background: #10b981; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; }
-    .btn-submit:hover { background: #059669; }
-    
-    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-    th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #e5e7eb; }
-    th { background: #f3f4f6; font-size: 13px; color: #4b5563; text-transform: uppercase; letter-spacing: 0.5px; }
-    td { font-size: 14px; color: #1f2937; }
-    .btn-link { padding: 6px 12px; background: #3b82f6; color: white; text-decoration: none; border-radius: 4px; font-size: 12px; font-weight: bold; }
-    .btn-link:hover { background: #2563eb; }
+    body { font-family: 'Inter', sans-serif; }
+    .glass { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); }
   </style>
 </head>
-<body>
+<body class="bg-slate-900 text-slate-100 min-h-screen">
 
-  <!-- ================= LAYAR LOGIN / REGISTER ================= -->
-  <div class="auth-container" id="authSection">
-    <div class="auth-card" id="loginCard">
-      <h2>DJATI LAW FIRM</h2>
-      <p>Sistem Informasi & Manajemen Berkas Klien</p>
+  <!-- ================= AUTH CONTAINER ================= -->
+  <div id="authSection" class="min-h-screen flex items-center justify-center p-6 bg-gradient-to-br from-slate-950 via-slate-900 to-blue-950">
+    <div class="w-full max-width max-w-md bg-slate-800/80 border border-slate-700/50 rounded-2xl p-8 shadow-2xl glass">
       
-      <div id="formLogin">
-        <input type="email" id="loginEmail" placeholder="Alamat Email">
-        <input type="password" id="loginPassword" placeholder="Kata Sandi">
-        <button onclick="loginApp()">Masuk ke Dashboard</button>
-        <p class="toggle-auth" onclick="toggleAuthMode()">Belum punya akun Klien? Daftar di sini</p>
+      <div class="text-center mb-8">
+        <div class="inline-flex p-3 bg-blue-600/20 text-blue-400 rounded-xl mb-3 border border-blue-500/30">
+          <i data-lucide="scale" class="w-8 h-8"></i>
+        </div>
+        <h2 class="text-2xl font-bold text-white tracking-wide">DJATI LAW FIRM</h2>
+        <p class="text-slate-400 text-sm mt-1">Portal Manajemen Berkas & Klien Terpadu</p>
       </div>
 
-      <div id="formRegister" style="display: none;">
-        <input type="text" id="regName" placeholder="Nama Lengkap Klien">
-        <input type="email" id="regEmail" placeholder="Alamat Email">
-        <input type="password" id="regPassword" placeholder="Buat Kata Sandi">
-        <button onclick="registerApp()">Daftar Akun Baru</button>
-        <p class="toggle-auth" onclick="toggleAuthMode()">Sudah punya akun? Kembali ke Login</p>
-      </div>
+      <!-- Form Login -->
+      <form id="formLogin" onsubmit="event.preventDefault(); loginApp();" class="space-y-4">
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Alamat Email</label>
+          <div class="relative">
+            <i data-lucide="mail" class="w-5 h-5 absolute left-3 top-3 text-slate-400"></i>
+            <input type="email" id="loginEmail" required class="w-full bg-slate-900/90 border border-slate-700 rounded-xl py-2.5 pl-10 pr-4 text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-sm" placeholder="nama@email.com">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Kata Sandi</label>
+          <div class="relative">
+            <i data-lucide="lock" class="w-5 h-5 absolute left-3 top-3 text-slate-400"></i>
+            <input type="password" id="loginPassword" required class="w-full bg-slate-900/90 border border-slate-700 rounded-xl py-2.5 pl-10 pr-4 text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-sm" placeholder="••••••••">
+          </div>
+        </div>
+
+        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold py-3 rounded-xl transition shadow-lg shadow-blue-600/30 flex items-center justify-center space-x-2 text-sm">
+          <span>Masuk Portal</span>
+          <i data-lucide="arrow-right" class="w-4 h-4"></i>
+        </button>
+        <p class="text-center text-xs text-slate-400 mt-4">
+          Belum memiliki akun Klien? <a href="#" onclick="toggleAuthMode()" class="text-blue-400 font-semibold hover:underline">Daftar Akun Baru</a>
+        </p>
+      </form>
+
+      <!-- Form Register -->
+      <form id="formRegister" onsubmit="event.preventDefault(); registerApp();" class="space-y-4 hidden">
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Nama Lengkap</label>
+          <input type="text" id="regName" required class="w-full bg-slate-900/90 border border-slate-700 rounded-xl py-2.5 px-4 text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 text-sm" placeholder="Klien / Pengacara">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Alamat Email</label>
+          <input type="email" id="regEmail" required class="w-full bg-slate-900/90 border border-slate-700 rounded-xl py-2.5 px-4 text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 text-sm" placeholder="nama@email.com">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Buat Kata Sandi</label>
+          <input type="password" id="regPassword" required class="w-full bg-slate-900/90 border border-slate-700 rounded-xl py-2.5 px-4 text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 text-sm" placeholder="Minimal 6 karakter">
+        </div>
+
+        <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-3 rounded-xl transition shadow-lg shadow-emerald-600/30 text-sm">
+          Konfirmasi Pendaftaran
+        </button>
+        <p class="text-center text-xs text-slate-400 mt-4">
+          Sudah terdaftar? <a href="#" onclick="toggleAuthMode()" class="text-blue-400 font-semibold hover:underline">Kembali ke Login</a>
+        </p>
+      </form>
+
     </div>
   </div>
 
-  <!-- ================= LAYAR DASHBOARD ================= -->
-  <div id="dashboardSection" style="display: none;">
-    <!-- Sidebar -->
-    <div class="sidebar">
-      <div class="sidebar-header">
-        <h2>DJATI LAW FIRM</h2>
-      </div>
-      <div class="sidebar-menu">
-        <div class="menu-item active">Beranda Dashboard</div>
-        <div class="menu-item">Arsip & Dokumen</div>
-      </div>
-      <div class="sidebar-footer">
-        <button class="btn-logout" onclick="logoutApp()">Keluar / Logout</button>
-      </div>
-    </div>
+  <!-- ================= DASHBOARD MAIN ================= -->
+  <div id="dashboardSection" class="hidden min-h-screen flex flex-col md:flex-row bg-slate-950">
+    
+    <!-- Sidebar Navigation -->
+    <aside class="w-full md:w-64 bg-slate-900 border-r border-slate-800 flex flex-col justify-between p-4">
+      <div>
+        <div class="flex items-center space-x-3 px-3 py-4 mb-6 border-b border-slate-800">
+          <div class="p-2 bg-blue-600 rounded-lg text-white">
+            <i data-lucide="shield" class="w-6 h-6"></i>
+          </div>
+          <div>
+            <h1 class="font-bold text-sm tracking-wider text-white">DJATI LAW FIRM</h1>
+            <p class="text-[10px] text-slate-400 uppercase font-semibold">Management System</p>
+          </div>
+        </div>
 
-    <!-- Main Content -->
-    <div class="main-content">
-      <div class="topbar">
-        <div>Manajemen Sistem Terpadu</div>
-        <div class="user-info">
-          Halo, <span id="displayNama">User</span> 
-          <span class="badge-role" id="displayRole">Client</span>
+        <nav class="space-y-1">
+          <a href="#" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl bg-blue-600/10 text-blue-400 font-medium text-sm border border-blue-500/20">
+            <i data-lucide="folder-open" class="w-4 h-4"></i>
+            <span>Arsip & Dokumen</span>
+          </a>
+        </nav>
+      </div>
+
+      <!-- User Profile Box & Logout -->
+      <div class="p-3 bg-slate-800/60 rounded-xl border border-slate-700/50 mt-6">
+        <div class="flex items-center justify-between mb-3">
+          <div class="truncate pr-2">
+            <p id="displayNama" class="text-sm font-semibold text-white truncate">User</p>
+            <span id="displayRole" class="inline-block text-[10px] uppercase font-extrabold px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-400 border border-blue-500/30 mt-1">CLIENT</span>
+          </div>
+        </div>
+        <button onclick="logoutApp()" class="w-full bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 font-medium py-1.5 rounded-lg transition text-xs flex items-center justify-center space-x-2">
+          <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
+          <span>Keluar Portal</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Workspace -->
+    <main class="flex-1 p-6 md:p-10 space-y-8 overflow-y-auto">
+      
+      <!-- Top Workspace Banner -->
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-slate-800">
+        <div>
+          <h2 class="text-2xl font-bold text-white tracking-tight">Manajemen Berkas Perkara</h2>
+          <p class="text-slate-400 text-sm mt-1">Sistem integrasi penyimpanan dokumen terenkripsi via Google Drive Platform.</p>
+        </div>
+        <div class="bg-slate-900 border border-slate-800 px-4 py-2 rounded-xl text-xs text-slate-400 flex items-center space-x-2">
+          <i data-lucide="key" class="w-4 h-4 text-blue-400"></i>
+          <span>System ID (UID): <strong id="myUid" class="text-slate-200 font-mono">...</strong></span>
         </div>
       </div>
 
-      <div class="content-area">
-        
-        <!-- Panel Admin: Tambah Arsip dengan Google Drive Link -->
-        <div class="card" id="panelAdmin" style="display: none;">
-          <div class="card-title">Unggah Salinan Dokumen Klien (via Google Drive)</div>
-          <div class="form-group">
-            <label>Nama / Keterangan Dokumen</label>
-            <input type="text" class="form-control" id="docName" placeholder="Contoh: Salinan Putusan Pengadilan">
+      <!-- Admin Upload Panel (Khusus Master/Pengacara) -->
+      <div id="panelAdmin" class="hidden bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl">
+        <div class="flex items-center space-x-3 mb-6">
+          <div class="p-2 bg-emerald-500/10 text-emerald-400 rounded-lg">
+            <i data-lucide="upload-cloud" class="w-5 h-5"></i>
           </div>
-          <div class="form-group">
-            <label>UID Klien (Tujuan Dokumen)</label>
-            <input type="text" class="form-control" id="docClientId" placeholder="Masukkan ID Sistem milik Klien (UID)">
+          <div>
+            <h3 class="text-base font-semibold text-white">Unggah Berkas Baru ke Google Drive</h3>
+            <p class="text-xs text-slate-400">Pilih klien dan unggah dokumen secara langsung tanpa input link manual.</p>
           </div>
-          <div class="form-group">
-            <label>Link Google Drive (Shareable Link)</label>
-            <input type="url" class="form-control" id="docUrl" placeholder="https://drive.google.com/file/d/...">
-          </div>
-          <button class="btn-submit" onclick="simpanDokumen()">Simpan ke Database</button>
-          <p id="statusSimpan" style="margin-top: 10px; font-size: 13px; color: green;"></p>
         </div>
 
-        <!-- Panel Bersama: Daftar Arsip -->
-        <div class="card">
-          <div class="card-title">Daftar Arsip Berkas Digital</div>
-          <p style="font-size: 13px; color: #6b7280; margin-bottom: 10px;">ID Sistem (UID) Anda: <strong id="myUid"></strong> <br>(Berikan ID ini kepada Admin/Pengacara agar dokumen bisa dikirim ke akun Anda).</p>
-          
-          <table>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          <div>
+            <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Judul Dokumen / Berkas</label>
+            <input type="text" id="docName" class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 px-4 text-white text-sm focus:border-blue-500 focus:outline-none" placeholder="Misal: Draft Perjanjian / Salinan BAP">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Pilih Klien Tujuan</label>
+            <select id="docClientId" class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2.5 px-4 text-white text-sm focus:border-blue-500 focus:outline-none">
+              <option value="">-- Memuat daftar klien --</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="mb-6">
+          <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Pilih File (PDF / Doc / Image)</label>
+          <input type="file" id="fileInput" class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2 px-4 text-slate-400 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-500 cursor-pointer">
+        </div>
+
+        <button onclick="simpanDokumenKeDrive()" id="btnUpload" class="bg-emerald-600 hover:bg-emerald-500 text-white font-semibold px-6 py-2.5 rounded-xl transition text-sm flex items-center space-x-2">
+          <i data-lucide="file-up" class="w-4 h-4"></i>
+          <span>Unggah & Sinkronkan</span>
+        </button>
+        <p id="statusSimpan" class="text-xs font-medium mt-3"></p>
+      </div>
+
+      <!-- Table Documents Area -->
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
+        <div class="p-5 border-b border-slate-800 flex items-center justify-between">
+          <h3 class="font-semibold text-white text-sm">Daftar Dokumen Digital Tersedia</h3>
+          <button onclick="muatDataBerkas()" class="text-slate-400 hover:text-white text-xs flex items-center space-x-1">
+            <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+            <span>Refresh Data</span>
+          </button>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
             <thead>
-              <tr>
-                <th>Nama Dokumen</th>
-                <th>Tanggal Data</th>
-                <th>Akses File</th>
+              <tr class="bg-slate-950/50 text-[11px] font-semibold text-slate-400 uppercase tracking-wider border-b border-slate-800">
+                <th class="py-3.5 px-6">Nama Dokumen</th>
+                <th class="py-3.5 px-6">Diunggah Pada</th>
+                <th class="py-3.5 px-6 text-right">Akses Google Drive</th>
               </tr>
             </thead>
-            <tbody id="tableBerkas">
-              <tr><td colspan="3">Memuat data arsip...</td></tr>
+            <tbody id="tableBerkas" class="divide-y divide-slate-800/60 text-sm text-slate-300">
+              <tr><td colspan="3" class="py-8 text-center text-slate-500 text-xs">Memuat daftar arsip...</td></tr>
             </tbody>
           </table>
         </div>
-
       </div>
-    </div>
+
+    </main>
   </div>
 
-  <!-- Firebase Web SDK -->
+  <!-- Firebase Web SDK & Controller Logic -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
     import { getFirestore, doc, setDoc, getDoc, collection, addDoc, query, where, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-    // PASTE FIREBASE CONFIGURATION ANDA DI SINI (DARI CONSOLE FIREBASE ANDA)
-const firebaseConfig = {
-  apiKey: "AIzaSyAjkJPfk4hQrPUjOgANu_ir2Q2Cuko-g9Q",
-  authDomain: "djati-law-firm.firebaseapp.com",
-  projectId: "djati-law-firm",
-  storageBucket: "djati-law-firm.firebasestorage.app",
-  messagingSenderId: "120872416118",
-  appId: "1:120872416118:web:101fda03908b9723aa4057"
-};
+    // KUNCI FIREBASE ANDA
+    const firebaseConfig = {
+      apiKey: "AIzaSyAjkJPfk4hQrPUjOgANu_ir2Q2Cuko-g9Q",
+      authDomain: "djati-law-firm.firebaseapp.com",
+      projectId: "djati-law-firm",
+      storageBucket: "djati-law-firm.firebasestorage.app",
+      messagingSenderId: "120872416118",
+      appId: "1:120872416118:web:101fda03908b9723aa4057"
+    };
+
+    // PASTE WEB APP URL DARI GOOGLE APPS SCRIPT ANDA DI SINI
+    const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzb5FYBe-AyLuGREUSsVkSnnjomVo6PRiWslr-CwaO2wIDrZCCLeuGR_l3WPqUP2-wP/exec";
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
@@ -176,150 +226,193 @@ const firebaseConfig = {
 
     let currentUserData = null;
 
-    // --- UI Toggles ---
-    window.toggleAuthMode = () => {
-      const login = document.getElementById('formLogin');
-      const register = document.getElementById('formRegister');
-      if(login.style.display === 'none') {
-        login.style.display = 'block'; register.style.display = 'none';
-      } else {
-        login.style.display = 'none'; register.style.display = 'block';
-      }
-    }
+    // Rendering Lucide Icons
+    window.addEventListener('DOMContentLoaded', () => lucide.createIcons());
 
-    // --- Authentication ---
+    // Toggle UI Auth Mode
+    window.toggleAuthMode = () => {
+      document.getElementById('formLogin').classList.toggle('hidden');
+      document.getElementById('formRegister').classList.toggle('hidden');
+    };
+
+    // Firebase Auth Handlers
     window.loginApp = async () => {
       const email = document.getElementById('loginEmail').value;
       const pass = document.getElementById('loginPassword').value;
       try {
         await signInWithEmailAndPassword(auth, email, pass);
-      } catch (err) { alert("Gagal Login: Cek kembali email & password Anda."); }
+      } catch (err) {
+        alert("Gagal Login: Periksa email dan password Anda.");
+      }
     };
 
     window.registerApp = async () => {
       const nama = document.getElementById('regName').value;
       const email = document.getElementById('regEmail').value;
       const pass = document.getElementById('regPassword').value;
-      if(!nama || !email || !pass) return alert("Lengkapi semua data!");
 
       try {
-        const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
-        const user = userCredential.user;
-        
-        // Simpan otomatis ke collection 'users' sebagai 'client'
-        await setDoc(doc(db, "users", user.uid), {
+        const userCred = await createUserWithEmailAndPassword(auth, email, pass);
+        await setDoc(doc(db, "users", userCred.user.uid), {
           nama: nama,
           role: "client",
           email: email
         });
-        
-        alert("Pendaftaran berhasil! Anda otomatis masuk ke dashboard.");
-      } catch (err) { alert("Gagal mendaftar: " + err.message); }
+        alert("Pendaftaran Berhasil!");
+      } catch (err) {
+        alert("Pendaftaran Gagal: " + err.message);
+      }
     };
 
-    window.logoutApp = () => { signOut(auth); };
+    window.logoutApp = () => signOut(auth);
 
-    // --- State Listener (Pengatur Tampilan Master / Klien) ---
+    // State Monitoring & Role Management
     onAuthStateChanged(auth, async (user) => {
       const authSec = document.getElementById('authSection');
       const dashSec = document.getElementById('dashboardSection');
 
       if (user) {
-        authSec.style.display = 'none';
-        dashSec.style.display = 'flex';
+        authSec.classList.add('hidden');
+        dashSec.classList.remove('hidden');
         document.getElementById('myUid').innerText = user.uid;
 
-        // Ambil data role dari database
         const docSnap = await getDoc(doc(db, "users", user.uid));
-        if (docSnap.exists()) {
-          currentUserData = { uid: user.uid, ...docSnap.data() };
-        } else {
-          // Fallback jika tidak ada data di firestore
-          currentUserData = { uid: user.uid, nama: user.email, role: 'client' };
-        }
+        currentUserData = docSnap.exists() ? { uid: user.uid, ...docSnap.data() } : { uid: user.uid, nama: user.email, role: 'client' };
 
         document.getElementById('displayNama').innerText = currentUserData.nama;
         document.getElementById('displayRole').innerText = currentUserData.role;
 
-        // Jika Master atau Pengacara, tampilkan form tambah dokumen
         if (currentUserData.role === 'master' || currentUserData.role === 'pengacara') {
-          document.getElementById('panelAdmin').style.display = 'block';
+          document.getElementById('panelAdmin').classList.remove('hidden');
+          muatDaftarKlienSelect();
         } else {
-          document.getElementById('panelAdmin').style.display = 'none';
+          document.getElementById('panelAdmin').classList.add('hidden');
         }
 
         muatDataBerkas();
       } else {
-        authSec.style.display = 'flex';
-        dashSec.style.display = 'none';
+        authSec.classList.remove('hidden');
+        dashSec.classList.add('hidden');
       }
     });
 
-    // --- Manajemen Database ---
-    window.simpanDokumen = async () => {
-      const namaDoc = document.getElementById('docName').value;
-      const clientId = document.getElementById('docClientId').value;
-      const urlDoc = document.getElementById('docUrl').value;
-      const status = document.getElementById('statusSimpan');
+    // Populate Klien Select Dropdown
+    async function muatDaftarKlienSelect() {
+      const select = document.getElementById('docClientId');
+      select.innerHTML = '<option value="">-- Pilih Klien --</option>';
+      
+      const q = query(collection(db, "users"), where("role", "==", "client"));
+      const snapshot = await getDocs(q);
 
-      if (!namaDoc || !clientId || !urlDoc) return alert("Isi semua kolom form!");
+      snapshot.forEach(docSnap => {
+        const data = docSnap.data();
+        select.innerHTML += `<option value="${docSnap.id}">${data.nama} (${data.email})</option>`;
+      });
+    }
+
+    // Google Apps Script Integration (Upload File Direct to Drive)
+    window.simpanDokumenKeDrive = async () => {
+      const docName = document.getElementById('docName').value;
+      const clientId = document.getElementById('docClientId').value;
+      const fileInput = document.getElementById('fileInput').files[0];
+      const status = document.getElementById('statusSimpan');
+      const btn = document.getElementById('btnUpload');
+
+      if (!docName || !clientId || !fileInput) {
+        alert("Mohon lengkapi Judul, Klien Tujuan, dan File Berkas!");
+        return;
+      }
 
       try {
-        status.innerText = "Menyimpan ke database...";
-        await addDoc(collection(db, "berkas"), {
-          namaBerkas: namaDoc,
-          clientId: clientId,
-          linkDrive: urlDoc,
-          createdAt: serverTimestamp(),
-          uploadedBy: currentUserData.uid
-        });
-        
-        status.innerText = "Dokumen berhasil disimpan!";
-        document.getElementById('docName').value = '';
-        document.getElementById('docClientId').value = '';
-        document.getElementById('docUrl').value = '';
-        
-        setTimeout(() => status.innerText = "", 3000);
-        muatDataBerkas(); // Refresh tabel
+        status.className = "text-xs font-medium mt-3 text-blue-400";
+        status.innerText = "Mengunggah file ke Google Drive via GAS...";
+        btn.disabled = true;
+
+        // Buka FileReader untuk konversi Base64
+        const reader = new FileReader();
+        reader.readAsDataURL(fileInput);
+        reader.onload = async function () {
+          const rawBase64 = reader.result;
+
+          // Kirim payload ke Google Apps Script Web App
+          const response = await fetch(GAS_WEB_APP_URL, {
+            method: 'POST',
+            body: JSON.stringify({
+              fileName: `${Date.now()}_${fileInput.name}`,
+              fileData: rawBase64
+            })
+          });
+
+          const result = await response.json();
+
+          if (result.status === "success") {
+            // Simpan link Google Drive yang didapat dari GAS ke Firestore
+            await addDoc(collection(db, "berkas"), {
+              namaBerkas: docName,
+              clientId: clientId,
+              linkDrive: result.fileUrl,
+              createdAt: serverTimestamp(),
+              uploadedBy: currentUserData.uid
+            });
+
+            status.className = "text-xs font-medium mt-3 text-emerald-400";
+            status.innerText = "Dokumen berhasil disimpan & disinkronkan ke Google Drive!";
+            document.getElementById('docName').value = '';
+            document.getElementById('fileInput').value = '';
+            muatDataBerkas();
+          } else {
+            throw new Error(result.message);
+          }
+          btn.disabled = false;
+        };
+
       } catch (err) {
-        status.innerText = "Gagal menyimpan: " + err.message;
+        status.className = "text-xs font-medium mt-3 text-rose-400";
+        status.innerText = "Gagal memproses unggahan: " + err.message;
+        btn.disabled = false;
       }
     };
 
+    // Load Documents from Firestore
     async function muatDataBerkas() {
       const tbody = document.getElementById('tableBerkas');
-      tbody.innerHTML = '<tr><td colspan="3">Memuat data...</td></tr>';
-      
+      tbody.innerHTML = '<tr><td colspan="3" class="py-8 text-center text-slate-500 text-xs">Memuat arsip berkas...</td></tr>';
+
       try {
         let q;
         if (currentUserData.role === 'master' || currentUserData.role === 'pengacara') {
-          q = collection(db, "berkas"); // Master lihat semua
+          q = collection(db, "berkas");
         } else {
-          q = query(collection(db, "berkas"), where("clientId", "==", currentUserData.uid)); // Klien lihat miliknya saja
+          q = query(collection(db, "berkas"), where("clientId", "==", currentUserData.uid));
         }
 
         const snapshot = await getDocs(q);
         tbody.innerHTML = '';
 
         if (snapshot.empty) {
-          tbody.innerHTML = '<tr><td colspan="3">Belum ada dokumen yang diarsipkan.</td></tr>';
+          tbody.innerHTML = '<tr><td colspan="3" class="py-8 text-center text-slate-500 text-xs">Belum ada dokumen yang tersimpan.</td></tr>';
           return;
         }
 
         snapshot.forEach((docSnap) => {
           const data = docSnap.data();
-          const row = document.createElement('tr');
-          const tgl = data.createdAt ? new Date(data.createdAt.seconds * 1000).toLocaleDateString('id-ID') : '-';
-          
-          row.innerHTML = `
-            <td><strong>${data.namaBerkas}</strong></td>
-            <td>${tgl}</td>
-            <td><a href="${data.linkDrive}" target="_blank" class="btn-link">Buka Google Drive</a></td>
+          const tgl = data.createdAt ? new Date(data.createdAt.seconds * 1000).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : 'Baru saja';
+
+          tbody.innerHTML += `
+            <tr class="hover:bg-slate-800/40 transition">
+              <td class="py-4 px-6 font-medium text-white">${data.namaBerkas}</td>
+              <td class="py-4 px-6 text-slate-400 text-xs">${tgl}</td>
+              <td class="py-4 px-6 text-right">
+                <a href="${data.linkDrive}" target="_blank" class="inline-flex items-center space-x-1.5 px-3 py-1.5 bg-blue-600/10 hover:bg-blue-600/20 text-blue-400 border border-blue-500/30 rounded-lg text-xs font-semibold transition">
+                  <span>Lihat di Drive</span>
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                </a>
+              </td>
+            </tr>
           `;
-          tbody.appendChild(row);
         });
       } catch (err) {
-        tbody.innerHTML = `<tr><td colspan="3">Gagal memuat data.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="3" class="py-8 text-center text-rose-400 text-xs">Terjadi kesalahan memuat data: ${err.message}</td></tr>`;
       }
     }
   </script>
