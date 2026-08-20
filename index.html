@@ -10,7 +10,6 @@
   <style>
     body { font-family: 'Inter', sans-serif; }
     .glass { background: rgba(30, 41, 59, 0.85); backdrop-filter: blur(16px); }
-    /* Hide scrollbar for clean look */
     ::-webkit-scrollbar { width: 6px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
@@ -20,7 +19,6 @@
 
   <!-- ================= AUTH CONTAINER ================= -->
   <div id="authSection" class="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-slate-950 via-slate-900 to-blue-950 relative overflow-hidden">
-    <!-- Dekorasi Background -->
     <div class="absolute top-0 left-0 w-full h-full overflow-hidden z-0 pointer-events-none opacity-20">
       <div class="absolute -top-24 -right-24 w-96 h-96 bg-blue-600 rounded-full mix-blend-screen filter blur-[100px]"></div>
       <div class="absolute bottom-0 left-0 w-72 h-72 bg-emerald-600 rounded-full mix-blend-screen filter blur-[100px]"></div>
@@ -32,10 +30,9 @@
           <i data-lucide="scale" class="w-8 h-8"></i>
         </div>
         <h2 class="text-2xl font-bold text-white tracking-wide">DJATI LAW FIRM</h2>
-        <p class="text-slate-400 text-sm mt-1">Portal Manajemen Berkas & Klien Terpadu</p>
+        <p class="text-slate-400 text-sm mt-1">Portal Manajemen Berkas & Klien</p>
       </div>
 
-      <!-- Notifikasi -->
       <div id="authMsg" class="hidden mb-4 p-3 rounded-lg text-xs font-semibold text-center"></div>
 
       <!-- LOGIN FORM -->
@@ -51,34 +48,19 @@
           </div>
           <input type="password" id="loginPassword" required class="w-full bg-slate-900/90 border border-slate-700 rounded-xl py-2.5 px-4 text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 text-sm">
         </div>
-
-        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold py-3 rounded-xl transition shadow-lg shadow-blue-600/30 text-sm flex justify-center items-center">
-          Masuk
-        </button>
-        
-        <div class="relative flex items-center py-2">
-          <div class="flex-grow border-t border-slate-700"></div>
-          <span class="flex-shrink-0 mx-4 text-slate-500 text-xs uppercase font-semibold">Atau</span>
-          <div class="flex-grow border-t border-slate-700"></div>
-        </div>
-
-        <button type="button" onclick="loginGoogle()" class="w-full bg-white text-slate-800 hover:bg-slate-100 font-semibold py-2.5 rounded-xl transition text-sm flex items-center justify-center space-x-2">
-          <svg class="w-4 h-4" viewBox="0 0 24 24"><path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-          <span>Masuk dengan Google</span>
-        </button>
-
+        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold py-3 rounded-xl transition shadow-lg shadow-blue-600/30 text-sm">Masuk</button>
         <p class="text-center text-xs text-slate-400 mt-4">Belum punya akun? <a href="#" onclick="toggleAuth('register')" class="text-blue-400 font-semibold hover:underline">Daftar Klien Baru</a></p>
       </form>
 
-      <!-- REGISTER FORM -->
+      <!-- REGISTER KLIEN FORM -->
       <form id="formRegister" onsubmit="event.preventDefault(); registerApp();" class="space-y-3 hidden">
         <div><input type="text" id="regName" required placeholder="Nama Lengkap Klien" class="w-full bg-slate-900 border border-slate-700 rounded-xl py-2 px-4 text-sm text-white"></div>
-        <div><input type="tel" id="regPhone" required placeholder="Nomor Handphone (WhatsApp)" class="w-full bg-slate-900 border border-slate-700 rounded-xl py-2 px-4 text-sm text-white"></div>
+        <div><input type="tel" id="regPhone" required placeholder="Nomor WhatsApp" class="w-full bg-slate-900 border border-slate-700 rounded-xl py-2 px-4 text-sm text-white"></div>
         <div><textarea id="regAddress" required placeholder="Alamat Lengkap" class="w-full bg-slate-900 border border-slate-700 rounded-xl py-2 px-4 text-sm text-white resize-none" rows="2"></textarea></div>
         <div><input type="email" id="regEmail" required placeholder="Email" class="w-full bg-slate-900 border border-slate-700 rounded-xl py-2 px-4 text-sm text-white"></div>
         <div><input type="password" id="regPassword" required placeholder="Buat Kata Sandi (Min 6)" class="w-full bg-slate-900 border border-slate-700 rounded-xl py-2 px-4 text-sm text-white"></div>
         
-        <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-3 rounded-xl transition text-sm">Daftar Akun</button>
+        <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-3 rounded-xl transition text-sm">Daftar Klien</button>
         <p class="text-center text-xs text-slate-400">Sudah terdaftar? <a href="#" onclick="toggleAuth('login')" class="text-blue-400 font-semibold hover:underline">Kembali Login</a></p>
       </form>
     </div>
@@ -86,7 +68,6 @@
 
   <!-- ================= DASHBOARD MAIN ================= -->
   <div id="dashboardSection" class="hidden min-h-screen flex flex-col md:flex-row bg-slate-950">
-    
     <!-- Sidebar Navigation -->
     <aside class="w-full md:w-64 bg-slate-900 border-r border-slate-800 flex flex-col justify-between">
       <div>
@@ -105,12 +86,18 @@
           <button onclick="switchView('clientView')" id="nav-clients" class="hidden w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white font-medium text-sm transition menu-btn">
             <i data-lucide="users" class="w-4 h-4"></i><span>Daftar Klien</span>
           </button>
+          <button onclick="switchView('threadView')" id="nav-threads" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white font-medium text-sm transition menu-btn">
+            <i data-lucide="message-square" class="w-4 h-4"></i><span>Manajemen Perkara</span>
+          </button>
           <button onclick="switchView('docView')" id="nav-docs" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white font-medium text-sm transition menu-btn">
-            <i data-lucide="folder-open" class="w-4 h-4"></i><span>Arsip Perkara</span>
+            <i data-lucide="folder-open" class="w-4 h-4"></i><span>Arsip Dokumen</span>
           </button>
         </nav>
       </div>
-      <div class="p-4 border-t border-slate-800">
+      <div class="p-4 border-t border-slate-800 space-y-2">
+        <button id="btnRegPengacara" onclick="bukaModalRegPengacara()" class="hidden w-full bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-400 border border-emerald-500/30 font-medium py-2 rounded-xl transition text-xs flex items-center justify-center space-x-2">
+          <i data-lucide="user-plus" class="w-4 h-4"></i><span>Registrasi Pengacara</span>
+        </button>
         <button onclick="logoutApp()" class="w-full bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 font-medium py-2 rounded-xl transition text-xs flex items-center justify-center space-x-2">
           <i data-lucide="log-out" class="w-4 h-4"></i><span>Keluar Portal</span>
         </button>
@@ -125,140 +112,162 @@
         <h2 class="text-2xl font-bold text-white mb-6">Profil Pengguna</h2>
         <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Nama Lengkap</label>
-              <input type="text" id="profName" class="w-full bg-slate-950 border border-slate-800 rounded-lg py-2 px-4 text-white text-sm">
-            </div>
-            <div>
-              <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Nomor HP / WA</label>
-              <input type="tel" id="profPhone" class="w-full bg-slate-950 border border-slate-800 rounded-lg py-2 px-4 text-white text-sm">
-            </div>
-            <div class="md:col-span-2">
-              <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Alamat Lengkap</label>
-              <textarea id="profAddress" class="w-full bg-slate-950 border border-slate-800 rounded-lg py-2 px-4 text-white text-sm resize-none" rows="2"></textarea>
-            </div>
-            <div>
-              <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Email Terdaftar</label>
-              <input type="email" id="profEmail" disabled class="w-full bg-slate-950/50 border border-slate-800/50 rounded-lg py-2 px-4 text-slate-500 text-sm cursor-not-allowed">
-            </div>
-            <div>
-              <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Status Akun</label>
-              <input type="text" id="profRole" disabled class="w-full bg-slate-950/50 border border-slate-800/50 rounded-lg py-2 px-4 text-blue-400 uppercase font-bold text-sm cursor-not-allowed">
-            </div>
-            <div class="md:col-span-2" id="profPerkaraDiv">
-              <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Nomor Perkara Anda</label>
-              <input type="text" id="profPerkara" disabled class="w-full bg-slate-950/50 border border-slate-800/50 rounded-lg py-2 px-4 text-emerald-400 font-mono text-sm cursor-not-allowed" placeholder="Belum ada perkara di-assign">
-            </div>
+            <div><label class="block text-xs font-semibold text-slate-400 mb-1">NAMA LENGKAP</label><input type="text" id="profName" class="w-full bg-slate-950 border border-slate-800 rounded-lg py-2 px-4 text-white text-sm"></div>
+            <div><label class="block text-xs font-semibold text-slate-400 mb-1">NOMOR HP</label><input type="tel" id="profPhone" class="w-full bg-slate-950 border border-slate-800 rounded-lg py-2 px-4 text-white text-sm"></div>
+            <div class="md:col-span-2"><label class="block text-xs font-semibold text-slate-400 mb-1">ALAMAT</label><textarea id="profAddress" class="w-full bg-slate-950 border border-slate-800 rounded-lg py-2 px-4 text-white text-sm resize-none" rows="2"></textarea></div>
+            <div><label class="block text-xs font-semibold text-slate-400 mb-1">EMAIL</label><input type="email" id="profEmail" disabled class="w-full bg-slate-950/50 border border-slate-800/50 rounded-lg py-2 px-4 text-slate-500 text-sm"></div>
+            <div><label class="block text-xs font-semibold text-slate-400 mb-1">ROLE</label><input type="text" id="profRole" disabled class="w-full bg-slate-950/50 border border-slate-800/50 rounded-lg py-2 px-4 text-blue-400 uppercase font-bold text-sm"></div>
           </div>
           <div class="mt-6 flex gap-3">
             <button onclick="updateProfile()" class="bg-blue-600 hover:bg-blue-500 text-white font-semibold py-2 px-6 rounded-lg text-sm transition">Simpan Pembaruan</button>
-            <button onclick="lupaPassword()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold py-2 px-6 rounded-lg text-sm transition border border-slate-700">Ganti Sandi (Via Email)</button>
           </div>
           <p id="profMsg" class="mt-3 text-xs font-medium"></p>
         </div>
       </div>
 
-      <!-- VIEW: DAFTAR KLIEN (Admin/Pengacara) -->
+      <!-- VIEW: DAFTAR KLIEN -->
       <div id="clientView" class="view-section hidden">
         <div class="flex justify-between items-center mb-6">
           <h2 class="text-2xl font-bold text-white">Manajemen Klien</h2>
-          <div class="relative">
-            <i data-lucide="search" class="w-4 h-4 absolute left-3 top-2.5 text-slate-400"></i>
-            <input type="text" id="searchClient" onkeyup="filterClients()" placeholder="Cari nama klien..." class="bg-slate-900 border border-slate-800 rounded-xl py-2 pl-9 pr-4 text-sm text-white focus:outline-none focus:border-blue-500">
-          </div>
+          <input type="text" id="searchClient" onkeyup="filterClients()" placeholder="Cari nama klien..." class="bg-slate-900 border border-slate-800 rounded-xl py-2 px-4 text-sm text-white">
         </div>
         <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
-          <table class="w-full text-left border-collapse" id="clientTable">
+          <table class="w-full text-left border-collapse">
             <thead>
-              <tr class="bg-slate-950/50 text-[11px] font-semibold text-slate-400 uppercase tracking-wider border-b border-slate-800">
+              <tr class="bg-slate-950/50 text-[11px] font-semibold text-slate-400 uppercase border-b border-slate-800">
                 <th class="py-3 px-4">Nama & Kontak</th>
                 <th class="py-3 px-4">Nomor Perkara</th>
-                <th class="py-3 px-4" id="colPengacara">Pengacara ID</th>
                 <th class="py-3 px-4 text-right">Aksi</th>
               </tr>
             </thead>
-            <tbody id="clientListBody" class="divide-y divide-slate-800/60 text-sm text-slate-300">
-              <!-- Load Clients Here -->
-            </tbody>
+            <tbody id="clientListBody" class="divide-y divide-slate-800/60 text-sm text-slate-300"></tbody>
           </table>
+        </div>
+      </div>
+
+      <!-- VIEW: MANAJEMEN PERKARA (THREADS) -->
+      <div id="threadView" class="view-section hidden">
+        <div class="flex justify-between items-center mb-6">
+          <h2 class="text-2xl font-bold text-white">Ruang Perkara (Threads)</h2>
+          <button id="btnCreateThread" onclick="bukaModalThread()" class="hidden bg-blue-600 hover:bg-blue-500 text-white font-semibold py-2 px-4 rounded-xl text-sm transition">
+            + Buat Thread Perkara
+          </button>
+        </div>
+        <div id="listThreads" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Threads dimuat disini -->
         </div>
       </div>
 
       <!-- VIEW: ARSIP DOKUMEN -->
       <div id="docView" class="view-section hidden">
-        <h2 class="text-2xl font-bold text-white mb-6">Arsip & Dokumen Perkara</h2>
+        <h2 class="text-2xl font-bold text-white mb-6">Arsip Dokumen Global</h2>
         
-        <!-- Upload Form (Khusus Master/Pengacara) -->
+        <!-- Filter Info -->
+        <div id="filterInfo" class="hidden mb-4 p-3 bg-blue-900/30 border border-blue-800 rounded-lg flex justify-between items-center">
+          <span class="text-sm text-blue-200" id="filterText">Menampilkan arsip terfilter</span>
+          <button onclick="hapusFilterArsip()" class="text-xs bg-blue-600 hover:bg-blue-500 px-3 py-1 rounded text-white">Tampilkan Semua</button>
+        </div>
+
         <div id="panelAdmin" class="hidden bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl mb-8">
-          <h3 class="text-base font-semibold text-white mb-4 flex items-center space-x-2">
-            <i data-lucide="cloud-upload" class="w-5 h-5 text-emerald-400"></i><span>Unggah Berkas ke Drive</span>
-          </h3>
+          <h3 class="text-base font-semibold text-white mb-4">Unggah Berkas Baru</h3>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-            <div>
-              <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Judul Dokumen</label>
-              <input type="text" id="docName" class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2 px-4 text-white text-sm" placeholder="Contoh: Salinan Putusan">
-            </div>
-            <div>
-              <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Pilih Klien</label>
-              <select id="docClientId" class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2 px-4 text-white text-sm">
-                <option value="">-- Memuat Klien --</option>
-              </select>
-            </div>
+            <div><label class="block text-xs font-semibold text-slate-400 mb-1">Judul Dokumen</label><input type="text" id="docName" class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2 px-4 text-white text-sm"></div>
+            <div><label class="block text-xs font-semibold text-slate-400 mb-1">Pilih Klien</label><select id="docClientId" class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2 px-4 text-white text-sm"></select></div>
           </div>
-          <div class="mb-4">
-            <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">File Berkas</label>
-            <input type="file" id="fileInput" class="w-full text-slate-400 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-blue-600 file:text-white cursor-pointer">
-          </div>
-          <button onclick="simpanDokumen()" id="btnUpload" class="bg-emerald-600 hover:bg-emerald-500 text-white font-semibold px-6 py-2.5 rounded-xl transition text-sm flex items-center space-x-2">
-            <i data-lucide="upload" class="w-4 h-4"></i><span>Sinkronkan ke Folder Drive</span>
-          </button>
+          <div class="mb-4"><input type="file" id="fileInput" class="w-full text-sm file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-blue-600 file:text-white cursor-pointer text-slate-400"></div>
+          <button onclick="simpanDokumen()" id="btnUpload" class="bg-emerald-600 hover:bg-emerald-500 text-white font-semibold px-6 py-2.5 rounded-xl text-sm">Sinkronkan ke Drive</button>
           <p id="statusSimpan" class="text-xs font-medium mt-3"></p>
         </div>
 
-        <!-- Document Table -->
         <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
-          <div class="p-4 border-b border-slate-800 flex justify-between items-center bg-slate-950/30">
-            <h3 class="font-semibold text-white text-sm">Daftar Dokumen</h3>
-            <button onclick="muatDataBerkas()" class="text-slate-400 hover:text-white text-xs flex items-center space-x-1"><i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i><span>Refresh</span></button>
-          </div>
-          <div class="overflow-x-auto">
-            <table class="w-full text-left border-collapse">
-              <thead>
-                <tr class="bg-slate-950/50 text-[11px] font-semibold text-slate-400 uppercase tracking-wider border-b border-slate-800">
-                  <th class="py-3 px-4">Nama Dokumen</th>
-                  <th class="py-3 px-4">Nomor Perkara (Folder)</th>
-                  <th class="py-3 px-4">Tanggal</th>
-                  <th class="py-3 px-4 text-right">Aksi</th>
-                </tr>
-              </thead>
-              <tbody id="tableBerkas" class="divide-y divide-slate-800/60 text-sm text-slate-300">
-                <tr><td colspan="4" class="py-6 text-center text-slate-500 text-xs">Memuat...</td></tr>
-              </tbody>
-            </table>
-          </div>
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="bg-slate-950/50 text-[11px] font-semibold text-slate-400 uppercase border-b border-slate-800">
+                <th class="py-3 px-4">Nama Dokumen</th>
+                <th class="py-3 px-4">Folder Perkara</th>
+                <th class="py-3 px-4 text-right">Berkas</th>
+              </tr>
+            </thead>
+            <tbody id="tableBerkas" class="divide-y divide-slate-800/60 text-sm text-slate-300"></tbody>
+          </table>
         </div>
       </div>
     </main>
   </div>
 
-  <!-- Modal Edit Klien (Hanya Master) -->
+  <!-- MODAL: REGISTRASI PENGACARA BARU (MASTER ONLY) -->
+  <div id="modalRegPengacara" class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-700 rounded-2xl p-6 w-full max-w-md shadow-2xl relative">
+      <h3 class="text-lg font-bold text-white mb-4">Registrasi Akun Pengacara</h3>
+      <form id="formRegPengacara" onsubmit="event.preventDefault(); submitRegPengacara();" class="space-y-3">
+        <input type="text" id="rpName" required placeholder="Nama Lengkap Pengacara" class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2 px-4 text-sm text-white">
+        <input type="tel" id="rpPhone" required placeholder="Nomor Handphone" class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2 px-4 text-sm text-white">
+        <input type="email" id="rpEmail" required placeholder="Email Pengacara" class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2 px-4 text-sm text-white">
+        <input type="password" id="rpPassword" required placeholder="Password Sementara" class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2 px-4 text-sm text-white">
+        <div class="mt-6 flex justify-end gap-3">
+          <button type="button" onclick="tutupModalRegPengacara()" class="px-4 py-2 bg-slate-800 text-slate-300 rounded-lg text-sm hover:bg-slate-700">Batal</button>
+          <button type="submit" id="btnSubmitPengacara" class="px-4 py-2 bg-emerald-600 text-white rounded-lg text-sm hover:bg-emerald-500">Daftarkan</button>
+        </div>
+        <p id="msgRegPengacara" class="text-xs text-center mt-2"></p>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: EDIT KLIEN & ASSIGN MULTIPLE PENGACARA -->
   <div id="modalEditKlien" class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
     <div class="bg-slate-900 border border-slate-700 rounded-2xl p-6 w-full max-w-md shadow-2xl relative">
-      <h3 class="text-lg font-bold text-white mb-4">Edit Data Klien</h3>
+      <h3 class="text-lg font-bold text-white mb-4">Atur Data Klien</h3>
       <input type="hidden" id="editKlienId">
       <div class="space-y-3">
         <div>
-          <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Nomor Perkara</label>
-          <input type="text" id="editNoPerkara" class="w-full bg-slate-950 border border-slate-800 rounded-lg py-2 px-3 text-white text-sm" placeholder="Misal: 123/Pdt.G/2023/PN">
+          <label class="block text-xs font-semibold text-slate-400 mb-1">Nomor Perkara</label>
+          <input type="text" id="editNoPerkara" class="w-full bg-slate-950 border border-slate-800 rounded-lg py-2 px-3 text-white text-sm">
         </div>
-        <div id="divEditPengacara">
-          <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">ID Pengacara (Assign)</label>
-          <input type="text" id="editIdPengacara" class="w-full bg-slate-950 border border-slate-800 rounded-lg py-2 px-3 text-white text-sm" placeholder="UID Pengacara penanggung jawab">
+        <div id="divEditPengacara" class="hidden">
+          <label class="block text-xs font-semibold text-slate-400 mb-1">Assign Pengacara (Bisa lebih dari 1)</label>
+          <div id="listCheckboxPengacara" class="max-h-32 overflow-y-auto bg-slate-950 border border-slate-800 rounded-lg p-2 space-y-2">
+            <!-- Checkbox pengacara dimuat disini -->
+          </div>
         </div>
       </div>
       <div class="mt-6 flex justify-end gap-3">
-        <button onclick="tutupModal()" class="px-4 py-2 bg-slate-800 text-slate-300 rounded-lg text-sm font-semibold hover:bg-slate-700 transition">Batal</button>
-        <button onclick="simpanEditKlien()" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-semibold hover:bg-blue-500 transition">Simpan Data</button>
+        <button onclick="tutupModalEdit()" class="px-4 py-2 bg-slate-800 text-slate-300 rounded-lg text-sm">Batal</button>
+        <button onclick="simpanEditKlien()" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm">Simpan</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: BUAT THREAD PERKARA -->
+  <div id="modalThread" class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-700 rounded-2xl p-6 w-full max-w-md shadow-2xl">
+      <h3 class="text-lg font-bold text-white mb-4">Buat Thread Perkara</h3>
+      <div class="space-y-3">
+        <input type="text" id="thJudul" placeholder="Judul / Nama Perkara" class="w-full bg-slate-950 border border-slate-800 rounded-lg py-2 px-3 text-white text-sm">
+        <select id="thKlien" class="w-full bg-slate-950 border border-slate-800 rounded-lg py-2 px-3 text-white text-sm"></select>
+      </div>
+      <div class="mt-6 flex justify-end gap-3">
+        <button onclick="document.getElementById('modalThread').classList.add('hidden')" class="px-4 py-2 bg-slate-800 text-slate-300 rounded-lg text-sm">Batal</button>
+        <button onclick="simpanThread()" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm">Buat Thread</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Thread Detail / Chat View -->
+  <div id="modalThreadDetail" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-[60] flex flex-col p-4 md:p-10">
+    <div class="bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl flex flex-col h-full w-full max-w-4xl mx-auto">
+      <div class="p-4 border-b border-slate-800 flex justify-between items-center">
+        <h3 id="tdJudul" class="text-lg font-bold text-white">Detail Perkara</h3>
+        <button onclick="document.getElementById('modalThreadDetail').classList.add('hidden')" class="text-slate-400 hover:text-white">Tutup</button>
+      </div>
+      <div class="flex-1 overflow-y-auto p-4 space-y-4" id="tdMessages">
+        <!-- Messages & File uploads in thread -->
+      </div>
+      <!-- Upload to Thread (Hanya Pengacara/Master) -->
+      <div class="p-4 border-t border-slate-800 bg-slate-950 flex gap-2" id="tdUploadArea">
+        <input type="hidden" id="tdThreadId">
+        <input type="text" id="tdDocName" placeholder="Nama Dokumen Tambahan..." class="flex-1 bg-slate-900 border border-slate-800 rounded-lg px-3 text-sm text-white">
+        <input type="file" id="tdFileInput" class="text-sm file:mr-2 file:py-1 file:px-3 file:rounded file:border-0 file:bg-blue-600 file:text-white cursor-pointer text-slate-400 w-48">
+        <button onclick="uploadToThread()" id="btnThreadUpload" class="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2 rounded-lg text-sm">Upload File</button>
       </div>
     </div>
   </div>
@@ -266,10 +275,10 @@
   <!-- Firebase & Logic Scripts -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged, sendPasswordResetEmail, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-    import { getFirestore, doc, setDoc, getDoc, updateDoc, collection, addDoc, query, where, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getFirestore, doc, setDoc, getDoc, updateDoc, collection, addDoc, query, where, getDocs, orderBy, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-    // --- SETUP FIREBASE & GAS ---
+    // Konfigurasi Utama
     const firebaseConfig = {
       apiKey: "AIzaSyAjkJPfk4hQrPUjOgANu_ir2Q2Cuko-g9Q",
       authDomain: "djati-law-firm.firebaseapp.com",
@@ -279,346 +288,405 @@
       appId: "1:120872416118:web:101fda03908b9723aa4057"
     };
 
-    // GANTI DENGAN WEB APP URL GOOGLE APPS SCRIPT ANDA YANG BARU DI-DEPLOY
     const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzb5FYBe-AyLuGREUSsVkSnnjomVo6PRiWslr-CwaO2wIDrZCCLeuGR_l3WPqUP2-wP/exec"; 
 
+    // App Utama
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
-    const providerGoogle = new GoogleAuthProvider();
+
+    // App Secondary (Khusus untuk Registrasi Pengacara tanpa melogout Master)
+    const secondaryApp = initializeApp(firebaseConfig, "Secondary");
+    const secondaryAuth = getAuth(secondaryApp);
 
     let currentUserData = null;
-    let allClientsData = []; // Untuk search cache
+    let allClientsData = []; 
+    let allPengacaraData = [];
+    let currentArsipFilter = null; // untuk filter tabel arsip
 
     window.addEventListener('DOMContentLoaded', () => lucide.createIcons());
 
-    // --- UI NAVIGATION LOGIC ---
-    window.toggleAuth = (type) => {
-      document.getElementById('formLogin').classList.toggle('hidden', type === 'register');
-      document.getElementById('formRegister').classList.toggle('hidden', type === 'login');
-      document.getElementById('authMsg').classList.add('hidden');
+    // --- NAVIGATION ---
+    window.toggleAuth = (t) => {
+      document.getElementById('formLogin').classList.toggle('hidden', t === 'register');
+      document.getElementById('formRegister').classList.toggle('hidden', t === 'login');
     };
 
     window.switchView = (viewId) => {
       document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden'));
       document.getElementById(viewId).classList.remove('hidden');
+      document.querySelectorAll('.menu-btn').forEach(btn => btn.classList.replace('text-blue-400','text-slate-400') || btn.classList.remove('bg-blue-600/10','border'));
       
-      // Styling button aktif
-      document.querySelectorAll('.menu-btn').forEach(btn => {
-        btn.classList.remove('bg-blue-600/10', 'text-blue-400', 'border', 'border-blue-500/20');
-        btn.classList.add('text-slate-400');
-      });
-      let activeBtnId = viewId === 'profileView' ? 'nav-profile' : (viewId === 'clientView' ? 'nav-clients' : 'nav-docs');
-      let activeBtn = document.getElementById(activeBtnId);
-      activeBtn.classList.remove('text-slate-400');
-      activeBtn.classList.add('bg-blue-600/10', 'text-blue-400', 'border', 'border-blue-500/20');
+      const activeMap = { profileView: 'nav-profile', clientView: 'nav-clients', threadView: 'nav-threads', docView: 'nav-docs' };
+      let btn = document.getElementById(activeMap[viewId]);
+      if(btn) btn.classList.add('bg-blue-600/10', 'text-blue-400', 'border', 'border-blue-500/20');
 
-      if (viewId === 'docView') muatDataBerkas();
+      if (viewId === 'docView') muatDataBerkas(currentArsipFilter);
       if (viewId === 'clientView') muatDaftarKlien();
-    };
-
-    const setAuthMsg = (msg, isError) => {
-      const div = document.getElementById('authMsg');
-      div.innerText = msg;
-      div.className = `mb-4 p-3 rounded-lg text-xs font-semibold text-center ${isError ? 'bg-red-500/20 text-red-400' : 'bg-green-500/20 text-green-400'}`;
-      div.classList.remove('hidden');
+      if (viewId === 'threadView') muatDaftarThreads();
     };
 
     // --- AUTHENTICATION ---
     window.loginApp = async () => {
-      try {
-        await signInWithEmailAndPassword(auth, document.getElementById('loginEmail').value, document.getElementById('loginPassword').value);
-      } catch (err) { setAuthMsg("Gagal Login: Cek email & password", true); }
+      try { await signInWithEmailAndPassword(auth, document.getElementById('loginEmail').value, document.getElementById('loginPassword').value); } 
+      catch (err) { alert("Gagal Login!"); }
     };
-
     window.registerApp = async () => {
       try {
         const cred = await createUserWithEmailAndPassword(auth, document.getElementById('regEmail').value, document.getElementById('regPassword').value);
         await setDoc(doc(db, "users", cred.user.uid), {
-          nama: document.getElementById('regName').value,
-          noHp: document.getElementById('regPhone').value,
-          alamat: document.getElementById('regAddress').value,
-          email: cred.user.email,
-          role: "client",
-          nomorPerkara: "",
-          pengacaraId: ""
+          nama: document.getElementById('regName').value, noHp: document.getElementById('regPhone').value,
+          alamat: document.getElementById('regAddress').value, email: cred.user.email, role: "client",
+          nomorPerkara: "", pengacaraIds: []
         });
-        setAuthMsg("Pendaftaran berhasil!", false);
-      } catch (err) { setAuthMsg(err.message, true); }
+        alert("Daftar berhasil!");
+      } catch (err) { alert(err.message); }
     };
-
-    window.loginGoogle = async () => {
-      try {
-        const res = await signInWithPopup(auth, providerGoogle);
-        const docRef = doc(db, "users", res.user.uid);
-        const docSnap = await getDoc(docRef);
-        // Jika user baru, buat profil di firestore
-        if (!docSnap.exists()) {
-          await setDoc(docRef, {
-            nama: res.user.displayName,
-            email: res.user.email,
-            noHp: "", alamat: "", role: "client", nomorPerkara: "", pengacaraId: ""
-          });
-        }
-      } catch (err) { setAuthMsg("Gagal login dengan Google", true); }
-    };
-
-    window.lupaPassword = async () => {
-      let email = document.getElementById('loginEmail').value || document.getElementById('profEmail')?.value;
-      if (!email) {
-        let inputEmail = prompt("Masukkan Email terdaftar Anda untuk reset password:");
-        if (!inputEmail) return;
-        email = inputEmail;
-      }
-      try {
-        await sendPasswordResetEmail(auth, email);
-        alert(`Link reset password telah dikirim ke ${email}`);
-      } catch (err) { alert("Gagal mengirim link: " + err.message); }
-    };
-
     window.logoutApp = () => signOut(auth);
 
-    // --- STATE OBSERVER ---
     onAuthStateChanged(auth, async (user) => {
-      const authSec = document.getElementById('authSection');
-      const dashSec = document.getElementById('dashboardSection');
-
       if (user) {
-        authSec.classList.add('hidden');
-        dashSec.classList.remove('hidden');
+        document.getElementById('authSection').classList.add('hidden');
+        document.getElementById('dashboardSection').classList.remove('hidden');
 
-        // Get User Profile
         const docSnap = await getDoc(doc(db, "users", user.uid));
-        currentUserData = docSnap.exists() ? { uid: user.uid, ...docSnap.data() } : { uid: user.uid, nama: user.displayName, email: user.email, role: 'client' };
+        currentUserData = docSnap.exists() ? { uid: user.uid, ...docSnap.data() } : { uid: user.uid, email: user.email, role: 'client' };
 
-        // Isi Menu Profile
         document.getElementById('profName').value = currentUserData.nama || '';
         document.getElementById('profPhone').value = currentUserData.noHp || '';
         document.getElementById('profAddress').value = currentUserData.alamat || '';
         document.getElementById('profEmail').value = currentUserData.email || '';
         document.getElementById('profRole').value = currentUserData.role;
-        document.getElementById('profPerkara').value = currentUserData.nomorPerkara || 'Belum ditugaskan';
 
-        // Role Based Logic UI
         if (currentUserData.role === 'master' || currentUserData.role === 'pengacara') {
           document.getElementById('nav-clients').classList.remove('hidden');
           document.getElementById('panelAdmin').classList.remove('hidden');
-          // Hide Nomor Perkara div di profile master/pengacara karena tidak relevan
-          document.getElementById('profPerkaraDiv').classList.add('hidden');
-          
-          if(currentUserData.role === 'pengacara') {
-            document.getElementById('colPengacara').classList.add('hidden'); // Pengacara tidak perlu lihat kolom Assign
-            document.getElementById('divEditPengacara').classList.add('hidden'); // Pengacara tdk bisa assign pengacara lain
-          }
+          document.getElementById('btnCreateThread').classList.remove('hidden');
           isiDropdownKlien();
+          
+          if(currentUserData.role === 'master') {
+            document.getElementById('btnRegPengacara').classList.remove('hidden');
+            document.getElementById('divEditPengacara').classList.remove('hidden');
+            ambilDaftarPengacara(); // Untuk render checkbox di modal edit klien
+          }
         } else {
+          // View untuk Klien biasa
           document.getElementById('nav-clients').classList.add('hidden');
           document.getElementById('panelAdmin').classList.add('hidden');
+          document.getElementById('tdUploadArea').classList.add('hidden'); // Klien tidak bisa upload di thread
         }
-
         switchView('profileView');
       } else {
-        authSec.classList.remove('hidden');
-        dashSec.classList.add('hidden');
+        document.getElementById('authSection').classList.remove('hidden');
+        document.getElementById('dashboardSection').classList.add('hidden');
       }
     });
 
-    // --- PROFILE MANAGEMENT ---
     window.updateProfile = async () => {
-      const msg = document.getElementById('profMsg');
       try {
-        msg.className = "mt-3 text-xs font-medium text-blue-400";
-        msg.innerText = "Menyimpan perubahan...";
         await updateDoc(doc(db, "users", currentUserData.uid), {
-          nama: document.getElementById('profName').value,
-          noHp: document.getElementById('profPhone').value,
-          alamat: document.getElementById('profAddress').value
+          nama: document.getElementById('profName').value, noHp: document.getElementById('profPhone').value, alamat: document.getElementById('profAddress').value
         });
-        msg.className = "mt-3 text-xs font-medium text-emerald-400";
-        msg.innerText = "Profil berhasil diperbarui!";
-        setTimeout(() => msg.innerText = "", 3000);
-      } catch (err) {
-        msg.className = "mt-3 text-xs font-medium text-rose-400";
-        msg.innerText = "Gagal memperbarui: " + err.message;
+        alert("Tersimpan!");
+      } catch (err) { alert(err.message); }
+    };
+
+    // --- REGISTRASI PENGACARA (Req 1) ---
+    window.bukaModalRegPengacara = () => document.getElementById('modalRegPengacara').classList.remove('hidden');
+    window.tutupModalRegPengacara = () => document.getElementById('modalRegPengacara').classList.add('hidden');
+    window.submitRegPengacara = async () => {
+      const msg = document.getElementById('msgRegPengacara');
+      const btn = document.getElementById('btnSubmitPengacara');
+      try {
+        btn.disabled = true; msg.innerText = "Mendaftarkan..."; msg.className = "text-xs text-center mt-2 text-blue-400";
+        // Gunakan secondaryAuth agar master tidak terlogout
+        const cred = await createUserWithEmailAndPassword(secondaryAuth, document.getElementById('rpEmail').value, document.getElementById('rpPassword').value);
+        
+        await setDoc(doc(db, "users", cred.user.uid), {
+          nama: document.getElementById('rpName').value, noHp: document.getElementById('rpPhone').value,
+          email: cred.user.email, role: "pengacara"
+        });
+        // Logout instance secondary setelah berhasil buat
+        await signOut(secondaryAuth);
+        
+        msg.innerText = "Pengacara berhasil didaftarkan!"; msg.className = "text-xs text-center mt-2 text-emerald-400";
+        setTimeout(() => { tutupModalRegPengacara(); document.getElementById('formRegPengacara').reset(); msg.innerText=""; btn.disabled=false; ambilDaftarPengacara(); }, 1500);
+      } catch (e) {
+        btn.disabled = false; msg.innerText = "Gagal: " + e.message; msg.className = "text-xs text-center mt-2 text-red-400";
       }
     };
 
-    // --- KLIEN MANAGEMENT (MASTER & PENGACARA) ---
+    // --- KLIEN & FILTER ARSIP (Req 2 & Req 3) ---
+    async function ambilDaftarPengacara() {
+      const q = query(collection(db, "users"), where("role", "==", "pengacara"));
+      const snap = await getDocs(q);
+      allPengacaraData = [];
+      snap.forEach(d => allPengacaraData.push({ id: d.id, ...d.data() }));
+    }
+
     async function muatDaftarKlien() {
       const tbody = document.getElementById('clientListBody');
-      tbody.innerHTML = '<tr><td colspan="4" class="py-4 text-center text-xs">Memuat data...</td></tr>';
-      
       try {
         let q;
-        if (currentUserData.role === 'master') {
-          q = query(collection(db, "users"), where("role", "==", "client"));
-        } else if (currentUserData.role === 'pengacara') {
-          q = query(collection(db, "users"), where("role", "==", "client"), where("pengacaraId", "==", currentUserData.uid));
-        }
+        if (currentUserData.role === 'master') q = query(collection(db, "users"), where("role", "==", "client"));
+        else if (currentUserData.role === 'pengacara') q = query(collection(db, "users"), where("role", "==", "client"), where("pengacaraIds", "array-contains", currentUserData.uid));
         
         const snapshot = await getDocs(q);
         allClientsData = [];
         snapshot.forEach(d => allClientsData.push({ id: d.id, ...d.data() }));
         renderTabelKlien(allClientsData);
-      } catch (err) { console.error(err); tbody.innerHTML = '<tr><td colspan="4" class="py-4 text-center text-red-400">Gagal memuat</td></tr>'; }
+      } catch (err) { tbody.innerHTML = '<tr><td colspan="3" class="py-4 text-center text-red-400">Gagal memuat</td></tr>'; }
     }
 
     window.renderTabelKlien = (dataArray) => {
       const tbody = document.getElementById('clientListBody');
       tbody.innerHTML = '';
-      if (dataArray.length === 0) return tbody.innerHTML = '<tr><td colspan="4" class="py-4 text-center text-slate-500 text-xs">Tidak ada klien ditemukan.</td></tr>';
+      if (dataArray.length === 0) return tbody.innerHTML = '<tr><td colspan="3" class="py-4 text-center text-slate-500 text-xs">Kosong</td></tr>';
 
       dataArray.forEach(k => {
         let tr = document.createElement('tr');
-        let roleMaster = currentUserData.role === 'master';
         tr.className = "hover:bg-slate-800/40 transition";
+        // REQ 2: Nomor Perkara / Nama Klien bisa diklik mengarah ke Arsip Filter
         tr.innerHTML = `
           <td class="py-3 px-4">
-            <div class="font-semibold text-white text-sm">${k.nama}</div>
+            <a href="#" onclick="filterArsipKlien('${k.id}', '${k.nama}')" class="font-semibold text-blue-400 hover:underline text-sm block">${k.nama}</a>
             <div class="text-xs text-slate-400">${k.noHp || '-'}</div>
           </td>
-          <td class="py-3 px-4 font-mono text-emerald-400 text-xs">${k.nomorPerkara || '<span class="text-slate-500">Belum Ada</span>'}</td>
-          ${roleMaster ? `<td class="py-3 px-4 text-xs font-mono text-slate-400">${k.pengacaraId ? k.pengacaraId.substring(0,8)+'...' : '-'}</td>` : ''}
+          <td class="py-3 px-4 font-mono text-emerald-400 text-xs">
+            <a href="#" onclick="filterArsipKlien('${k.id}', '${k.nomorPerkara}')" class="hover:underline">${k.nomorPerkara || '<span class="text-slate-500">Belum Ada</span>'}</a>
+          </td>
           <td class="py-3 px-4 text-right">
-            <button onclick="bukaEditKlien('${k.id}', '${k.nomorPerkara || ''}', '${k.pengacaraId || ''}')" class="text-xs bg-slate-800 hover:bg-slate-700 text-white px-3 py-1.5 rounded border border-slate-600 transition">Atur Data</button>
+            <button onclick="bukaEditKlien('${k.id}', '${k.nomorPerkara || ''}', '${k.pengacaraIds || []}')" class="text-xs bg-slate-800 text-white px-3 py-1.5 rounded border border-slate-600">Atur Data</button>
           </td>
         `;
         tbody.appendChild(tr);
       });
     };
 
-    window.filterClients = () => {
-      let val = document.getElementById('searchClient').value.toLowerCase();
-      let filtered = allClientsData.filter(k => k.nama.toLowerCase().includes(val) || (k.nomorPerkara && k.nomorPerkara.toLowerCase().includes(val)));
-      renderTabelKlien(filtered);
+    window.filterArsipKlien = (clientId, identifier) => {
+      currentArsipFilter = clientId;
+      document.getElementById('filterInfo').classList.remove('hidden');
+      document.getElementById('filterText').innerText = "Menampilkan arsip terkait: " + identifier;
+      switchView('docView');
     };
 
-    window.bukaEditKlien = (id, noPerk, pengId) => {
+    window.hapusFilterArsip = () => {
+      currentArsipFilter = null;
+      document.getElementById('filterInfo').classList.add('hidden');
+      muatDataBerkas();
+    };
+
+    window.bukaEditKlien = (id, noPerk, pengacaraIdsStr) => {
       document.getElementById('editKlienId').value = id;
       document.getElementById('editNoPerkara').value = noPerk;
-      if(currentUserData.role === 'master') document.getElementById('editIdPengacara').value = pengId;
+      
+      // REQ 3: Multiple Pengacara Dropdown/Checkbox
+      if(currentUserData.role === 'master') {
+        let assigned = pengacaraIdsStr.split(',');
+        let listHtml = '';
+        allPengacaraData.forEach(p => {
+          let checked = assigned.includes(p.id) ? 'checked' : '';
+          listHtml += `<label class="flex items-center space-x-2 text-sm text-slate-300"><input type="checkbox" class="chk-pengacara rounded bg-slate-900 border-slate-700 text-blue-600" value="${p.id}" ${checked}><span>${p.nama}</span></label>`;
+        });
+        document.getElementById('listCheckboxPengacara').innerHTML = listHtml;
+      }
       document.getElementById('modalEditKlien').classList.remove('hidden');
     };
-
-    window.tutupModal = () => document.getElementById('modalEditKlien').classList.add('hidden');
+    window.tutupModalEdit = () => document.getElementById('modalEditKlien').classList.add('hidden');
 
     window.simpanEditKlien = async () => {
       let uid = document.getElementById('editKlienId').value;
       let updates = { nomorPerkara: document.getElementById('editNoPerkara').value };
-      if(currentUserData.role === 'master') updates.pengacaraId = document.getElementById('editIdPengacara').value;
+      
+      if(currentUserData.role === 'master') {
+        let checkedBoxes = document.querySelectorAll('.chk-pengacara:checked');
+        let ids = Array.from(checkedBoxes).map(cb => cb.value);
+        updates.pengacaraIds = ids;
+      }
       
       try {
         await updateDoc(doc(db, "users", uid), updates);
-        tutupModal();
-        muatDaftarKlien(); // refresh
-        isiDropdownKlien(); // refresh dropdown form
-      } catch(err) { alert("Gagal menyimpan: " + err.message); }
+        tutupModalEdit(); muatDaftarKlien(); isiDropdownKlien();
+      } catch(err) { alert(err.message); }
     };
 
-    // --- UPLOAD & DOCUMENT MANAGEMENT ---
+    // --- UPLOAD GLOBAL & ARSIP ---
     async function isiDropdownKlien() {
-      const select = document.getElementById('docClientId');
-      select.innerHTML = '<option value="">-- Pilih Klien --</option>';
-      let q = currentUserData.role === 'master' 
-        ? query(collection(db, "users"), where("role", "==", "client"))
-        : query(collection(db, "users"), where("role", "==", "client"), where("pengacaraId", "==", currentUserData.uid));
-        
+      const select = document.getElementById('docClientId'); const selTh = document.getElementById('thKlien');
+      select.innerHTML = '<option value="">-- Pilih Klien --</option>'; selTh.innerHTML = '<option value="">-- Pilih Klien untuk Thread --</option>';
+      let q = currentUserData.role === 'master' ? query(collection(db, "users"), where("role", "==", "client")) : query(collection(db, "users"), where("role", "==", "client"), where("pengacaraIds", "array-contains", currentUserData.uid));
       const snap = await getDocs(q);
       snap.forEach(d => {
-        let data = d.data();
-        let labelData = data.nomorPerkara ? `[${data.nomorPerkara}] ${data.nama}` : data.nama;
-        // Simpan nama & no perkara di dataset untuk dikirim ke GAS
-        select.innerHTML += `<option value="${d.id}" data-nama="${data.nama}" data-perkara="${data.nomorPerkara||''}">${labelData}</option>`;
+        let data = d.data(); let l = data.nomorPerkara ? `[${data.nomorPerkara}] ${data.nama}` : data.nama;
+        let opt = `<option value="${d.id}" data-nama="${data.nama}" data-perkara="${data.nomorPerkara||''}">${l}</option>`;
+        select.innerHTML += opt; selTh.innerHTML += opt;
       });
     }
 
     window.simpanDokumen = async () => {
-      const docName = document.getElementById('docName').value;
-      const selectEl = document.getElementById('docClientId');
-      const clientId = selectEl.value;
-      const fileInput = document.getElementById('fileInput').files[0];
-      const status = document.getElementById('statusSimpan');
-      const btn = document.getElementById('btnUpload');
+      const docName = document.getElementById('docName').value; const sel = document.getElementById('docClientId');
+      const file = document.getElementById('fileInput').files[0];
+      if (!docName || !sel.value || !file) return alert("Lengkapi form!");
+      
+      const opt = sel.options[sel.selectedIndex];
+      uploadKeDrive(file, docName, sel.value, opt.getAttribute('data-nama'), opt.getAttribute('data-perkara'), document.getElementById('statusSimpan'), document.getElementById('btnUpload'), false);
+    };
 
-      if (!docName || !clientId || !fileInput) return alert("Lengkapi Form Upload!");
-
-      // Ambil data tambahan dari tag option terpilih
-      const opt = selectEl.options[selectEl.selectedIndex];
-      const clientName = opt.getAttribute('data-nama');
-      const nomorPerkara = opt.getAttribute('data-perkara');
-
-      try {
-        status.className = "text-xs font-medium mt-3 text-blue-400";
-        status.innerText = "Membuat folder & mengunggah ke Drive...";
-        btn.disabled = true;
-
-        const reader = new FileReader();
-        reader.readAsDataURL(fileInput);
-        reader.onload = async () => {
+    async function uploadKeDrive(file, docName, clientId, clientName, noPerkara, statusEl, btnEl, isThread, threadId) {
+      statusEl.className = "text-xs mt-2 text-blue-400"; statusEl.innerText = "Mengunggah..."; btnEl.disabled = true;
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = async () => {
+        try {
           const res = await fetch(GAS_WEB_APP_URL, {
-            method: 'POST',
-            body: JSON.stringify({
-              fileName: fileInput.name,
-              fileData: reader.result,
-              clientName: clientName,
-              nomorPerkara: nomorPerkara
-            })
+            method: 'POST', body: JSON.stringify({ fileName: file.name, fileData: reader.result, clientName: clientName, nomorPerkara: noPerkara })
           });
           const result = await res.json();
-
           if (result.status === "success") {
-            await addDoc(collection(db, "berkas"), {
-              namaBerkas: docName,
-              folderName: result.folderName,
-              clientId: clientId,
-              linkDrive: result.fileUrl,
-              createdAt: serverTimestamp(),
-              uploadedBy: currentUserData.uid
-            });
-            status.className = "text-xs font-medium mt-3 text-emerald-400";
-            status.innerText = "Dokumen tersimpan di folder: " + result.folderName;
-            document.getElementById('docName').value = ''; document.getElementById('fileInput').value = '';
-            muatDataBerkas();
+            const dataBerkas = {
+              namaBerkas: docName, folderName: result.folderName, clientId: clientId,
+              linkDrive: result.fileUrl, createdAt: serverTimestamp(), uploadedBy: currentUserData.uid
+            };
+            if(isThread) dataBerkas.threadId = threadId;
+            
+            await addDoc(collection(db, "berkas"), dataBerkas);
+            statusEl.className = "text-xs mt-2 text-emerald-400"; statusEl.innerText = "Berhasil!";
+            if(!isThread) { document.getElementById('docName').value = ''; document.getElementById('fileInput').value = ''; muatDataBerkas(currentArsipFilter); }
+            else { document.getElementById('tdDocName').value = ''; document.getElementById('tdFileInput').value = ''; }
           } else throw new Error(result.message);
-          btn.disabled = false;
-        };
-      } catch (err) {
-        status.className = "text-xs font-medium mt-3 text-rose-400";
-        status.innerText = "Error: " + err.message;
-        btn.disabled = false;
-      }
-    };
+        } catch (err) { statusEl.className = "text-xs mt-2 text-red-400"; statusEl.innerText = err.message; }
+        finally { btnEl.disabled = false; setTimeout(()=>{statusEl.innerText="";},3000); }
+      };
+    }
 
-    window.muatDataBerkas = async () => {
-      const tbody = document.getElementById('tableBerkas');
-      tbody.innerHTML = '<tr><td colspan="4" class="py-6 text-center text-xs">Memuat arsip...</td></tr>';
+    window.muatDataBerkas = async (filterClientId = null) => {
+      const tbody = document.getElementById('tableBerkas'); tbody.innerHTML = '<tr><td colspan="3" class="py-6 text-center text-xs">Memuat...</td></tr>';
       try {
         let q;
-        if (currentUserData.role === 'master' || currentUserData.role === 'pengacara') {
-          q = collection(db, "berkas");
-        } else {
-          q = query(collection(db, "berkas"), where("clientId", "==", currentUserData.uid));
+        if(filterClientId) { q = query(collection(db, "berkas"), where("clientId", "==", filterClientId)); } 
+        else {
+          if (currentUserData.role === 'master' || currentUserData.role === 'pengacara') q = collection(db, "berkas");
+          else q = query(collection(db, "berkas"), where("clientId", "==", currentUserData.uid));
         }
-
         const snap = await getDocs(q);
         tbody.innerHTML = '';
-        if (snap.empty) return tbody.innerHTML = '<tr><td colspan="4" class="py-6 text-center text-slate-500 text-xs">Arsip kosong.</td></tr>';
-
+        if (snap.empty) return tbody.innerHTML = '<tr><td colspan="3" class="py-6 text-center text-slate-500 text-xs">Kosong</td></tr>';
         snap.forEach(d => {
           let data = d.data();
-          let tgl = data.createdAt ? new Date(data.createdAt.seconds * 1000).toLocaleDateString('id-ID') : 'Baru saja';
-          tbody.innerHTML += `
-            <tr class="hover:bg-slate-800/40">
-              <td class="py-3 px-4 font-semibold text-white text-sm">${data.namaBerkas}</td>
-              <td class="py-3 px-4 font-mono text-emerald-400 text-xs">${data.folderName || 'Root'}</td>
-              <td class="py-3 px-4 text-xs text-slate-400">${tgl}</td>
-              <td class="py-3 px-4 text-right">
-                <a href="${data.linkDrive}" target="_blank" class="inline-flex px-3 py-1.5 bg-blue-600/20 text-blue-400 rounded-lg text-xs font-semibold hover:bg-blue-600 hover:text-white transition">Akses File</a>
-              </td>
-            </tr>`;
+          tbody.innerHTML += `<tr class="hover:bg-slate-800/40">
+            <td class="py-3 px-4 font-semibold text-white text-sm">${data.namaBerkas}</td>
+            <td class="py-3 px-4 text-xs text-slate-400">${data.folderName}</td>
+            <td class="py-3 px-4 text-right"><a href="${data.linkDrive}" target="_blank" class="px-3 py-1 bg-blue-600/20 text-blue-400 rounded text-xs font-semibold">Buka File</a></td>
+          </tr>`;
         });
-      } catch(err) { console.error(err); }
+      } catch(e){}
     };
+
+    // --- MANAJEMEN PERKARA / THREADS (Req 4) ---
+    window.bukaModalThread = () => document.getElementById('modalThread').classList.remove('hidden');
+    window.simpanThread = async () => {
+      const judul = document.getElementById('thJudul').value;
+      const sel = document.getElementById('thKlien'); const clientId = sel.value;
+      if(!judul || !clientId) return alert("Isi data!");
+      
+      const opt = sel.options[sel.selectedIndex];
+      try {
+        await addDoc(collection(db, "threads"), {
+          judul: judul, clientId: clientId, clientName: opt.getAttribute('data-nama'), noPerkara: opt.getAttribute('data-perkara'),
+          createdAt: serverTimestamp(), createdBy: currentUserData.uid
+        });
+        document.getElementById('modalThread').classList.add('hidden');
+        muatDaftarThreads();
+      } catch(e) { alert(e.message); }
+    };
+
+    async function muatDaftarThreads() {
+      const div = document.getElementById('listThreads'); div.innerHTML = '<p class="text-xs text-slate-400">Memuat...</p>';
+      let q;
+      if (currentUserData.role === 'master') q = query(collection(db, "threads")); // Master lihat semua
+      else if (currentUserData.role === 'client') q = query(collection(db, "threads"), where("clientId", "==", currentUserData.uid));
+      else { 
+        // Pengacara - ini membutuhkan cloud function agar query dinamis untuk semua klien si pengacara, 
+        // Untuk penyederhanaan: jika dia pengacara, ambil semua thread, lalu filter manual di client (hanya menampilkan thread klien dia).
+        q = query(collection(db, "threads")); 
+      }
+
+      const snap = await getDocs(q); div.innerHTML = '';
+      if(snap.empty) div.innerHTML = '<p class="text-xs text-slate-400">Belum ada thread perkara.</p>';
+
+      snap.forEach(d => {
+        let t = d.data();
+        
+        // Filter manual untuk pengacara
+        if (currentUserData.role === 'pengacara') {
+          let relatedClient = allClientsData.find(c => c.id === t.clientId);
+          if(!relatedClient) return; // Skip jika thread ini milik klien yg bukan diassign ke pengacara ini
+        }
+
+        div.innerHTML += `
+          <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 shadow-lg hover:border-blue-500/50 transition cursor-pointer" onclick="bukaThread('${d.id}', '${t.judul}', '${t.clientId}', '${t.clientName}', '${t.noPerkara}')">
+            <h4 class="font-bold text-blue-400 text-sm mb-1">${t.judul}</h4>
+            <p class="text-xs text-slate-400">Klien: ${t.clientName}</p>
+            <p class="text-xs text-emerald-500 font-mono mt-1">${t.noPerkara || 'No Perkara'}</p>
+          </div>
+        `;
+      });
+    }
+
+    let unsubThread = null;
+    let activeThread = {};
+    window.bukaThread = (id, judul, clientId, clientName, noPerkara) => {
+      activeThread = { id, clientId, clientName, noPerkara };
+      document.getElementById('tdJudul').innerText = judul;
+      document.getElementById('tdThreadId').value = id;
+      document.getElementById('modalThreadDetail').classList.remove('hidden');
+
+      const msgDiv = document.getElementById('tdMessages');
+      msgDiv.innerHTML = '<p class="text-center text-xs">Memuat berkas perkara...</p>';
+      
+      if(unsubThread) unsubThread(); // Hentikan listener lama
+      
+      // Ambil berkas khusus thread ini
+      const q = query(collection(db, "berkas"), where("threadId", "==", id));
+      unsubThread = onSnapshot(q, (snap) => {
+        msgDiv.innerHTML = '';
+        if(snap.empty) msgDiv.innerHTML = '<p class="text-center text-xs text-slate-500">Belum ada dokumen yang diunggah ke ruang ini.</p>';
+        
+        // Urutkan manual by waktu lokal karena firestore orderBy butuh index
+        let docs = []; snap.forEach(d => docs.push(d.data()));
+        docs.sort((a,b) => (a.createdAt?.seconds || 0) - (b.createdAt?.seconds || 0));
+
+        docs.forEach(data => {
+          let isMe = data.uploadedBy === currentUserData.uid;
+          let roleTag = (data.uploadedBy === activeThread.clientId) ? 'Klien' : 'Pengacara / Master';
+          msgDiv.innerHTML += `
+            <div class="flex ${isMe ? 'justify-end' : 'justify-start'}">
+              <div class="${isMe ? 'bg-blue-600/20 border border-blue-500/30' : 'bg-slate-800 border border-slate-700'} rounded-xl p-3 max-w-[80%]">
+                <span class="text-[10px] text-slate-400 block mb-1 uppercase">${roleTag} mengunggah berkas:</span>
+                <div class="flex items-center space-x-3">
+                  <i data-lucide="file-text" class="w-5 h-5 text-emerald-400"></i>
+                  <div>
+                    <p class="text-sm text-white font-medium">${data.namaBerkas}</p>
+                    <a href="${data.linkDrive}" target="_blank" class="text-xs text-blue-400 hover:underline">Unduh / Buka File</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          `;
+        });
+        lucide.createIcons();
+      });
+    };
+
+    window.uploadToThread = () => {
+      const docName = document.getElementById('tdDocName').value;
+      const file = document.getElementById('tdFileInput').files[0];
+      if(!docName || !file) return alert("Pilih file & masukkan nama!");
+      
+      uploadKeDrive(file, docName, activeThread.clientId, activeThread.clientName, activeThread.noPerkara, 
+        document.getElementById('btnThreadUpload'), document.getElementById('btnThreadUpload'), true, activeThread.id);
+    };
+
   </script>
 </body>
 </html>
