@@ -44,6 +44,7 @@
         <div>
           <div class="flex justify-between items-center mb-2">
             <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider">Kata Sandi</label>
+            <!-- LUPA PASSWORD DIPERBAIKI -->
             <a href="#" onclick="lupaPassword()" class="text-xs text-blue-400 hover:underline">Lupa sandi?</a>
           </div>
           <input type="password" id="loginPassword" required class="w-full bg-slate-900/90 border border-slate-700 rounded-xl py-2.5 px-4 text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 text-sm">
@@ -74,7 +75,7 @@
         <div class="flex items-center space-x-3 px-6 py-6 border-b border-slate-800 mb-4">
           <div class="p-2 bg-blue-600 rounded-lg text-white"><i data-lucide="scale" class="w-5 h-5"></i></div>
           <div>
-            <h1 class="font-bold text-sm tracking-wider text-white">DJATI LAW</h1>
+            <h1 class="font-bold text-sm tracking-wider text-white">DJATI LAW FIRM</h1>
             <p class="text-[10px] text-slate-400 uppercase font-semibold">Portal System</p>
           </div>
         </div>
@@ -83,10 +84,13 @@
           <button onclick="switchView('profileView')" id="nav-profile" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white font-medium text-sm transition menu-btn">
             <i data-lucide="user" class="w-4 h-4"></i><span>Profil & Akun</span>
           </button>
+          <!-- TAMBAHAN MENU PENGACARA -->
+          <button onclick="switchView('pengacaraView')" id="nav-pengacara" class="hidden w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white font-medium text-sm transition menu-btn">
+            <i data-lucide="briefcase" class="w-4 h-4"></i><span>Manajemen Pengacara</span>
+          </button>
           <button onclick="switchView('clientView')" id="nav-clients" class="hidden w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white font-medium text-sm transition menu-btn">
             <i data-lucide="users" class="w-4 h-4"></i><span>Daftar Klien</span>
           </button>
-          <!-- REVISI POIN 2: Menu Manajemen Perkara Dihapus -->
           <button onclick="switchView('docView')" id="nav-docs" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white font-medium text-sm transition menu-btn">
             <i data-lucide="folder-open" class="w-4 h-4"></i><span>Arsip Dokumen</span>
           </button>
@@ -116,13 +120,31 @@
             <div><label class="block text-xs font-semibold text-slate-400 mb-1">EMAIL</label><input type="email" id="profEmail" disabled class="w-full bg-slate-950/50 border border-slate-800/50 rounded-lg py-2 px-4 text-slate-500 text-sm"></div>
             <div><label class="block text-xs font-semibold text-slate-400 mb-1">ROLE</label><input type="text" id="profRole" disabled class="w-full bg-slate-950/50 border border-slate-800/50 rounded-lg py-2 px-4 text-blue-400 uppercase font-bold text-sm"></div>
           </div>
-          <!-- REVISI POIN 1: Tombol diarahkan ke modal ganti password -->
           <div class="mt-6 flex flex-wrap gap-3">
             <button id="btnEditProfile" onclick="toggleEditProfile(true)" class="bg-slate-700 hover:bg-slate-600 text-white font-semibold py-2 px-6 rounded-lg text-sm transition">Edit Informasi</button>
             <button id="btnSimpanProfile" onclick="updateProfile()" class="hidden bg-blue-600 hover:bg-blue-500 text-white font-semibold py-2 px-6 rounded-lg text-sm transition">Simpan Informasi</button>
             <button onclick="bukaModalGantiPassword()" class="bg-red-600 hover:bg-red-500 text-white font-semibold py-2 px-6 rounded-lg text-sm transition">Ganti Password</button>
           </div>
           <p id="profMsg" class="mt-3 text-xs font-medium"></p>
+        </div>
+      </div>
+
+      <!-- VIEW: MANAJEMEN PENGACARA -->
+      <div id="pengacaraView" class="view-section hidden">
+        <div class="flex justify-between items-center mb-6">
+          <h2 class="text-2xl font-bold text-white">Manajemen Pengacara</h2>
+        </div>
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="bg-slate-950/50 text-[11px] font-semibold text-slate-400 uppercase border-b border-slate-800">
+                <th class="py-3 px-4">Nama & Kontak</th>
+                <th class="py-3 px-4">Kasus / Perkara yang Ditangani</th>
+                <th class="py-3 px-4 text-right">Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="pengacaraListBody" class="divide-y divide-slate-800/60 text-sm text-slate-300"></tbody>
+          </table>
         </div>
       </div>
 
@@ -149,13 +171,11 @@
 
       <!-- VIEW: ARSIP DOKUMEN -->
       <div id="docView" class="view-section hidden">
-        <!-- REVISI POIN 3: Ditambahkan filter search arsip -->
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-3">
           <h2 class="text-2xl font-bold text-white">Arsip Dokumen Global</h2>
           <input type="text" id="searchArsip" onkeyup="renderTabelBerkas()" placeholder="Cari nama dokumen..." class="bg-slate-900 border border-slate-800 rounded-xl py-2 px-4 text-sm text-white max-w-xs w-full">
         </div>
         
-        <!-- Filter Info -->
         <div id="filterInfo" class="hidden mb-4 p-3 bg-blue-900/30 border border-blue-800 rounded-lg flex justify-between items-center">
           <span class="text-sm text-blue-200" id="filterText">Menampilkan arsip terfilter</span>
           <button onclick="hapusFilterArsip()" class="text-xs bg-blue-600 hover:bg-blue-500 px-3 py-1 rounded text-white">Tampilkan Semua</button>
@@ -193,7 +213,7 @@
     </main>
   </div>
 
-  <!-- REVISI POIN 1: MODAL GANTI PASSWORD -->
+  <!-- MODAL GANTI PASSWORD -->
   <div id="modalGantiPassword" class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
     <div class="bg-slate-900 border border-slate-700 rounded-2xl p-6 w-full max-w-md shadow-2xl relative">
       <h3 class="text-lg font-bold text-white mb-4">Ganti Password</h3>
@@ -255,12 +275,17 @@
     </div>
   </div>
 
-  <!-- MODAL: EDIT KLIEN & ASSIGN MULTIPLE PENGACARA -->
+  <!-- MODAL: EDIT KLIEN -->
   <div id="modalEditKlien" class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
     <div class="bg-slate-900 border border-slate-700 rounded-2xl p-6 w-full max-w-md shadow-2xl relative">
       <h3 class="text-lg font-bold text-white mb-4">Atur Data Klien</h3>
       <input type="hidden" id="editKlienId">
       <div class="space-y-3">
+        <div id="divEditDetailKlien" class="hidden space-y-3">
+          <div><label class="block text-xs font-semibold text-slate-400 mb-1">Nama Lengkap</label><input type="text" id="editNamaKlien" class="w-full bg-slate-950 border border-slate-800 rounded-lg py-2 px-3 text-white text-sm"></div>
+          <div><label class="block text-xs font-semibold text-slate-400 mb-1">Nomor HP</label><input type="text" id="editHpKlien" class="w-full bg-slate-950 border border-slate-800 rounded-lg py-2 px-3 text-white text-sm"></div>
+          <div><label class="block text-xs font-semibold text-slate-400 mb-1">Alamat</label><textarea id="editAlamatKlien" class="w-full bg-slate-950 border border-slate-800 rounded-lg py-2 px-3 text-white text-sm resize-none" rows="2"></textarea></div>
+        </div>
         <div>
           <label class="block text-xs font-semibold text-slate-400 mb-1">Nomor Perkara</label>
           <input type="text" id="editNoPerkara" class="w-full bg-slate-950 border border-slate-800 rounded-lg py-2 px-3 text-white text-sm">
@@ -278,12 +303,28 @@
     </div>
   </div>
 
+  <!-- MODAL: EDIT PENGACARA -->
+  <div id="modalEditPengacara" class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-700 rounded-2xl p-6 w-full max-w-md shadow-2xl relative">
+      <h3 class="text-lg font-bold text-white mb-4">Edit Informasi Pengacara</h3>
+      <input type="hidden" id="editPengacaraId">
+      <div class="space-y-3">
+        <div><label class="block text-xs font-semibold text-slate-400 mb-1">Nama Lengkap</label><input type="text" id="editNamaPengacara" class="w-full bg-slate-950 border border-slate-800 rounded-lg py-2 px-3 text-white text-sm"></div>
+        <div><label class="block text-xs font-semibold text-slate-400 mb-1">Nomor HP</label><input type="text" id="editHpPengacara" class="w-full bg-slate-950 border border-slate-800 rounded-lg py-2 px-3 text-white text-sm"></div>
+        <div><label class="block text-xs font-semibold text-slate-400 mb-1">Alamat</label><textarea id="editAlamatPengacara" class="w-full bg-slate-950 border border-slate-800 rounded-lg py-2 px-3 text-white text-sm resize-none" rows="2"></textarea></div>
+      </div>
+      <div class="mt-6 flex justify-end gap-3">
+        <button onclick="tutupModalEditPengacara()" class="px-4 py-2 bg-slate-800 text-slate-300 rounded-lg text-sm">Batal</button>
+        <button onclick="simpanEditPengacara()" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm">Simpan</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Firebase & Logic Scripts -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    // Ditambahkan EmailAuthProvider dan reauthenticateWithCredential untuk fungsi ganti password (poin 1)
-    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged, updatePassword, EmailAuthProvider, reauthenticateWithCredential } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-    import { getFirestore, doc, setDoc, getDoc, updateDoc, collection, addDoc, query, where, getDocs, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged, updatePassword, EmailAuthProvider, reauthenticateWithCredential, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getFirestore, doc, setDoc, getDoc, updateDoc, collection, addDoc, query, where, getDocs, orderBy, serverTimestamp, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     // Konfigurasi Utama
     const firebaseConfig = {
@@ -308,7 +349,7 @@
     let allClientsData = []; 
     let allPengacaraData = [];
     let currentArsipFilter = null; 
-    let allBerkasData = []; // Array penampung seluruh berkas untuk di filter via JS (poin 3)
+    let allBerkasData = [];
 
     window.addEventListener('DOMContentLoaded', () => lucide.createIcons());
 
@@ -323,12 +364,13 @@
       document.getElementById(viewId).classList.remove('hidden');
       document.querySelectorAll('.menu-btn').forEach(btn => btn.classList.replace('text-blue-400','text-slate-400') || btn.classList.remove('bg-blue-600/10','border'));
       
-      const activeMap = { profileView: 'nav-profile', clientView: 'nav-clients', docView: 'nav-docs' };
+      const activeMap = { profileView: 'nav-profile', clientView: 'nav-clients', docView: 'nav-docs', pengacaraView: 'nav-pengacara' };
       let btn = document.getElementById(activeMap[viewId]);
       if(btn) btn.classList.add('bg-blue-600/10', 'text-blue-400', 'border', 'border-blue-500/20');
 
       if (viewId === 'docView') muatDataBerkas(currentArsipFilter);
       if (viewId === 'clientView') muatDaftarKlien();
+      if (viewId === 'pengacaraView') muatDaftarPengacaraView();
     };
 
     // --- AUTHENTICATION ---
@@ -336,6 +378,7 @@
       try { await signInWithEmailAndPassword(auth, document.getElementById('loginEmail').value, document.getElementById('loginPassword').value); } 
       catch (err) { alert("Gagal Login!"); }
     };
+
     window.registerApp = async () => {
       try {
         const cred = await createUserWithEmailAndPassword(auth, document.getElementById('regEmail').value, document.getElementById('regPassword').value);
@@ -348,6 +391,21 @@
       } catch (err) { alert(err.message); }
     };
     window.logoutApp = () => signOut(auth);
+
+    // SISTEM LUPA SANDI DIPERBARUI
+    window.lupaPassword = async () => {
+      let emailVal = document.getElementById('loginEmail').value;
+      const emailInput = emailVal ? emailVal : window.prompt("Masukkan email yang terdaftar untuk menerima link reset sandi:");
+      
+      if (!emailInput) return;
+      
+      try {
+        await sendPasswordResetEmail(auth, emailInput);
+        alert("Instruksi reset sandi telah dikirim ke email " + emailInput + ". Silakan cek inbox/spam Anda.");
+      } catch (err) {
+        alert("Gagal mengirim email reset sandi: " + err.message);
+      }
+    };
 
     onAuthStateChanged(auth, async (user) => {
       if (user) {
@@ -373,11 +431,14 @@
           isiDropdownKlien();
           
           if(currentUserData.role === 'master') {
+            document.getElementById('nav-pengacara').classList.remove('hidden');
             document.getElementById('btnRegPengacara').classList.remove('hidden');
             document.getElementById('divEditPengacara').classList.remove('hidden');
+            document.getElementById('divEditDetailKlien').classList.remove('hidden');
           }
         } else {
           document.getElementById('nav-clients').classList.add('hidden');
+          document.getElementById('nav-pengacara').classList.add('hidden');
           document.getElementById('btnTampilUpload').classList.add('hidden');
         }
         switchView('profileView');
@@ -408,7 +469,6 @@
       } catch (err) { alert(err.message); }
     };
 
-    // --- REVISI POIN 1: Logika Modal Ganti Password ---
     window.bukaModalGantiPassword = () => {
         document.getElementById('formGantiPassword').reset();
         document.getElementById('msgGantiPassword').innerText = "";
@@ -424,65 +484,29 @@
 
       if(newPw !== confPw) {
           msg.innerText = "Konfirmasi password baru tidak cocok!";
-          msg.className = "text-xs text-center mt-2 text-red-400";
-          return;
+          msg.className = "text-xs text-center mt-2 text-red-400"; return;
       }
       if(newPw.length < 6) {
           msg.innerText = "Password baru minimal 6 karakter!";
-          msg.className = "text-xs text-center mt-2 text-red-400";
-          return;
+          msg.className = "text-xs text-center mt-2 text-red-400"; return;
       }
 
       try {
-          btn.disabled = true;
-          msg.innerText = "Memproses...";
-          msg.className = "text-xs text-center mt-2 text-blue-400";
+          btn.disabled = true; msg.innerText = "Memproses..."; msg.className = "text-xs text-center mt-2 text-blue-400";
 
           const user = auth.currentUser;
           const credential = EmailAuthProvider.credential(user.email, oldPw);
-          
           await reauthenticateWithCredential(user, credential);
           await updatePassword(user, newPw);
 
-          msg.innerText = "Password berhasil diubah!";
-          msg.className = "text-xs text-center mt-2 text-emerald-400";
-          setTimeout(() => {
-              document.getElementById('modalGantiPassword').classList.add('hidden');
-              btn.disabled = false;
-          }, 1500);
+          msg.innerText = "Password berhasil diubah!"; msg.className = "text-xs text-center mt-2 text-emerald-400";
+          setTimeout(() => { document.getElementById('modalGantiPassword').classList.add('hidden'); btn.disabled = false; }, 1500);
       } catch(err) {
-          btn.disabled = false;
-          msg.innerText = "Gagal: Password lama salah atau error lainnya.";
-          msg.className = "text-xs text-center mt-2 text-red-400";
+          btn.disabled = false; msg.innerText = "Gagal: Password lama salah."; msg.className = "text-xs text-center mt-2 text-red-400";
       }
     };
 
-    // --- REGISTRASI PENGACARA ---
-    window.bukaModalRegPengacara = () => document.getElementById('modalRegPengacara').classList.remove('hidden');
-    window.tutupModalRegPengacara = () => document.getElementById('modalRegPengacara').classList.add('hidden');
-    window.submitRegPengacara = async () => {
-      const msg = document.getElementById('msgRegPengacara');
-      const btn = document.getElementById('btnSubmitPengacara');
-      try {
-        btn.disabled = true; msg.innerText = "Mendaftarkan..."; msg.className = "text-xs text-center mt-2 text-blue-400";
-        const cred = await createUserWithEmailAndPassword(secondaryAuth, document.getElementById('rpEmail').value, document.getElementById('rpPassword').value);
-        
-        await setDoc(doc(db, "users", cred.user.uid), {
-          nama: document.getElementById('rpName').value, 
-          noHp: document.getElementById('rpPhone').value,
-          alamat: document.getElementById('rpAddress').value,
-          email: cred.user.email, role: "pengacara"
-        });
-        await signOut(secondaryAuth);
-        
-        msg.innerText = "Pengacara berhasil didaftarkan!"; msg.className = "text-xs text-center mt-2 text-emerald-400";
-        setTimeout(() => { tutupModalRegPengacara(); document.getElementById('formRegPengacara').reset(); msg.innerText=""; btn.disabled=false; ambilDaftarPengacara(); }, 1500);
-      } catch (e) {
-        btn.disabled = false; msg.innerText = "Gagal: " + e.message; msg.className = "text-xs text-center mt-2 text-red-400";
-      }
-    };
-
-    // --- KLIEN ---
+    // --- MANAJEMEN PENGACARA ---
     async function ambilDaftarPengacara() {
       const q = query(collection(db, "users"), where("role", "==", "pengacara"));
       const snap = await getDocs(q);
@@ -490,6 +514,77 @@
       snap.forEach(d => allPengacaraData.push({ id: d.id, ...d.data() }));
     }
 
+    window.muatDaftarPengacaraView = async () => {
+      if(allClientsData.length === 0) await muatDaftarKlien(); // Pastikan data klien ter-load untuk memetakan kasus
+      
+      const tbody = document.getElementById('pengacaraListBody');
+      tbody.innerHTML = '';
+      if (allPengacaraData.length === 0) return tbody.innerHTML = '<tr><td colspan="3" class="py-4 text-center text-slate-500 text-xs">Kosong</td></tr>';
+
+      allPengacaraData.forEach(p => {
+        let clientsHandled = allClientsData.filter(c => c.pengacaraIds && c.pengacaraIds.includes(p.id));
+        let listKasus = clientsHandled.map(c => `<span class="block mb-1 text-emerald-400">• ${c.nomorPerkara || 'Menunggu No Perkara'} <span class="text-slate-400">(${c.nama})</span></span>`).join('');
+        if(!listKasus) listKasus = '<span class="text-slate-500 italic">Belum menangani kasus</span>';
+
+        let safeNama = (p.nama||'').replace(/'/g, "&#39;");
+        let safeHp = (p.noHp||'').replace(/'/g, "&#39;");
+        let safeAlamat = (p.alamat||'').replace(/'/g, "&#39;");
+
+        let tr = document.createElement('tr');
+        tr.className = "hover:bg-slate-800/40 transition";
+        tr.innerHTML = `
+          <td class="py-3 px-4">
+            <div class="font-semibold text-white text-sm block">${p.nama}</div>
+            <div class="text-xs text-slate-400">${p.email} | ${p.noHp || '-'}</div>
+          </td>
+          <td class="py-3 px-4 text-xs">
+            ${listKasus}
+          </td>
+          <td class="py-3 px-4 text-right flex justify-end gap-2">
+            <button onclick="bukaEditPengacara('${p.id}', '${safeNama}', '${safeHp}', '${safeAlamat}')" class="text-xs bg-slate-800 text-white px-3 py-1.5 rounded border border-slate-600 hover:bg-slate-700 transition">Edit</button>
+            <button onclick="hapusPengacara('${p.id}')" class="text-xs bg-red-600/20 text-red-400 px-3 py-1.5 rounded border border-red-500/20 hover:bg-red-500/30 transition">Hapus</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    window.bukaEditPengacara = (id, nama, hp, alamat) => {
+        document.getElementById('editPengacaraId').value = id;
+        document.getElementById('editNamaPengacara').value = nama;
+        document.getElementById('editHpPengacara').value = hp;
+        document.getElementById('editAlamatPengacara').value = alamat;
+        document.getElementById('modalEditPengacara').classList.remove('hidden');
+    }
+    window.tutupModalEditPengacara = () => document.getElementById('modalEditPengacara').classList.add('hidden');
+
+    window.simpanEditPengacara = async () => {
+        let uid = document.getElementById('editPengacaraId').value;
+        let updates = { 
+            nama: document.getElementById('editNamaPengacara').value,
+            noHp: document.getElementById('editHpPengacara').value,
+            alamat: document.getElementById('editAlamatPengacara').value
+        };
+        try {
+            await updateDoc(doc(db, "users", uid), updates);
+            tutupModalEditPengacara();
+            await ambilDaftarPengacara();
+            muatDaftarPengacaraView();
+        } catch(err) { alert("Gagal edit: " + err.message); }
+    }
+
+    window.hapusPengacara = async (id) => {
+        if(confirm("Apakah Anda yakin ingin menghapus data pengacara ini dari sistem?")) {
+            try {
+                await deleteDoc(doc(db, "users", id));
+                await ambilDaftarPengacara();
+                muatDaftarPengacaraView();
+                muatDaftarKlien(); // refresh tabel klien agar relasi pengacara update
+            } catch(err) { alert("Gagal menghapus pengacara: " + err.message); }
+        }
+    }
+
+    // --- KLIEN ---
     async function muatDaftarKlien() {
       const tbody = document.getElementById('clientListBody');
       try {
@@ -519,11 +614,19 @@
         }
         let pengacaraText = pengacaraNames.length > 0 ? pengacaraNames.join(', ') : '<span class="text-slate-500 italic">Belum diset</span>';
 
+        let safeNama = (k.nama||'').replace(/'/g, "&#39;");
+        let safeHp = (k.noHp||'').replace(/'/g, "&#39;");
+        let safeAlamat = (k.alamat||'').replace(/'/g, "&#39;");
+
+        // Action Buttons
+        let btnEdit = `<button onclick="bukaEditKlien('${k.id}', '${k.nomorPerkara || ''}', '${k.pengacaraIds || []}', '${safeNama}', '${safeHp}', '${safeAlamat}')" class="text-xs bg-slate-800 text-white px-3 py-1.5 rounded border border-slate-600 hover:bg-slate-700 transition">Atur Data</button>`;
+        let btnDelete = currentUserData.role === 'master' ? `<button onclick="hapusKlien('${k.id}')" class="text-xs bg-red-600/20 text-red-400 px-3 py-1.5 rounded border border-red-500/20 hover:bg-red-500/30 transition">Hapus</button>` : '';
+
         let tr = document.createElement('tr');
         tr.className = "hover:bg-slate-800/40 transition";
         tr.innerHTML = `
           <td class="py-3 px-4">
-            <a href="#" onclick="filterArsipKlien('${k.id}', '${k.nama}')" class="font-semibold text-blue-400 hover:underline text-sm block">${k.nama}</a>
+            <a href="#" onclick="filterArsipKlien('${k.id}', '${safeNama}')" class="font-semibold text-blue-400 hover:underline text-sm block">${k.nama}</a>
             <div class="text-xs text-slate-400">${k.noHp || '-'}</div>
           </td>
           <td class="py-3 px-4 font-mono text-emerald-400 text-xs">
@@ -532,8 +635,8 @@
           <td class="py-3 px-4 text-xs text-slate-300">
             ${pengacaraText}
           </td>
-          <td class="py-3 px-4 text-right">
-            <button onclick="bukaEditKlien('${k.id}', '${k.nomorPerkara || ''}', '${k.pengacaraIds || []}')" class="text-xs bg-slate-800 text-white px-3 py-1.5 rounded border border-slate-600 hover:bg-slate-700 transition">Atur Data</button>
+          <td class="py-3 px-4 text-right flex justify-end gap-2">
+            ${btnEdit} ${btnDelete}
           </td>
         `;
         tbody.appendChild(tr);
@@ -559,7 +662,6 @@
         document.getElementById('ciEmail').innerText = klienData.email || '-';
         document.getElementById('ciAddress').innerText = klienData.alamat || '-';
       }
-
       switchView('docView');
     };
 
@@ -570,11 +672,15 @@
       muatDataBerkas();
     };
 
-    window.bukaEditKlien = (id, noPerk, pengacaraIdsStr) => {
+    window.bukaEditKlien = (id, noPerk, pengacaraIdsStr, nama, hp, alamat) => {
       document.getElementById('editKlienId').value = id;
       document.getElementById('editNoPerkara').value = noPerk;
       
       if(currentUserData.role === 'master') {
+        document.getElementById('editNamaKlien').value = nama;
+        document.getElementById('editHpKlien').value = hp;
+        document.getElementById('editAlamatKlien').value = alamat;
+
         let assigned = pengacaraIdsStr.split(',');
         let listHtml = '';
         allPengacaraData.forEach(p => {
@@ -592,6 +698,10 @@
       let updates = { nomorPerkara: document.getElementById('editNoPerkara').value };
       
       if(currentUserData.role === 'master') {
+        updates.nama = document.getElementById('editNamaKlien').value;
+        updates.noHp = document.getElementById('editHpKlien').value;
+        updates.alamat = document.getElementById('editAlamatKlien').value;
+
         let checkedBoxes = document.querySelectorAll('.chk-pengacara:checked');
         let ids = Array.from(checkedBoxes).map(cb => cb.value);
         updates.pengacaraIds = ids;
@@ -601,6 +711,48 @@
         await updateDoc(doc(db, "users", uid), updates);
         tutupModalEdit(); muatDaftarKlien(); isiDropdownKlien();
       } catch(err) { alert(err.message); }
+    };
+
+    window.hapusKlien = async (id) => {
+        if(confirm("Apakah Anda yakin ingin menghapus data klien ini secara permanen?")) {
+            try {
+                await deleteDoc(doc(db, "users", id));
+                muatDaftarKlien();
+                isiDropdownKlien();
+            } catch(err) { alert("Gagal menghapus klien: " + err.message); }
+        }
+    }
+
+    // --- REGISTRASI PENGACARA ---
+    window.bukaModalRegPengacara = () => document.getElementById('modalRegPengacara').classList.remove('hidden');
+    window.tutupModalRegPengacara = () => document.getElementById('modalRegPengacara').classList.add('hidden');
+    
+    window.submitRegPengacara = async () => {
+      const msg = document.getElementById('msgRegPengacara');
+      const btn = document.getElementById('btnSubmitPengacara');
+      try {
+        btn.disabled = true; msg.innerText = "Mendaftarkan..."; msg.className = "text-xs text-center mt-2 text-blue-400";
+        const cred = await createUserWithEmailAndPassword(secondaryAuth, document.getElementById('rpEmail').value, document.getElementById('rpPassword').value);
+        
+        await setDoc(doc(db, "users", cred.user.uid), {
+          nama: document.getElementById('rpName').value, 
+          noHp: document.getElementById('rpPhone').value,
+          alamat: document.getElementById('rpAddress').value,
+          email: cred.user.email, role: "pengacara"
+        });
+        await signOut(secondaryAuth);
+        
+        msg.innerText = "Pengacara berhasil didaftarkan!"; msg.className = "text-xs text-center mt-2 text-emerald-400";
+        setTimeout(async () => { 
+            tutupModalRegPengacara(); 
+            document.getElementById('formRegPengacara').reset(); 
+            msg.innerText=""; btn.disabled=false; 
+            await ambilDaftarPengacara(); 
+            if(document.getElementById('pengacaraView').classList.contains('hidden') === false) muatDaftarPengacaraView();
+        }, 1500);
+      } catch (e) {
+        btn.disabled = false; msg.innerText = "Gagal: " + e.message; msg.className = "text-xs text-center mt-2 text-red-400";
+      }
     };
 
     // --- UPLOAD GLOBAL & ARSIP ---
@@ -659,7 +811,6 @@
       };
     }
 
-    // REVISI POIN 3: Modifikasi logic muat data untuk Filter Arsip Pengacara + Search
     window.muatDataBerkas = async (filterClientId = null) => {
       const tbody = document.getElementById('tableBerkas'); 
       tbody.innerHTML = '<tr><td colspan="3" class="py-6 text-center text-xs">Memuat...</td></tr>';
@@ -684,7 +835,6 @@
         snap.forEach(d => {
           let data = d.data();
           if (currentUserData.role === 'pengacara' && !filterClientId) {
-              // Jika role pengacara, pastikan berkasnya terkait klien yg dikoneksikan
               if (connectedClientIds.includes(data.clientId)) {
                   allBerkasData.push(data);
               }
@@ -692,15 +842,12 @@
               allBerkasData.push(data);
           }
         });
-        
         renderTabelBerkas();
-
       } catch(e) {
           tbody.innerHTML = '<tr><td colspan="3" class="py-6 text-center text-xs text-red-400">Gagal memuat</td></tr>';
       }
     };
 
-    // REVISI POIN 3: Render array hasil load, dipisah fungsinya agar mudah digunakan via Form Search
     window.renderTabelBerkas = () => {
         const tbody = document.getElementById('tableBerkas');
         const searchTerm = document.getElementById('searchArsip') ? document.getElementById('searchArsip').value.toLowerCase() : '';
