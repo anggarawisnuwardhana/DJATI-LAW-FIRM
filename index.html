@@ -38,8 +38,8 @@
       <!-- LOGIN FORM -->
       <form id="formLogin" onsubmit="event.preventDefault(); loginApp();" class="space-y-4">
         <div>
-          <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Email</label>
-          <input type="email" id="loginEmail" required class="w-full bg-slate-900/90 border border-slate-700 rounded-xl py-2.5 px-4 text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 text-sm">
+          <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Email / No HP</label>
+          <input type="text" id="loginIdentifier" required class="w-full bg-slate-900/90 border border-slate-700 rounded-xl py-2.5 px-4 text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 text-sm">
         </div>
         <div>
           <div class="flex justify-between items-center mb-2">
@@ -48,19 +48,20 @@
           </div>
           <input type="password" id="loginPassword" required class="w-full bg-slate-900/90 border border-slate-700 rounded-xl py-2.5 px-4 text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 text-sm">
         </div>
-        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold py-3 rounded-xl transition shadow-lg shadow-blue-600/30 text-sm">Masuk</button>
+        <button type="submit" id="btnLoginSubmit" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold py-3 rounded-xl transition shadow-lg shadow-blue-600/30 text-sm">Masuk</button>
         <p class="text-center text-xs text-slate-400 mt-4">Belum punya akun? <a href="#" onclick="toggleAuth('register')" class="text-blue-400 font-semibold hover:underline">Daftar Klien Baru</a></p>
       </form>
 
       <!-- REGISTER KLIEN FORM -->
       <form id="formRegister" onsubmit="event.preventDefault(); registerApp();" class="space-y-3 hidden">
         <div><input type="text" id="regName" required placeholder="Nama Lengkap Klien" class="w-full bg-slate-900 border border-slate-700 rounded-xl py-2 px-4 text-sm text-white"></div>
-        <div><input type="tel" id="regPhone" required placeholder="Nomor WhatsApp" class="w-full bg-slate-900 border border-slate-700 rounded-xl py-2 px-4 text-sm text-white"></div>
+        <div><input type="tel" id="regPhone" required placeholder="Nomor WhatsApp (Cth: 08123456789)" class="w-full bg-slate-900 border border-slate-700 rounded-xl py-2 px-4 text-sm text-white"></div>
         <div><textarea id="regAddress" required placeholder="Alamat Lengkap" class="w-full bg-slate-900 border border-slate-700 rounded-xl py-2 px-4 text-sm text-white resize-none" rows="2"></textarea></div>
         <div><input type="email" id="regEmail" required placeholder="Email" class="w-full bg-slate-900 border border-slate-700 rounded-xl py-2 px-4 text-sm text-white"></div>
         <div><input type="password" id="regPassword" required placeholder="Buat Kata Sandi (Min 6)" class="w-full bg-slate-900 border border-slate-700 rounded-xl py-2 px-4 text-sm text-white"></div>
+        <div id="regErrorMsg" class="text-red-400 text-xs text-center hidden"></div>
         
-        <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-3 rounded-xl transition text-sm">Daftar Klien</button>
+        <button type="submit" id="btnRegSubmit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-3 rounded-xl transition text-sm">Daftar Klien</button>
         <p class="text-center text-xs text-slate-400">Sudah terdaftar? <a href="#" onclick="toggleAuth('login')" class="text-blue-400 font-semibold hover:underline">Kembali Login</a></p>
       </form>
     </div>
@@ -226,8 +227,8 @@
             <thead>
               <tr class="bg-slate-950/50 text-[11px] font-semibold text-slate-400 uppercase border-b border-slate-800">
                 <th class="py-3 px-4">Nama Dokumen</th>
-                <th class="py-3 px-4">Folder Perkara</th>
-                <th class="py-3 px-4 text-right">Berkas</th>
+                <th class="py-3 px-4">Detail Info</th>
+                <th class="py-3 px-4 text-right">Aksi</th>
               </tr>
             </thead>
             <tbody id="tableBerkas" class="divide-y divide-slate-800/60 text-sm text-slate-300"></tbody>
@@ -286,10 +287,11 @@
       <h3 class="text-lg font-bold text-white mb-4">Registrasi Akun Pengacara</h3>
       <form id="formRegPengacara" onsubmit="event.preventDefault(); submitRegPengacara();" class="space-y-3">
         <input type="text" id="rpName" required placeholder="Nama Lengkap Pengacara" class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2 px-4 text-sm text-white">
-        <input type="tel" id="rpPhone" required placeholder="Nomor Handphone" class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2 px-4 text-sm text-white">
+        <input type="tel" id="rpPhone" required placeholder="Nomor Handphone (Cth: 08123456789)" class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2 px-4 text-sm text-white">
         <textarea id="rpAddress" required placeholder="Alamat Pengacara" class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2 px-4 text-sm text-white resize-none" rows="2"></textarea>
         <input type="email" id="rpEmail" required placeholder="Email Pengacara" class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2 px-4 text-sm text-white">
         <input type="password" id="rpPassword" required placeholder="Password Sementara" class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2 px-4 text-sm text-white">
+        <div id="regPengacaraErrorMsg" class="text-red-400 text-xs text-center hidden"></div>
         <div class="mt-6 flex justify-end gap-3">
           <button type="button" onclick="tutupModalRegPengacara()" class="px-4 py-2 bg-slate-800 text-slate-300 rounded-lg text-sm hover:bg-slate-700">Batal</button>
           <button type="submit" id="btnSubmitPengacara" class="px-4 py-2 bg-emerald-600 text-white rounded-lg text-sm hover:bg-emerald-500">Daftarkan</button>
@@ -305,10 +307,11 @@
       <h3 class="text-lg font-bold text-white mb-4">Registrasi Akun Master</h3>
       <form id="formRegMaster" onsubmit="event.preventDefault(); submitRegMaster();" class="space-y-3">
         <input type="text" id="rmName" required placeholder="Nama Lengkap Master" class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2 px-4 text-sm text-white">
-        <input type="tel" id="rmPhone" required placeholder="Nomor Handphone" class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2 px-4 text-sm text-white">
+        <input type="tel" id="rmPhone" required placeholder="Nomor Handphone (Cth: 08123456789)" class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2 px-4 text-sm text-white">
         <textarea id="rmAddress" required placeholder="Alamat Master" class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2 px-4 text-sm text-white resize-none" rows="2"></textarea>
         <input type="email" id="rmEmail" required placeholder="Email Master" class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2 px-4 text-sm text-white">
         <input type="password" id="rmPassword" required placeholder="Password Sementara" class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2 px-4 text-sm text-white">
+        <div id="regMasterErrorMsg" class="text-red-400 text-xs text-center hidden"></div>
         <div class="mt-6 flex justify-end gap-3">
           <button type="button" onclick="tutupModalRegMaster()" class="px-4 py-2 bg-slate-800 text-slate-300 rounded-lg text-sm hover:bg-slate-700">Batal</button>
           <button type="submit" id="btnSubmitMaster" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-500">Daftarkan</button>
@@ -442,11 +445,20 @@
     window.switchView = (viewId) => {
       document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden'));
       document.getElementById(viewId).classList.remove('hidden');
-      document.querySelectorAll('.menu-btn').forEach(btn => btn.classList.replace('text-blue-400','text-slate-400') || btn.classList.remove('bg-blue-600/10','border'));
       
+      // FIX VISUAL SIDEBAR: Hapus kelas aktif dari semua tombol menu
+      document.querySelectorAll('.menu-btn').forEach(btn => {
+         btn.classList.remove('bg-blue-600/10', 'text-blue-400', 'border', 'border-blue-500/20');
+         btn.classList.add('text-slate-400'); // Kembalikan ke warna default
+      });
+      
+      // Tambahkan kelas aktif hanya ke tombol yang di-klik
       const activeMap = { profileView: 'nav-profile', clientView: 'nav-clients', docView: 'nav-docs', pengacaraView: 'nav-pengacara', masterView: 'nav-master' };
       let btn = document.getElementById(activeMap[viewId]);
-      if(btn) btn.classList.add('bg-blue-600/10', 'text-blue-400', 'border', 'border-blue-500/20');
+      if(btn) {
+         btn.classList.remove('text-slate-400');
+         btn.classList.add('bg-blue-600/10', 'text-blue-400', 'border', 'border-blue-500/20');
+      }
 
       if (viewId === 'docView') muatDataBerkas(currentArsipFilter);
       if (viewId === 'clientView') muatDaftarKlien();
@@ -454,35 +466,96 @@
       if (viewId === 'masterView') muatDaftarMasterView();
     };
 
+    // --- HELPER FUNCTION: CHECK DUPLICATE EMAIL/PHONE ---
+    async function checkDuplicateUser(email, phone) {
+       const qEmail = query(collection(db, "users"), where("email", "==", email));
+       const qPhone = query(collection(db, "users"), where("noHp", "==", phone));
+       
+       const [snapEmail, snapPhone] = await Promise.all([getDocs(qEmail), getDocs(qPhone)]);
+       
+       if (!snapEmail.empty) return "Email sudah terdaftar.";
+       if (!snapPhone.empty) return "Nomor HP sudah terdaftar.";
+       return null;
+    }
+
     // --- AUTHENTICATION ---
     window.loginApp = async () => {
-      try { await signInWithEmailAndPassword(auth, document.getElementById('loginEmail').value, document.getElementById('loginPassword').value); } 
+      let identifier = document.getElementById('loginIdentifier').value.trim();
+      let password = document.getElementById('loginPassword').value;
+      const btn = document.getElementById('btnLoginSubmit');
+      
+      try {
+        btn.disabled = true;
+        let loginEmail = identifier;
+        
+        // LOGIN DENGAN NOMOR HP: Jika identifier berupa angka, cari email-nya di Firestore
+        if (/^\d+$/.test(identifier)) {
+             const qPhone = query(collection(db, "users"), where("noHp", "==", identifier));
+             const snapPhone = await getDocs(qPhone);
+             if (snapPhone.empty) {
+                 throw new Error("Nomor HP tidak ditemukan.");
+             }
+             loginEmail = snapPhone.docs[0].data().email;
+        }
+
+        await signInWithEmailAndPassword(auth, loginEmail, password); 
+      } 
       catch (err) { alert("Gagal Login! " + err.message); }
+      finally { btn.disabled = false; }
     };
 
     window.registerApp = async () => {
+      const email = document.getElementById('regEmail').value.trim();
+      const phone = document.getElementById('regPhone').value.trim();
+      const msgEl = document.getElementById('regErrorMsg');
+      const btn = document.getElementById('btnRegSubmit');
+
       try {
-        const cred = await createUserWithEmailAndPassword(auth, document.getElementById('regEmail').value, document.getElementById('regPassword').value);
+        btn.disabled = true;
+        msgEl.classList.add('hidden');
+
+        // CEK DUPLIKASI NO HP & EMAIL
+        const duplicateError = await checkDuplicateUser(email, phone);
+        if (duplicateError) {
+             msgEl.innerText = duplicateError;
+             msgEl.classList.remove('hidden');
+             btn.disabled = false;
+             return;
+        }
+
+        const cred = await createUserWithEmailAndPassword(auth, email, document.getElementById('regPassword').value);
         await setDoc(doc(db, "users", cred.user.uid), {
-          nama: document.getElementById('regName').value, noHp: document.getElementById('regPhone').value,
+          nama: document.getElementById('regName').value, noHp: phone,
           alamat: document.getElementById('regAddress').value, email: cred.user.email, role: "client",
           nomorPerkara: "", pengacaraIds: []
         });
         alert("Daftar berhasil!");
-      } catch (err) { alert(err.message); }
+      } catch (err) { 
+          msgEl.innerText = err.message;
+          msgEl.classList.remove('hidden');
+      } finally { btn.disabled = false; }
     };
     
     window.logoutApp = () => signOut(auth);
 
     window.lupaPassword = async () => {
-      let emailVal = document.getElementById('loginEmail').value;
-      const emailInput = emailVal ? emailVal : window.prompt("Masukkan email yang terdaftar untuk menerima link reset sandi:");
-      if (!emailInput) return;
+      let identifier = document.getElementById('loginIdentifier').value;
+      const input = identifier ? identifier : window.prompt("Masukkan Email atau Nomor HP yang terdaftar untuk link reset sandi:");
+      if (!input) return;
+      
       try {
-        await sendPasswordResetEmail(auth, emailInput);
-        alert("Instruksi reset sandi telah dikirim ke email " + emailInput + ". Silakan cek inbox/spam Anda.");
+        let emailTarget = input;
+        if (/^\d+$/.test(input)) {
+             const qPhone = query(collection(db, "users"), where("noHp", "==", input));
+             const snapPhone = await getDocs(qPhone);
+             if (snapPhone.empty) throw new Error("Nomor HP tidak ditemukan.");
+             emailTarget = snapPhone.docs[0].data().email;
+        }
+
+        await sendPasswordResetEmail(auth, emailTarget);
+        alert("Instruksi reset sandi telah dikirim ke email " + emailTarget + ".");
       } catch (err) {
-        alert("Gagal mengirim email reset sandi: " + err.message);
+        alert("Gagal memproses reset sandi: " + err.message);
       }
     };
 
@@ -683,15 +756,30 @@
     window.tutupModalRegMaster = () => document.getElementById('modalRegMaster').classList.add('hidden');
     
     window.submitRegMaster = async () => {
+      const email = document.getElementById('rmEmail').value.trim();
+      const phone = document.getElementById('rmPhone').value.trim();
       const msg = document.getElementById('msgRegMaster');
+      const errorMsg = document.getElementById('regMasterErrorMsg');
       const btn = document.getElementById('btnSubmitMaster');
+      
       try {
-        btn.disabled = true; msg.innerText = "Mendaftarkan..."; msg.className = "text-xs text-center mt-2 text-blue-400";
-        const cred = await createUserWithEmailAndPassword(secondaryAuth, document.getElementById('rmEmail').value, document.getElementById('rmPassword').value);
+        btn.disabled = true; errorMsg.classList.add('hidden');
+        msg.innerText = "Mendaftarkan..."; msg.className = "text-xs text-center mt-2 text-blue-400";
+        
+        const duplicateError = await checkDuplicateUser(email, phone);
+        if (duplicateError) {
+             errorMsg.innerText = duplicateError;
+             errorMsg.classList.remove('hidden');
+             msg.innerText = "";
+             btn.disabled = false;
+             return;
+        }
+
+        const cred = await createUserWithEmailAndPassword(secondaryAuth, email, document.getElementById('rmPassword').value);
         
         await setDoc(doc(db, "users", cred.user.uid), {
           nama: document.getElementById('rmName').value, 
-          noHp: document.getElementById('rmPhone').value,
+          noHp: phone,
           alamat: document.getElementById('rmAddress').value,
           email: cred.user.email, role: "master"
         });
@@ -1015,15 +1103,30 @@
     window.tutupModalRegPengacara = () => document.getElementById('modalRegPengacara').classList.add('hidden');
     
     window.submitRegPengacara = async () => {
+      const email = document.getElementById('rpEmail').value.trim();
+      const phone = document.getElementById('rpPhone').value.trim();
       const msg = document.getElementById('msgRegPengacara');
+      const errorMsg = document.getElementById('regPengacaraErrorMsg');
       const btn = document.getElementById('btnSubmitPengacara');
+
       try {
-        btn.disabled = true; msg.innerText = "Mendaftarkan..."; msg.className = "text-xs text-center mt-2 text-blue-400";
-        const cred = await createUserWithEmailAndPassword(secondaryAuth, document.getElementById('rpEmail').value, document.getElementById('rpPassword').value);
+        btn.disabled = true; errorMsg.classList.add('hidden');
+        msg.innerText = "Mendaftarkan..."; msg.className = "text-xs text-center mt-2 text-blue-400";
+
+        const duplicateError = await checkDuplicateUser(email, phone);
+        if (duplicateError) {
+             errorMsg.innerText = duplicateError;
+             errorMsg.classList.remove('hidden');
+             msg.innerText = "";
+             btn.disabled = false;
+             return;
+        }
+
+        const cred = await createUserWithEmailAndPassword(secondaryAuth, email, document.getElementById('rpPassword').value);
         
         await setDoc(doc(db, "users", cred.user.uid), {
           nama: document.getElementById('rpName').value, 
-          noHp: document.getElementById('rpPhone').value,
+          noHp: phone,
           alamat: document.getElementById('rpAddress').value,
           email: cred.user.email, role: "pengacara"
         });
@@ -1085,7 +1188,7 @@
           if (result.status === "success") {
             const dataBerkas = {
               namaBerkas: docName, folderName: result.folderName, clientId: clientId,
-              linkDrive: result.fileUrl, createdAt: serverTimestamp(), uploadedBy: currentUserData.uid
+              linkDrive: result.fileUrl, fileId: result.fileId, createdAt: serverTimestamp(), uploadedBy: currentUserData.uid
             };
             
             await addDoc(collection(db, "berkas"), dataBerkas);
@@ -1097,6 +1200,30 @@
         finally { btnEl.disabled = false; setTimeout(()=>{statusEl.innerText="";},3000); }
       };
     }
+
+    // Hapus Berkas dari DB Firestore dan Request ke Google Apps Script (Drive)
+    window.hapusBerkas = async (berkasId, fileIdDrive) => {
+       if(!confirm("Apakah Anda yakin ingin menghapus berkas ini secara permanen dari Portal dan Google Drive?")) return;
+
+       try {
+           // Hapus dari Firestore
+           await deleteDoc(doc(db, "berkas", berkasId));
+           
+           // Hapus dari Google Drive via Apps Script
+           if(fileIdDrive) {
+               fetch(GAS_WEB_APP_URL, {
+                   method: 'POST',
+                   body: JSON.stringify({ action: "delete", fileId: fileIdDrive })
+               }).catch(e => console.log("Gagal menghapus di drive (mungkin sudah terhapus): ", e));
+           }
+
+           alert("Berkas berhasil dihapus.");
+           muatDataBerkas(currentArsipFilter);
+       } catch (err) {
+           alert("Gagal menghapus berkas: " + err.message);
+       }
+    };
+
 
     window.muatDataBerkas = async (filterClientId = null) => {
       const tbody = document.getElementById('tableBerkas'); 
@@ -1121,6 +1248,7 @@
 
         snap.forEach(d => {
           let data = d.data();
+          data.id = d.id; // Simpan document ID
           if (currentUserData.role === 'pengacara' && !filterClientId) {
               if (connectedClientIds.includes(data.clientId)) {
                   allBerkasData.push(data);
@@ -1129,6 +1257,14 @@
               allBerkasData.push(data);
           }
         });
+
+        // Urutkan berdasarkan tanggal upload terbaru (descending)
+        allBerkasData.sort((a, b) => {
+            const tA = a.createdAt ? a.createdAt.toMillis() : 0;
+            const tB = b.createdAt ? b.createdAt.toMillis() : 0;
+            return tB - tA;
+        });
+
         renderTabelBerkas();
       } catch(e) {
           tbody.innerHTML = '<tr><td colspan="3" class="py-6 text-center text-xs text-red-400">Gagal memuat</td></tr>';
@@ -1149,11 +1285,29 @@
         }
 
         filteredBerkas.forEach(data => {
+            // Format Tanggal
+            let uploadDateStr = '-';
+            if(data.createdAt) {
+                const d = data.createdAt.toDate();
+                uploadDateStr = d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) + ' ' + d.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+            }
+
+            // Tombol Delete (Hanya Master dan Pengacara)
+            let btnDelete = (currentUserData.role === 'master' || currentUserData.role === 'pengacara') 
+                ? `<button onclick="hapusBerkas('${data.id}', '${data.fileId}')" class="px-2 py-1 bg-red-600/20 text-red-400 rounded text-xs font-semibold hover:bg-red-600/40 transition">Hapus</button>`
+                : '';
+
             tbody.innerHTML += `
             <tr class="hover:bg-slate-800/40">
-              <td class="py-3 px-4 font-semibold text-white text-sm">${data.namaBerkas}</td>
+              <td class="py-3 px-4">
+                  <div class="font-semibold text-white text-sm">${data.namaBerkas}</div>
+                  <div class="text-[10px] text-slate-500 mt-0.5">Diunggah: ${uploadDateStr}</div>
+              </td>
               <td class="py-3 px-4 text-xs text-slate-400">${data.folderName}</td>
-              <td class="py-3 px-4 text-right"><a href="${data.linkDrive}" target="_blank" class="px-3 py-1 bg-blue-600/20 text-blue-400 rounded text-xs font-semibold hover:bg-blue-600/40 transition">Buka File</a></td>
+              <td class="py-3 px-4 text-right flex justify-end gap-2 items-center">
+                  <a href="${data.linkDrive}" target="_blank" class="px-3 py-1 bg-blue-600/20 text-blue-400 rounded text-xs font-semibold hover:bg-blue-600/40 transition">Lihat File</a>
+                  ${btnDelete}
+              </td>
             </tr>`;
         });
     };
