@@ -83,6 +83,11 @@
           <button onclick="switchView('profileView')" id="nav-profile" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white font-medium text-sm transition menu-btn">
             <i data-lucide="user" class="w-4 h-4"></i><span>Profil & Akun</span>
           </button>
+          
+          <button onclick="switchView('masterView')" id="nav-master" class="hidden w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white font-medium text-sm transition menu-btn">
+            <i data-lucide="shield" class="w-4 h-4"></i><span>Manajemen Master</span>
+          </button>
+
           <button onclick="switchView('pengacaraView')" id="nav-pengacara" class="hidden w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white font-medium text-sm transition menu-btn">
             <i data-lucide="briefcase" class="w-4 h-4"></i><span>Manajemen Pengacara</span>
           </button>
@@ -95,6 +100,9 @@
         </nav>
       </div>
       <div class="p-4 border-t border-slate-800 space-y-2">
+        <button id="btnRegMaster" onclick="bukaModalRegMaster()" class="hidden w-full bg-blue-600/20 hover:bg-blue-600/30 text-blue-400 border border-blue-500/30 font-medium py-2 rounded-xl transition text-xs flex items-center justify-center space-x-2">
+          <i data-lucide="shield-plus" class="w-4 h-4"></i><span>Registrasi Master</span>
+        </button>
         <button id="btnRegPengacara" onclick="bukaModalRegPengacara()" class="hidden w-full bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-400 border border-emerald-500/30 font-medium py-2 rounded-xl transition text-xs flex items-center justify-center space-x-2">
           <i data-lucide="user-plus" class="w-4 h-4"></i><span>Registrasi Pengacara</span>
         </button>
@@ -124,6 +132,24 @@
             <button onclick="bukaModalGantiPassword()" class="bg-red-600 hover:bg-red-500 text-white font-semibold py-2 px-6 rounded-lg text-sm transition">Ganti Password</button>
           </div>
           <p id="profMsg" class="mt-3 text-xs font-medium"></p>
+        </div>
+      </div>
+
+      <!-- VIEW: MANAJEMEN MASTER -->
+      <div id="masterView" class="view-section hidden">
+        <div class="flex justify-between items-center mb-6">
+          <h2 class="text-2xl font-bold text-white">Manajemen Master</h2>
+        </div>
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="bg-slate-950/50 text-[11px] font-semibold text-slate-400 uppercase border-b border-slate-800">
+                <th class="py-3 px-4">Nama & Kontak</th>
+                <th class="py-3 px-4 text-right">Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="masterListBody" class="divide-y divide-slate-800/60 text-sm text-slate-300"></tbody>
+          </table>
         </div>
       </div>
 
@@ -273,7 +299,26 @@
     </div>
   </div>
 
-  <!-- MODAL: EDIT & ATUR KLIEN (GABUNGAN DENGAN MODE) -->
+  <!-- MODAL: REGISTRASI MASTER BARU -->
+  <div id="modalRegMaster" class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-700 rounded-2xl p-6 w-full max-w-md shadow-2xl relative">
+      <h3 class="text-lg font-bold text-white mb-4">Registrasi Akun Master</h3>
+      <form id="formRegMaster" onsubmit="event.preventDefault(); submitRegMaster();" class="space-y-3">
+        <input type="text" id="rmName" required placeholder="Nama Lengkap Master" class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2 px-4 text-sm text-white">
+        <input type="tel" id="rmPhone" required placeholder="Nomor Handphone" class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2 px-4 text-sm text-white">
+        <textarea id="rmAddress" required placeholder="Alamat Master" class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2 px-4 text-sm text-white resize-none" rows="2"></textarea>
+        <input type="email" id="rmEmail" required placeholder="Email Master" class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2 px-4 text-sm text-white">
+        <input type="password" id="rmPassword" required placeholder="Password Sementara" class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2 px-4 text-sm text-white">
+        <div class="mt-6 flex justify-end gap-3">
+          <button type="button" onclick="tutupModalRegMaster()" class="px-4 py-2 bg-slate-800 text-slate-300 rounded-lg text-sm hover:bg-slate-700">Batal</button>
+          <button type="submit" id="btnSubmitMaster" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-500">Daftarkan</button>
+        </div>
+        <p id="msgRegMaster" class="text-xs text-center mt-2"></p>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: EDIT & ATUR KLIEN -->
   <div id="modalEditKlien" class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
     <div class="bg-slate-900 border border-slate-700 rounded-2xl p-6 w-full max-w-md shadow-2xl relative">
       <h3 id="titleModalEditKlien" class="text-lg font-bold text-white mb-4">Pengaturan Klien</h3>
@@ -322,6 +367,39 @@
     </div>
   </div>
 
+  <!-- MODAL: EDIT MASTER -->
+  <div id="modalEditMaster" class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-700 rounded-2xl p-6 w-full max-w-md shadow-2xl relative">
+      <h3 class="text-lg font-bold text-white mb-4">Edit Informasi Master</h3>
+      <input type="hidden" id="editMasterId">
+      <div class="space-y-3">
+        <div><label class="block text-xs font-semibold text-slate-400 mb-1">Nama Lengkap</label><input type="text" id="editNamaMaster" class="w-full bg-slate-950 border border-slate-800 rounded-lg py-2 px-3 text-white text-sm"></div>
+        <div><label class="block text-xs font-semibold text-slate-400 mb-1">Nomor HP</label><input type="text" id="editHpMaster" class="w-full bg-slate-950 border border-slate-800 rounded-lg py-2 px-3 text-white text-sm"></div>
+        <div><label class="block text-xs font-semibold text-slate-400 mb-1">Alamat</label><textarea id="editAlamatMaster" class="w-full bg-slate-950 border border-slate-800 rounded-lg py-2 px-3 text-white text-sm resize-none" rows="2"></textarea></div>
+      </div>
+      <div class="mt-6 flex justify-end gap-3">
+        <button onclick="tutupModalEditMaster()" class="px-4 py-2 bg-slate-800 text-slate-300 rounded-lg text-sm">Batal</button>
+        <button onclick="simpanEditMaster()" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm">Simpan</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: UNASSIGN KASUS -->
+  <div id="modalUnassign" class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-700 rounded-2xl p-6 w-full max-w-md shadow-2xl relative">
+      <h3 class="text-lg font-bold text-white mb-2">Lepas Assign Kasus</h3>
+      <p class="text-xs text-slate-400 mb-4">Pilih kasus yang akan <span class="font-bold text-red-400">dilepas</span> dari pengacara <span id="namaPengacaraUnassign" class="text-white font-semibold"></span>:</p>
+      <input type="hidden" id="unassignPengacaraId">
+      <div id="listUnassignClients" class="max-h-48 overflow-y-auto space-y-2 mb-4 bg-slate-950 p-2 rounded-lg border border-slate-800">
+      </div>
+      <div class="mt-6 flex justify-end gap-3">
+        <button onclick="tutupModalUnassign()" class="px-4 py-2 bg-slate-800 text-slate-300 rounded-lg text-sm hover:bg-slate-700">Batal</button>
+        <button onclick="simpanUnassign()" class="px-4 py-2 bg-orange-600 text-white rounded-lg text-sm hover:bg-orange-500">Lepas Terpilih</button>
+      </div>
+    </div>
+  </div>
+
+
   <!-- Firebase & Logic Scripts -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
@@ -349,6 +427,7 @@
     let currentUserData = null;
     let allClientsData = []; 
     let allPengacaraData = [];
+    let allMasterData = [];
     let currentArsipFilter = null; 
     let allBerkasData = [];
 
@@ -365,13 +444,14 @@
       document.getElementById(viewId).classList.remove('hidden');
       document.querySelectorAll('.menu-btn').forEach(btn => btn.classList.replace('text-blue-400','text-slate-400') || btn.classList.remove('bg-blue-600/10','border'));
       
-      const activeMap = { profileView: 'nav-profile', clientView: 'nav-clients', docView: 'nav-docs', pengacaraView: 'nav-pengacara' };
+      const activeMap = { profileView: 'nav-profile', clientView: 'nav-clients', docView: 'nav-docs', pengacaraView: 'nav-pengacara', masterView: 'nav-master' };
       let btn = document.getElementById(activeMap[viewId]);
       if(btn) btn.classList.add('bg-blue-600/10', 'text-blue-400', 'border', 'border-blue-500/20');
 
       if (viewId === 'docView') muatDataBerkas(currentArsipFilter);
       if (viewId === 'clientView') muatDaftarKlien();
       if (viewId === 'pengacaraView') muatDaftarPengacaraView();
+      if (viewId === 'masterView') muatDaftarMasterView();
     };
 
     // --- AUTHENTICATION ---
@@ -408,10 +488,8 @@
 
     onAuthStateChanged(auth, async (user) => {
       if (user) {
-        // Cek dokumen user; jika tidak ada maka master telah menghapus akun ini, tolak login
         let docSnap = await getDoc(doc(db, "users", user.uid));
         
-        // Delay 1 detik untuk mencegah false-positive pada saat register baru dimana firestore blm selesai Write
         if (!docSnap.exists()) {
            await new Promise(r => setTimeout(r, 1000)); 
            docSnap = await getDoc(doc(db, "users", user.uid));
@@ -452,11 +530,17 @@
             document.getElementById('nav-pengacara').classList.remove('hidden');
             document.getElementById('btnRegPengacara').classList.remove('hidden');
             document.getElementById('divEditPengacara').classList.remove('hidden');
+
+            document.getElementById('nav-master').classList.remove('hidden');
+            document.getElementById('btnRegMaster').classList.remove('hidden');
+            await ambilDaftarMaster();
           }
         } else {
           document.getElementById('nav-clients').classList.add('hidden');
           document.getElementById('nav-pengacara').classList.add('hidden');
+          document.getElementById('nav-master').classList.add('hidden');
           document.getElementById('btnTampilUpload').classList.add('hidden');
+          document.getElementById('btnRegMaster').classList.add('hidden');
         }
         switchView('profileView');
       } else {
@@ -523,6 +607,110 @@
       }
     };
 
+
+    // --- MANAJEMEN MASTER ---
+    async function ambilDaftarMaster() {
+      const q = query(collection(db, "users"), where("role", "==", "master"));
+      const snap = await getDocs(q);
+      allMasterData = [];
+      snap.forEach(d => allMasterData.push({ id: d.id, ...d.data() }));
+    }
+
+    window.muatDaftarMasterView = async () => {
+      const tbody = document.getElementById('masterListBody');
+      tbody.innerHTML = '';
+      if (allMasterData.length === 0) return tbody.innerHTML = '<tr><td colspan="2" class="py-4 text-center text-slate-500 text-xs">Kosong</td></tr>';
+
+      allMasterData.forEach(p => {
+        let safeNama = (p.nama||'').replace(/'/g, "&#39;");
+        let safeHp = (p.noHp||'').replace(/'/g, "&#39;");
+        let safeAlamat = (p.alamat||'').replace(/'/g, "&#39;");
+
+        let btnEdit = `<button onclick="bukaEditMaster('${p.id}', '${safeNama}', '${safeHp}', '${safeAlamat}')" class="text-xs bg-slate-800 text-white px-3 py-1.5 rounded border border-slate-600 hover:bg-slate-700 transition">Edit</button>`;
+        let btnDelete = (p.id !== currentUserData.uid) ? `<button onclick="hapusMaster('${p.id}')" class="text-xs bg-red-600/20 text-red-400 px-3 py-1.5 rounded border border-red-500/20 hover:bg-red-500/30 transition">Hapus</button>` : `<span class="text-xs text-slate-500 border border-slate-700 px-3 py-1.5 rounded">Anda</span>`;
+
+        let tr = document.createElement('tr');
+        tr.className = "hover:bg-slate-800/40 transition";
+        tr.innerHTML = `
+          <td class="py-3 px-4">
+            <div class="font-semibold text-white text-sm block">${p.nama}</div>
+            <div class="text-xs text-slate-400">${p.email} | ${p.noHp || '-'}</div>
+          </td>
+          <td class="py-3 px-4 text-right flex justify-end gap-2 flex-wrap">
+            ${btnEdit} ${btnDelete}
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    window.bukaEditMaster = (id, nama, hp, alamat) => {
+        document.getElementById('editMasterId').value = id;
+        document.getElementById('editNamaMaster').value = nama;
+        document.getElementById('editHpMaster').value = hp;
+        document.getElementById('editAlamatMaster').value = alamat;
+        document.getElementById('modalEditMaster').classList.remove('hidden');
+    }
+    window.tutupModalEditMaster = () => document.getElementById('modalEditMaster').classList.add('hidden');
+
+    window.simpanEditMaster = async () => {
+        let uid = document.getElementById('editMasterId').value;
+        let updates = { 
+            nama: document.getElementById('editNamaMaster').value,
+            noHp: document.getElementById('editHpMaster').value,
+            alamat: document.getElementById('editAlamatMaster').value
+        };
+        try {
+            await updateDoc(doc(db, "users", uid), updates);
+            tutupModalEditMaster();
+            await ambilDaftarMaster();
+            muatDaftarMasterView();
+        } catch(err) { alert("Gagal edit: " + err.message); }
+    }
+
+    window.hapusMaster = async (id) => {
+        if(confirm("Apakah Anda yakin ingin menghapus data master ini?")) {
+            try {
+                await deleteDoc(doc(db, "users", id));
+                await ambilDaftarMaster();
+                muatDaftarMasterView();
+            } catch(err) { alert("Gagal menghapus master: " + err.message); }
+        }
+    }
+
+    // --- REGISTRASI MASTER ---
+    window.bukaModalRegMaster = () => document.getElementById('modalRegMaster').classList.remove('hidden');
+    window.tutupModalRegMaster = () => document.getElementById('modalRegMaster').classList.add('hidden');
+    
+    window.submitRegMaster = async () => {
+      const msg = document.getElementById('msgRegMaster');
+      const btn = document.getElementById('btnSubmitMaster');
+      try {
+        btn.disabled = true; msg.innerText = "Mendaftarkan..."; msg.className = "text-xs text-center mt-2 text-blue-400";
+        const cred = await createUserWithEmailAndPassword(secondaryAuth, document.getElementById('rmEmail').value, document.getElementById('rmPassword').value);
+        
+        await setDoc(doc(db, "users", cred.user.uid), {
+          nama: document.getElementById('rmName').value, 
+          noHp: document.getElementById('rmPhone').value,
+          alamat: document.getElementById('rmAddress').value,
+          email: cred.user.email, role: "master"
+        });
+        await signOut(secondaryAuth);
+        
+        msg.innerText = "Master berhasil didaftarkan!"; msg.className = "text-xs text-center mt-2 text-emerald-400";
+        setTimeout(async () => { 
+            tutupModalRegMaster(); 
+            document.getElementById('formRegMaster').reset(); 
+            msg.innerText=""; btn.disabled=false; 
+            await ambilDaftarMaster(); 
+            if(document.getElementById('masterView').classList.contains('hidden') === false) muatDaftarMasterView();
+        }, 1500);
+      } catch (e) {
+        btn.disabled = false; msg.innerText = "Gagal: " + e.message; msg.className = "text-xs text-center mt-2 text-red-400";
+      }
+    };
+
+
     // --- MANAJEMEN PENGACARA ---
     async function ambilDaftarPengacara() {
       const q = query(collection(db, "users"), where("role", "==", "pengacara"));
@@ -547,9 +735,9 @@
         let safeHp = (p.noHp||'').replace(/'/g, "&#39;");
         let safeAlamat = (p.alamat||'').replace(/'/g, "&#39;");
 
-        // Action Lepas Assign
+        // Action Lepas Assign (Modified to show modal)
         let btnUnassign = clientsHandled.length > 0 
-           ? `<button onclick="lepasSemuaAssign('${p.id}')" class="text-xs bg-orange-600/20 text-orange-400 px-3 py-1.5 rounded border border-orange-500/20 hover:bg-orange-500/30 transition">Lepas Assign</button>` 
+           ? `<button onclick="bukaModalUnassign('${p.id}', '${safeNama}')" class="text-xs bg-orange-600/20 text-orange-400 px-3 py-1.5 rounded border border-orange-500/20 hover:bg-orange-500/30 transition">Lepas Assign</button>` 
            : '';
 
         let tr = document.createElement('tr');
@@ -572,21 +760,58 @@
       });
     }
 
-    // Aksi Master untuk Hapus (Lepas) Semua koneksi pengacara ke klien (Unassign)
-    window.lepasSemuaAssign = async (pengacaraId) => {
-        if(confirm("Apakah Anda yakin ingin menghapus/melepas semua tugas (assign) dari pengacara ini?")) {
-            try {
-                let clientsToUpdate = allClientsData.filter(c => c.pengacaraIds && c.pengacaraIds.includes(pengacaraId));
-                let promises = clientsToUpdate.map(c => {
-                    let newIds = c.pengacaraIds.filter(id => id !== pengacaraId);
-                    return updateDoc(doc(db, "users", c.id), { pengacaraIds: newIds });
-                });
-                await Promise.all(promises);
-                await muatDaftarKlien();
-                muatDaftarPengacaraView();
-            } catch(err) { alert("Gagal melepas assign: " + err.message); }
-        }
+    // --- LOGIKA UNASSIGN SPESIFIK ---
+    window.bukaModalUnassign = (pid, pNama) => {
+       document.getElementById('unassignPengacaraId').value = pid;
+       document.getElementById('namaPengacaraUnassign').innerText = pNama;
+       let clientsHandled = allClientsData.filter(c => c.pengacaraIds && c.pengacaraIds.includes(pid));
+       let html = '';
+       if(clientsHandled.length === 0) {
+          html = '<p class="text-xs text-slate-400">Tidak ada kasus yang ditangani.</p>';
+       } else {
+          clientsHandled.forEach(c => {
+             html += `<label class="flex items-center space-x-2 text-sm text-slate-300 bg-slate-800 p-2 rounded cursor-pointer hover:bg-slate-700 transition">
+                        <input type="checkbox" class="chk-unassign rounded bg-slate-900 border-slate-700 text-red-600" value="${c.id}">
+                        <span>${c.nama} - <span class="text-emerald-400">${c.nomorPerkara || 'Menunggu No Perkara'}</span></span>
+                      </label>`;
+          });
+       }
+       document.getElementById('listUnassignClients').innerHTML = html;
+       document.getElementById('modalUnassign').classList.remove('hidden');
     }
+
+    window.tutupModalUnassign = () => {
+        document.getElementById('modalUnassign').classList.add('hidden');
+    }
+
+    window.simpanUnassign = async () => {
+       let pid = document.getElementById('unassignPengacaraId').value;
+       let checkedBoxes = document.querySelectorAll('.chk-unassign:checked');
+       let clientIdsToUnassign = Array.from(checkedBoxes).map(cb => cb.value);
+
+       if(clientIdsToUnassign.length === 0) {
+          tutupModalUnassign(); return;
+       }
+
+       if(!confirm(`Yakin ingin melepas ${clientIdsToUnassign.length} kasus dari pengacara ini?`)) return;
+
+       try {
+          let promises = clientIdsToUnassign.map(cid => {
+              let client = allClientsData.find(c => c.id === cid);
+              if(client) {
+                 let newIds = client.pengacaraIds.filter(id => id !== pid);
+                 return updateDoc(doc(db, "users", cid), { pengacaraIds: newIds });
+              }
+          });
+          await Promise.all(promises);
+          await muatDaftarKlien();
+          muatDaftarPengacaraView();
+          tutupModalUnassign();
+       } catch(err) {
+          alert("Gagal melepas assign: " + err.message);
+       }
+    }
+
 
     window.bukaEditPengacara = (id, nama, hp, alamat) => {
         document.getElementById('editPengacaraId').value = id;
@@ -612,7 +837,6 @@
         } catch(err) { alert("Gagal edit: " + err.message); }
     }
 
-    // Hanya menghapus User Document, Data berkas di google drive tetap aman
     window.hapusPengacara = async (id) => {
         if(confirm("Apakah Anda yakin ingin menghapus data pengacara ini dari sistem? (Akun akan tidak bisa login, tapi arsip/berkas tetap aman)")) {
             try {
@@ -776,7 +1000,6 @@
       } catch(err) { alert(err.message); }
     };
 
-    // Hanya menghapus User Document, Data berkas di google drive tetap aman
     window.hapusKlien = async (id) => {
         if(confirm("Apakah Anda yakin ingin menghapus data klien ini secara permanen? (Akun akan dihapus, arsip/berkas tetap aman sebagai backup)")) {
             try {
