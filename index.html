@@ -468,14 +468,22 @@
 
     // --- HELPER FUNCTION: CHECK DUPLICATE EMAIL/PHONE ---
     async function checkDuplicateUser(email, phone) {
-       const qEmail = query(collection(db, "users"), where("email", "==", email));
-       const qPhone = query(collection(db, "users"), where("noHp", "==", phone));
-       
-       const [snapEmail, snapPhone] = await Promise.all([getDocs(qEmail), getDocs(qPhone)]);
-       
-       if (!snapEmail.empty) return "Email sudah terdaftar.";
-       if (!snapPhone.empty) return "Nomor HP sudah terdaftar.";
-       return null;
+       try {
+           const qEmail = query(collection(db, "users"), where("email", "==", email));
+           const qPhone = query(collection(db, "users"), where("noHp", "==", phone));
+           
+           const [snapEmail, snapPhone] = await Promise.all([getDocs(qEmail), getDocs(qPhone)]);
+           
+           if (!snapEmail.empty) return "Email sudah terdaftar.";
+           if (!snapPhone.empty) return "Nomor HP sudah terdaftar.";
+           return null;
+       } catch (error) {
+           // BUG FIX: Jika user belum login (seperti klien baru register pada layar Auth),
+           // Aturan Firestore (request.auth != null) akan memblokir getDocs dan menghasilkan error.
+           // Kita tangkap errornya dan return null. Firebase Auth akan tetap mengamankan duplikasi 
+           // email secara otomatis pada langkah berikutnya (saat createUserWithEmailAndPassword).
+           return null;
+       }
     }
 
     // --- AUTHENTICATION ---
@@ -490,17 +498,27 @@
         
         // LOGIN DENGAN NOMOR HP: Jika identifier berupa angka, cari email-nya di Firestore
         if (/^\d+$/.test(identifier)) {
-             const qPhone = query(collection(db, "users"), where("noHp", "==", identifier));
-             const snapPhone = await getDocs(qPhone);
-             if (snapPhone.empty) {
-                 throw new Error("Nomor HP tidak ditemukan.");
+             try {
+                 const qPhone = query(collection(db, "users"), where("noHp", "==", identifier));
+                 const snapPhone = await getDocs(qPhone);
+                 if (snapPhone.empty) {
+                     throw new Error("Nomor HP tidak ditemukan.");
+                 }
+                 loginEmail = snapPhone.docs[0].data().email;
+             } catch(err) {
+                 if(err.code === 'permission-denied') {
+                     throw new Error("Sistem keamanan memblokir pencarian No HP sebelum login. Harap gunakan Email Anda untuk Login.");
+                 } else {
+                     throw err;
+                 }
              }
-             loginEmail = snapPhone.docs[0].data().email;
         }
 
         await signInWithEmailAndPassword(auth, loginEmail, password); 
       } 
-      catch (err) { alert("Gagal Login! " + err.message); }
+      catch (err) { 
+          alert("Gagal Login! " + err.message); 
+      }
       finally { btn.disabled = false; }
     };
 
@@ -515,6 +533,7 @@
         msgEl.classList.add('hidden');
 
         // CEK DUPLIKASI NO HP & EMAIL
+        // Jika sedang posisi logout (register guest), checkDuplicateUser akan mereturn null secara aman
         const duplicateError = await checkDuplicateUser(email, phone);
         if (duplicateError) {
              msgEl.innerText = duplicateError;
@@ -529,9 +548,16 @@
           alamat: document.getElementById('regAddress').value, email: cred.user.email, role: "client",
           nomorPerkara: "", pengacaraIds: []
         });
+        
         alert("Daftar berhasil!");
+        
       } catch (err) { 
-          msgEl.innerText = err.message;
+          // Menangkap error bawaan firebase auth jika email sudah dipakai
+          let errMsg = err.message;
+          if (err.code === 'auth/email-already-in-use') errMsg = "Pendaftaran Gagal: Email sudah terdaftar.";
+          else if (err.code === 'auth/weak-password') errMsg = "Password terlalu lemah (minimal 6 karakter).";
+          
+          msgEl.innerText = errMsg;
           msgEl.classList.remove('hidden');
       } finally { btn.disabled = false; }
     };
@@ -546,10 +572,15 @@
       try {
         let emailTarget = input;
         if (/^\d+$/.test(input)) {
-             const qPhone = query(collection(db, "users"), where("noHp", "==", input));
-             const snapPhone = await getDocs(qPhone);
-             if (snapPhone.empty) throw new Error("Nomor HP tidak ditemukan.");
-             emailTarget = snapPhone.docs[0].data().email;
+             try {
+                 const qPhone = query(collection(db, "users"), where("noHp", "==", input));
+                 const snapPhone = await getDocs(qPhone);
+                 if (snapPhone.empty) throw new Error("Nomor HP tidak ditemukan.");
+                 emailTarget = snapPhone.docs[0].data().email;
+             } catch(err) {
+                 if(err.code === 'permission-denied') throw new Error("Keamanan sistem memblokir pencarian No HP sebelum login. Harap gunakan Email.");
+                 throw err;
+             }
         }
 
         await sendPasswordResetEmail(auth, emailTarget);
