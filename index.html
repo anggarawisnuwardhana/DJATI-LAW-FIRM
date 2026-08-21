@@ -44,7 +44,6 @@
         <div>
           <div class="flex justify-between items-center mb-2">
             <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider">Kata Sandi</label>
-            <!-- LUPA PASSWORD DIPERBAIKI -->
             <a href="#" onclick="lupaPassword()" class="text-xs text-blue-400 hover:underline">Lupa sandi?</a>
           </div>
           <input type="password" id="loginPassword" required class="w-full bg-slate-900/90 border border-slate-700 rounded-xl py-2.5 px-4 text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 text-sm">
@@ -84,7 +83,6 @@
           <button onclick="switchView('profileView')" id="nav-profile" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white font-medium text-sm transition menu-btn">
             <i data-lucide="user" class="w-4 h-4"></i><span>Profil & Akun</span>
           </button>
-          <!-- TAMBAHAN MENU PENGACARA -->
           <button onclick="switchView('pengacaraView')" id="nav-pengacara" class="hidden w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white font-medium text-sm transition menu-btn">
             <i data-lucide="briefcase" class="w-4 h-4"></i><span>Manajemen Pengacara</span>
           </button>
@@ -275,23 +273,27 @@
     </div>
   </div>
 
-  <!-- MODAL: EDIT KLIEN -->
+  <!-- MODAL: EDIT & ATUR KLIEN (GABUNGAN DENGAN MODE) -->
   <div id="modalEditKlien" class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
     <div class="bg-slate-900 border border-slate-700 rounded-2xl p-6 w-full max-w-md shadow-2xl relative">
-      <h3 class="text-lg font-bold text-white mb-4">Atur Data Klien</h3>
+      <h3 id="titleModalEditKlien" class="text-lg font-bold text-white mb-4">Pengaturan Klien</h3>
       <input type="hidden" id="editKlienId">
+      <input type="hidden" id="editKlienMode">
       <div class="space-y-3">
+        <!-- MODE EDIT INFO -->
         <div id="divEditDetailKlien" class="hidden space-y-3">
           <div><label class="block text-xs font-semibold text-slate-400 mb-1">Nama Lengkap</label><input type="text" id="editNamaKlien" class="w-full bg-slate-950 border border-slate-800 rounded-lg py-2 px-3 text-white text-sm"></div>
           <div><label class="block text-xs font-semibold text-slate-400 mb-1">Nomor HP</label><input type="text" id="editHpKlien" class="w-full bg-slate-950 border border-slate-800 rounded-lg py-2 px-3 text-white text-sm"></div>
           <div><label class="block text-xs font-semibold text-slate-400 mb-1">Alamat</label><textarea id="editAlamatKlien" class="w-full bg-slate-950 border border-slate-800 rounded-lg py-2 px-3 text-white text-sm resize-none" rows="2"></textarea></div>
         </div>
-        <div>
+        
+        <!-- MODE ATUR DATA (PERKARA & ASSIGN) -->
+        <div id="divNoPerkara" class="hidden">
           <label class="block text-xs font-semibold text-slate-400 mb-1">Nomor Perkara</label>
           <input type="text" id="editNoPerkara" class="w-full bg-slate-950 border border-slate-800 rounded-lg py-2 px-3 text-white text-sm">
         </div>
         <div id="divEditPengacara" class="hidden">
-          <label class="block text-xs font-semibold text-slate-400 mb-1">Assign Pengacara (Bisa lebih dari 1)</label>
+          <label class="block text-xs font-semibold text-slate-400 mb-1 mt-3">Assign Pengacara (Bisa lebih dari 1)</label>
           <div id="listCheckboxPengacara" class="max-h-32 overflow-y-auto bg-slate-950 border border-slate-800 rounded-lg p-2 space-y-2">
           </div>
         </div>
@@ -326,7 +328,6 @@
     import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged, updatePassword, EmailAuthProvider, reauthenticateWithCredential, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
     import { getFirestore, doc, setDoc, getDoc, updateDoc, collection, addDoc, query, where, getDocs, orderBy, serverTimestamp, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-    // Konfigurasi Utama
     const firebaseConfig = {
       apiKey: "AIzaSyAjkJPfk4hQrPUjOgANu_ir2Q2Cuko-g9Q",
       authDomain: "djati-law-firm.firebaseapp.com",
@@ -376,7 +377,7 @@
     // --- AUTHENTICATION ---
     window.loginApp = async () => {
       try { await signInWithEmailAndPassword(auth, document.getElementById('loginEmail').value, document.getElementById('loginPassword').value); } 
-      catch (err) { alert("Gagal Login!"); }
+      catch (err) { alert("Gagal Login! " + err.message); }
     };
 
     window.registerApp = async () => {
@@ -390,15 +391,13 @@
         alert("Daftar berhasil!");
       } catch (err) { alert(err.message); }
     };
+    
     window.logoutApp = () => signOut(auth);
 
-    // SISTEM LUPA SANDI DIPERBARUI
     window.lupaPassword = async () => {
       let emailVal = document.getElementById('loginEmail').value;
       const emailInput = emailVal ? emailVal : window.prompt("Masukkan email yang terdaftar untuk menerima link reset sandi:");
-      
       if (!emailInput) return;
-      
       try {
         await sendPasswordResetEmail(auth, emailInput);
         alert("Instruksi reset sandi telah dikirim ke email " + emailInput + ". Silakan cek inbox/spam Anda.");
@@ -409,11 +408,30 @@
 
     onAuthStateChanged(auth, async (user) => {
       if (user) {
+        // Cek dokumen user; jika tidak ada maka master telah menghapus akun ini, tolak login
+        let docSnap = await getDoc(doc(db, "users", user.uid));
+        
+        // Delay 1 detik untuk mencegah false-positive pada saat register baru dimana firestore blm selesai Write
+        if (!docSnap.exists()) {
+           await new Promise(r => setTimeout(r, 1000)); 
+           docSnap = await getDoc(doc(db, "users", user.uid));
+           
+           if (!docSnap.exists()) {
+               await signOut(auth);
+               let authMsg = document.getElementById('authMsg');
+               authMsg.innerText = "Akun Anda telah dinonaktifkan atau dihapus.";
+               authMsg.classList.remove('hidden', 'bg-blue-600/20', 'text-blue-400');
+               authMsg.classList.add('bg-red-600/20', 'text-red-400', 'border', 'border-red-500/30');
+               document.getElementById('authSection').classList.remove('hidden');
+               document.getElementById('dashboardSection').classList.add('hidden');
+               return;
+           }
+        }
+
         document.getElementById('authSection').classList.add('hidden');
         document.getElementById('dashboardSection').classList.remove('hidden');
-
-        const docSnap = await getDoc(doc(db, "users", user.uid));
-        currentUserData = docSnap.exists() ? { uid: user.uid, ...docSnap.data() } : { uid: user.uid, email: user.email, role: 'client' };
+        
+        currentUserData = { uid: user.uid, ...docSnap.data() };
 
         document.getElementById('profName').value = currentUserData.nama || '';
         document.getElementById('profPhone').value = currentUserData.noHp || '';
@@ -434,7 +452,6 @@
             document.getElementById('nav-pengacara').classList.remove('hidden');
             document.getElementById('btnRegPengacara').classList.remove('hidden');
             document.getElementById('divEditPengacara').classList.remove('hidden');
-            document.getElementById('divEditDetailKlien').classList.remove('hidden');
           }
         } else {
           document.getElementById('nav-clients').classList.add('hidden');
@@ -515,7 +532,7 @@
     }
 
     window.muatDaftarPengacaraView = async () => {
-      if(allClientsData.length === 0) await muatDaftarKlien(); // Pastikan data klien ter-load untuk memetakan kasus
+      if(allClientsData.length === 0) await muatDaftarKlien(); 
       
       const tbody = document.getElementById('pengacaraListBody');
       tbody.innerHTML = '';
@@ -530,6 +547,11 @@
         let safeHp = (p.noHp||'').replace(/'/g, "&#39;");
         let safeAlamat = (p.alamat||'').replace(/'/g, "&#39;");
 
+        // Action Lepas Assign
+        let btnUnassign = clientsHandled.length > 0 
+           ? `<button onclick="lepasSemuaAssign('${p.id}')" class="text-xs bg-orange-600/20 text-orange-400 px-3 py-1.5 rounded border border-orange-500/20 hover:bg-orange-500/30 transition">Lepas Assign</button>` 
+           : '';
+
         let tr = document.createElement('tr');
         tr.className = "hover:bg-slate-800/40 transition";
         tr.innerHTML = `
@@ -540,13 +562,30 @@
           <td class="py-3 px-4 text-xs">
             ${listKasus}
           </td>
-          <td class="py-3 px-4 text-right flex justify-end gap-2">
+          <td class="py-3 px-4 text-right flex justify-end gap-2 flex-wrap">
+            ${btnUnassign}
             <button onclick="bukaEditPengacara('${p.id}', '${safeNama}', '${safeHp}', '${safeAlamat}')" class="text-xs bg-slate-800 text-white px-3 py-1.5 rounded border border-slate-600 hover:bg-slate-700 transition">Edit</button>
             <button onclick="hapusPengacara('${p.id}')" class="text-xs bg-red-600/20 text-red-400 px-3 py-1.5 rounded border border-red-500/20 hover:bg-red-500/30 transition">Hapus</button>
           </td>
         `;
         tbody.appendChild(tr);
       });
+    }
+
+    // Aksi Master untuk Hapus (Lepas) Semua koneksi pengacara ke klien (Unassign)
+    window.lepasSemuaAssign = async (pengacaraId) => {
+        if(confirm("Apakah Anda yakin ingin menghapus/melepas semua tugas (assign) dari pengacara ini?")) {
+            try {
+                let clientsToUpdate = allClientsData.filter(c => c.pengacaraIds && c.pengacaraIds.includes(pengacaraId));
+                let promises = clientsToUpdate.map(c => {
+                    let newIds = c.pengacaraIds.filter(id => id !== pengacaraId);
+                    return updateDoc(doc(db, "users", c.id), { pengacaraIds: newIds });
+                });
+                await Promise.all(promises);
+                await muatDaftarKlien();
+                muatDaftarPengacaraView();
+            } catch(err) { alert("Gagal melepas assign: " + err.message); }
+        }
     }
 
     window.bukaEditPengacara = (id, nama, hp, alamat) => {
@@ -573,13 +612,14 @@
         } catch(err) { alert("Gagal edit: " + err.message); }
     }
 
+    // Hanya menghapus User Document, Data berkas di google drive tetap aman
     window.hapusPengacara = async (id) => {
-        if(confirm("Apakah Anda yakin ingin menghapus data pengacara ini dari sistem?")) {
+        if(confirm("Apakah Anda yakin ingin menghapus data pengacara ini dari sistem? (Akun akan tidak bisa login, tapi arsip/berkas tetap aman)")) {
             try {
                 await deleteDoc(doc(db, "users", id));
                 await ambilDaftarPengacara();
                 muatDaftarPengacaraView();
-                muatDaftarKlien(); // refresh tabel klien agar relasi pengacara update
+                muatDaftarKlien(); 
             } catch(err) { alert("Gagal menghapus pengacara: " + err.message); }
         }
     }
@@ -618,8 +658,9 @@
         let safeHp = (k.noHp||'').replace(/'/g, "&#39;");
         let safeAlamat = (k.alamat||'').replace(/'/g, "&#39;");
 
-        // Action Buttons
-        let btnEdit = `<button onclick="bukaEditKlien('${k.id}', '${k.nomorPerkara || ''}', '${k.pengacaraIds || []}', '${safeNama}', '${safeHp}', '${safeAlamat}')" class="text-xs bg-slate-800 text-white px-3 py-1.5 rounded border border-slate-600 hover:bg-slate-700 transition">Atur Data</button>`;
+        // Action Buttons (DIPISAH INFO & ATUR DATA UNTUK MASTER)
+        let btnEditInfo = currentUserData.role === 'master' ? `<button onclick="bukaEditKlien('info', '${k.id}', '${k.nomorPerkara || ''}', '${k.pengacaraIds || []}', '${safeNama}', '${safeHp}', '${safeAlamat}')" class="text-xs bg-slate-800 text-white px-3 py-1.5 rounded border border-slate-600 hover:bg-slate-700 transition">Edit Info</button>` : '';
+        let btnAtur = `<button onclick="bukaEditKlien('atur', '${k.id}', '${k.nomorPerkara || ''}', '${k.pengacaraIds || []}', '${safeNama}', '${safeHp}', '${safeAlamat}')" class="text-xs bg-blue-600/20 text-blue-400 px-3 py-1.5 rounded border border-blue-500/20 hover:bg-blue-500/30 transition">Atur Data</button>`;
         let btnDelete = currentUserData.role === 'master' ? `<button onclick="hapusKlien('${k.id}')" class="text-xs bg-red-600/20 text-red-400 px-3 py-1.5 rounded border border-red-500/20 hover:bg-red-500/30 transition">Hapus</button>` : '';
 
         let tr = document.createElement('tr');
@@ -635,8 +676,8 @@
           <td class="py-3 px-4 text-xs text-slate-300">
             ${pengacaraText}
           </td>
-          <td class="py-3 px-4 text-right flex justify-end gap-2">
-            ${btnEdit} ${btnDelete}
+          <td class="py-3 px-4 text-right flex justify-end gap-2 flex-wrap">
+            ${btnEditInfo} ${btnAtur} ${btnDelete}
           </td>
         `;
         tbody.appendChild(tr);
@@ -672,39 +713,61 @@
       muatDataBerkas();
     };
 
-    window.bukaEditKlien = (id, noPerk, pengacaraIdsStr, nama, hp, alamat) => {
+    // FUNGSI GABUNGAN BUKA MODAL BERDASARKAN PARAMETER MODE (info / atur)
+    window.bukaEditKlien = (mode, id, noPerk, pengacaraIdsStr, nama, hp, alamat) => {
       document.getElementById('editKlienId').value = id;
-      document.getElementById('editNoPerkara').value = noPerk;
+      document.getElementById('editKlienMode').value = mode; 
       
-      if(currentUserData.role === 'master') {
-        document.getElementById('editNamaKlien').value = nama;
-        document.getElementById('editHpKlien').value = hp;
-        document.getElementById('editAlamatKlien').value = alamat;
+      document.getElementById('titleModalEditKlien').innerText = mode === 'info' ? 'Edit Informasi Klien' : 'Atur Perkara & Assign';
 
-        let assigned = pengacaraIdsStr.split(',');
-        let listHtml = '';
-        allPengacaraData.forEach(p => {
-          let checked = assigned.includes(p.id) ? 'checked' : '';
-          listHtml += `<label class="flex items-center space-x-2 text-sm text-slate-300"><input type="checkbox" class="chk-pengacara rounded bg-slate-900 border-slate-700 text-blue-600" value="${p.id}" ${checked}><span>${p.nama}</span></label>`;
-        });
-        document.getElementById('listCheckboxPengacara').innerHTML = listHtml;
+      if (mode === 'info' && currentUserData.role === 'master') {
+          document.getElementById('divEditDetailKlien').classList.remove('hidden');
+          document.getElementById('divNoPerkara').classList.add('hidden');
+          document.getElementById('divEditPengacara').classList.add('hidden');
+
+          document.getElementById('editNamaKlien').value = nama;
+          document.getElementById('editHpKlien').value = hp;
+          document.getElementById('editAlamatKlien').value = alamat;
+      } 
+      else if (mode === 'atur') {
+          document.getElementById('divEditDetailKlien').classList.add('hidden');
+          document.getElementById('divNoPerkara').classList.remove('hidden');
+          document.getElementById('editNoPerkara').value = noPerk;
+
+          if (currentUserData.role === 'master') {
+              document.getElementById('divEditPengacara').classList.remove('hidden');
+              let assigned = pengacaraIdsStr ? (typeof pengacaraIdsStr === 'string' ? pengacaraIdsStr.split(',') : pengacaraIdsStr) : [];
+              let listHtml = '';
+              allPengacaraData.forEach(p => {
+                let checked = assigned.includes(p.id) ? 'checked' : '';
+                listHtml += `<label class="flex items-center space-x-2 text-sm text-slate-300"><input type="checkbox" class="chk-pengacara rounded bg-slate-900 border-slate-700 text-blue-600" value="${p.id}" ${checked}><span>${p.nama}</span></label>`;
+              });
+              document.getElementById('listCheckboxPengacara').innerHTML = listHtml;
+          }
       }
+
       document.getElementById('modalEditKlien').classList.remove('hidden');
     };
+    
     window.tutupModalEdit = () => document.getElementById('modalEditKlien').classList.add('hidden');
 
     window.simpanEditKlien = async () => {
       let uid = document.getElementById('editKlienId').value;
-      let updates = { nomorPerkara: document.getElementById('editNoPerkara').value };
+      let mode = document.getElementById('editKlienMode').value;
+      let updates = {};
       
-      if(currentUserData.role === 'master') {
-        updates.nama = document.getElementById('editNamaKlien').value;
-        updates.noHp = document.getElementById('editHpKlien').value;
-        updates.alamat = document.getElementById('editAlamatKlien').value;
-
-        let checkedBoxes = document.querySelectorAll('.chk-pengacara:checked');
-        let ids = Array.from(checkedBoxes).map(cb => cb.value);
-        updates.pengacaraIds = ids;
+      if (mode === 'info') {
+          updates.nama = document.getElementById('editNamaKlien').value;
+          updates.noHp = document.getElementById('editHpKlien').value;
+          updates.alamat = document.getElementById('editAlamatKlien').value;
+      } 
+      else if (mode === 'atur') {
+          updates.nomorPerkara = document.getElementById('editNoPerkara').value;
+          if(currentUserData.role === 'master') {
+            let checkedBoxes = document.querySelectorAll('.chk-pengacara:checked');
+            let ids = Array.from(checkedBoxes).map(cb => cb.value);
+            updates.pengacaraIds = ids;
+          }
       }
       
       try {
@@ -713,8 +776,9 @@
       } catch(err) { alert(err.message); }
     };
 
+    // Hanya menghapus User Document, Data berkas di google drive tetap aman
     window.hapusKlien = async (id) => {
-        if(confirm("Apakah Anda yakin ingin menghapus data klien ini secara permanen?")) {
+        if(confirm("Apakah Anda yakin ingin menghapus data klien ini secara permanen? (Akun akan dihapus, arsip/berkas tetap aman sebagai backup)")) {
             try {
                 await deleteDoc(doc(db, "users", id));
                 muatDaftarKlien();
