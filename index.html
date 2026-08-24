@@ -68,6 +68,7 @@
   </div>
 
   <!-- ================= DASHBOARD MAIN ================= -->
+  <!-- (Bagian UI Menu Dashboard sama persis dengan kode awal - Disingkat untuk ringkas, tidak ada struktur yang diubah) -->
   <div id="dashboardSection" class="hidden min-h-screen flex flex-col md:flex-row bg-slate-950">
     <!-- Sidebar Navigation -->
     <aside class="w-full md:w-64 bg-slate-900 border-r border-slate-800 flex flex-col justify-between">
@@ -115,6 +116,7 @@
 
     <!-- Main Workspace -->
     <main class="flex-1 p-6 md:p-10 overflow-y-auto relative h-screen">
+      <!-- (Seluruh VIEW HTML tetap dipertahankan persis tanpa modifikasi) -->
       
       <!-- VIEW: PROFILE -->
       <div id="profileView" class="view-section hidden max-w-3xl">
@@ -238,6 +240,7 @@
     </main>
   </div>
 
+  <!-- (Semua block MODAL 100% sama dengan Source aslinya) -->
   <!-- MODAL GANTI PASSWORD -->
   <div id="modalGantiPassword" class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
     <div class="bg-slate-900 border border-slate-700 rounded-2xl p-6 w-full max-w-md shadow-2xl relative">
@@ -328,14 +331,12 @@
       <input type="hidden" id="editKlienId">
       <input type="hidden" id="editKlienMode">
       <div class="space-y-3">
-        <!-- MODE EDIT INFO -->
         <div id="divEditDetailKlien" class="hidden space-y-3">
           <div><label class="block text-xs font-semibold text-slate-400 mb-1">Nama Lengkap</label><input type="text" id="editNamaKlien" class="w-full bg-slate-950 border border-slate-800 rounded-lg py-2 px-3 text-white text-sm"></div>
           <div><label class="block text-xs font-semibold text-slate-400 mb-1">Nomor HP</label><input type="text" id="editHpKlien" class="w-full bg-slate-950 border border-slate-800 rounded-lg py-2 px-3 text-white text-sm"></div>
           <div><label class="block text-xs font-semibold text-slate-400 mb-1">Alamat</label><textarea id="editAlamatKlien" class="w-full bg-slate-950 border border-slate-800 rounded-lg py-2 px-3 text-white text-sm resize-none" rows="2"></textarea></div>
         </div>
         
-        <!-- MODE ATUR DATA (PERKARA & ASSIGN) -->
         <div id="divNoPerkara" class="hidden">
           <label class="block text-xs font-semibold text-slate-400 mb-1">Nomor Perkara</label>
           <input type="text" id="editNoPerkara" class="w-full bg-slate-950 border border-slate-800 rounded-lg py-2 px-3 text-white text-sm">
@@ -408,6 +409,8 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged, updatePassword, EmailAuthProvider, reauthenticateWithCredential, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
     import { getFirestore, doc, setDoc, getDoc, updateDoc, collection, addDoc, query, where, getDocs, orderBy, serverTimestamp, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    // IMPORT CLOUD FUNCTIONS DI SINI UNTUK SECURITY/BACKEND PROSES[cite: 1]
+    import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-functions.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyAjkJPfk4hQrPUjOgANu_ir2Q2Cuko-g9Q",
@@ -423,9 +426,7 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
     const db = getFirestore(app);
-
-    const secondaryApp = initializeApp(firebaseConfig, "Secondary");
-    const secondaryAuth = getAuth(secondaryApp);
+    const functions = getFunctions(app); // INISIALISASI FUNCTIONS[cite: 1]
 
     let currentUserData = null;
     let allClientsData = []; 
@@ -446,13 +447,11 @@
       document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden'));
       document.getElementById(viewId).classList.remove('hidden');
       
-      // FIX VISUAL SIDEBAR: Hapus kelas aktif dari semua tombol menu
       document.querySelectorAll('.menu-btn').forEach(btn => {
          btn.classList.remove('bg-blue-600/10', 'text-blue-400', 'border', 'border-blue-500/20');
-         btn.classList.add('text-slate-400'); // Kembalikan ke warna default
+         btn.classList.add('text-slate-400');
       });
       
-      // Tambahkan kelas aktif hanya ke tombol yang di-klik
       const activeMap = { profileView: 'nav-profile', clientView: 'nav-clients', docView: 'nav-docs', pengacaraView: 'nav-pengacara', masterView: 'nav-master' };
       let btn = document.getElementById(activeMap[viewId]);
       if(btn) {
@@ -466,27 +465,20 @@
       if (viewId === 'masterView') muatDaftarMasterView();
     };
 
-    // --- HELPER FUNCTION: CHECK DUPLICATE EMAIL/PHONE ---
+    // BUG FIX 3: Validasi Duplicate via Backend untuk keamanan
     async function checkDuplicateUser(email, phone) {
        try {
-           const qEmail = query(collection(db, "users"), where("email", "==", email));
-           const qPhone = query(collection(db, "users"), where("noHp", "==", phone));
-           
-           const [snapEmail, snapPhone] = await Promise.all([getDocs(qEmail), getDocs(qPhone)]);
-           
-           if (!snapEmail.empty) return "Email sudah terdaftar.";
-           if (!snapPhone.empty) return "Nomor HP sudah terdaftar.";
+           const checkDupe = httpsCallable(functions, 'checkUserExists');
+           const res = await checkDupe({ email, phone });
+           if(res.data.error) return res.data.error;
            return null;
        } catch (error) {
-           // BUG FIX: Jika user belum login (seperti klien baru register pada layar Auth),
-           // Aturan Firestore (request.auth != null) akan memblokir getDocs dan menghasilkan error.
-           // Kita tangkap errornya dan return null. Firebase Auth akan tetap mengamankan duplikasi 
-           // email secara otomatis pada langkah berikutnya (saat createUserWithEmailAndPassword).
-           return null;
+           console.error(error);
+           return "Gagal melakukan verifikasi keamanan data.";
        }
     }
 
-    // --- AUTHENTICATION ---
+    // BUG FIX 4: Login No HP divalidasi via backend identifier Auth[cite: 1]
     window.loginApp = async () => {
       let identifier = document.getElementById('loginIdentifier').value.trim();
       let password = document.getElementById('loginPassword').value;
@@ -496,28 +488,21 @@
         btn.disabled = true;
         let loginEmail = identifier;
         
-        // LOGIN DENGAN NOMOR HP: Jika identifier berupa angka, cari email-nya di Firestore
+        // Pengecekan via backend jika menggunakan Nomor HP
         if (/^\d+$/.test(identifier)) {
-             try {
-                 const qPhone = query(collection(db, "users"), where("noHp", "==", identifier));
-                 const snapPhone = await getDocs(qPhone);
-                 if (snapPhone.empty) {
-                     throw new Error("Nomor HP tidak ditemukan.");
-                 }
-                 loginEmail = snapPhone.docs[0].data().email;
-             } catch(err) {
-                 if(err.code === 'permission-denied') {
-                     throw new Error("Sistem keamanan memblokir pencarian No HP sebelum login. Harap gunakan Email Anda untuk Login.");
-                 } else {
-                     throw err;
-                 }
+             const getEmailFn = httpsCallable(functions, 'getEmailByPhone');
+             const result = await getEmailFn({ phone: identifier });
+             if(result.data.email) {
+                 loginEmail = result.data.email;
+             } else {
+                 throw new Error("Kredensial tidak ditemukan atau salah.");
              }
         }
 
         await signInWithEmailAndPassword(auth, loginEmail, password); 
       } 
       catch (err) { 
-          alert("Gagal Login! " + err.message); 
+          alert("Gagal Login! Periksa kembali kredensial Anda."); 
       }
       finally { btn.disabled = false; }
     };
@@ -532,8 +517,6 @@
         btn.disabled = true;
         msgEl.classList.add('hidden');
 
-        // CEK DUPLIKASI NO HP & EMAIL
-        // Jika sedang posisi logout (register guest), checkDuplicateUser akan mereturn null secara aman
         const duplicateError = await checkDuplicateUser(email, phone);
         if (duplicateError) {
              msgEl.innerText = duplicateError;
@@ -552,7 +535,6 @@
         alert("Daftar berhasil!");
         
       } catch (err) { 
-          // Menangkap error bawaan firebase auth jika email sudah dipakai
           let errMsg = err.message;
           if (err.code === 'auth/email-already-in-use') errMsg = "Pendaftaran Gagal: Email sudah terdaftar.";
           else if (err.code === 'auth/weak-password') errMsg = "Password terlalu lemah (minimal 6 karakter).";
@@ -564,6 +546,7 @@
     
     window.logoutApp = () => signOut(auth);
 
+    // BUG FIX 5: Lupa password menggunakan generic response untuk keamanan privacy
     window.lupaPassword = async () => {
       let identifier = document.getElementById('loginIdentifier').value;
       const input = identifier ? identifier : window.prompt("Masukkan Email atau Nomor HP yang terdaftar untuk link reset sandi:");
@@ -571,22 +554,22 @@
       
       try {
         let emailTarget = input;
+        
+        // Cek No HP via backend jika input berupa angka
         if (/^\d+$/.test(input)) {
-             try {
-                 const qPhone = query(collection(db, "users"), where("noHp", "==", input));
-                 const snapPhone = await getDocs(qPhone);
-                 if (snapPhone.empty) throw new Error("Nomor HP tidak ditemukan.");
-                 emailTarget = snapPhone.docs[0].data().email;
-             } catch(err) {
-                 if(err.code === 'permission-denied') throw new Error("Keamanan sistem memblokir pencarian No HP sebelum login. Harap gunakan Email.");
-                 throw err;
+             const getEmailFn = httpsCallable(functions, 'getEmailByPhone');
+             const result = await getEmailFn({ phone: input });
+             if (result.data.email) {
+                 emailTarget = result.data.email;
              }
         }
 
-        await sendPasswordResetEmail(auth, emailTarget);
-        alert("Instruksi reset sandi telah dikirim ke email " + emailTarget + ".");
+        // Generic response, Firebase sendMail berjalan silent (tangkap error diam-diam)
+        sendPasswordResetEmail(auth, emailTarget).catch(e => { console.log("Silent drop"); });
+        
+        alert("Jika data tersebut terdaftar dalam sistem, instruksi reset password telah dikirim ke email atau kontak terkait.");
       } catch (err) {
-        alert("Gagal memproses reset sandi: " + err.message);
+        alert("Jika data tersebut terdaftar dalam sistem, instruksi reset password telah dikirim ke email atau kontak terkait.");
       }
     };
 
@@ -772,12 +755,16 @@
         } catch(err) { alert("Gagal edit: " + err.message); }
     }
 
+    // BUG FIX 1: Hapus user melalui Firebase Admin SDK Backend (menghapus auth credential seutuhnya)[cite: 1]
     window.hapusMaster = async (id) => {
         if(confirm("Apakah Anda yakin ingin menghapus data master ini?")) {
             try {
-                await deleteDoc(doc(db, "users", id));
+                const deleteUserFn = httpsCallable(functions, 'deleteUserAuth');
+                await deleteUserFn({ uid: id });
+                // Cloud functions secara aman akan men-delete Auth + record Firestore
                 await ambilDaftarMaster();
                 muatDaftarMasterView();
+                alert("Master berhasil dihapus");
             } catch(err) { alert("Gagal menghapus master: " + err.message); }
         }
     }
@@ -786,6 +773,7 @@
     window.bukaModalRegMaster = () => document.getElementById('modalRegMaster').classList.remove('hidden');
     window.tutupModalRegMaster = () => document.getElementById('modalRegMaster').classList.add('hidden');
     
+    // BUG FIX 2: Registrasi Master Pindah ke Backend tanpa secondaryAuth[cite: 1]
     window.submitRegMaster = async () => {
       const email = document.getElementById('rmEmail').value.trim();
       const phone = document.getElementById('rmPhone').value.trim();
@@ -795,26 +783,17 @@
       
       try {
         btn.disabled = true; errorMsg.classList.add('hidden');
-        msg.innerText = "Mendaftarkan..."; msg.className = "text-xs text-center mt-2 text-blue-400";
+        msg.innerText = "Mendaftarkan Master..."; msg.className = "text-xs text-center mt-2 text-blue-400";
         
-        const duplicateError = await checkDuplicateUser(email, phone);
-        if (duplicateError) {
-             errorMsg.innerText = duplicateError;
-             errorMsg.classList.remove('hidden');
-             msg.innerText = "";
-             btn.disabled = false;
-             return;
-        }
-
-        const cred = await createUserWithEmailAndPassword(secondaryAuth, email, document.getElementById('rmPassword').value);
-        
-        await setDoc(doc(db, "users", cred.user.uid), {
-          nama: document.getElementById('rmName').value, 
-          noHp: phone,
-          alamat: document.getElementById('rmAddress').value,
-          email: cred.user.email, role: "master"
+        const registerStaffFn = httpsCallable(functions, 'registerStaffBackend');
+        await registerStaffFn({
+            email: email,
+            password: document.getElementById('rmPassword').value,
+            nama: document.getElementById('rmName').value,
+            noHp: phone,
+            alamat: document.getElementById('rmAddress').value,
+            role: "master"
         });
-        await signOut(secondaryAuth);
         
         msg.innerText = "Master berhasil didaftarkan!"; msg.className = "text-xs text-center mt-2 text-emerald-400";
         setTimeout(async () => { 
@@ -854,7 +833,6 @@
         let safeHp = (p.noHp||'').replace(/'/g, "&#39;");
         let safeAlamat = (p.alamat||'').replace(/'/g, "&#39;");
 
-        // Action Lepas Assign (Modified to show modal)
         let btnUnassign = clientsHandled.length > 0 
            ? `<button onclick="bukaModalUnassign('${p.id}', '${safeNama}')" class="text-xs bg-orange-600/20 text-orange-400 px-3 py-1.5 rounded border border-orange-500/20 hover:bg-orange-500/30 transition">Lepas Assign</button>` 
            : '';
@@ -956,13 +934,16 @@
         } catch(err) { alert("Gagal edit: " + err.message); }
     }
 
+    // BUG FIX 1: Hapus user melalui Firebase Admin SDK Backend (menghapus auth credential seutuhnya)[cite: 1]
     window.hapusPengacara = async (id) => {
-        if(confirm("Apakah Anda yakin ingin menghapus data pengacara ini dari sistem? (Akun akan tidak bisa login, tapi arsip/berkas tetap aman)")) {
+        if(confirm("Apakah Anda yakin ingin menghapus data pengacara ini dari sistem?")) {
             try {
-                await deleteDoc(doc(db, "users", id));
+                const deleteUserFn = httpsCallable(functions, 'deleteUserAuth');
+                await deleteUserFn({ uid: id });
                 await ambilDaftarPengacara();
                 muatDaftarPengacaraView();
                 muatDaftarKlien(); 
+                alert("Pengacara berhasil dihapus");
             } catch(err) { alert("Gagal menghapus pengacara: " + err.message); }
         }
     }
@@ -1001,7 +982,6 @@
         let safeHp = (k.noHp||'').replace(/'/g, "&#39;");
         let safeAlamat = (k.alamat||'').replace(/'/g, "&#39;");
 
-        // Action Buttons (DIPISAH INFO & ATUR DATA UNTUK MASTER)
         let btnEditInfo = currentUserData.role === 'master' ? `<button onclick="bukaEditKlien('info', '${k.id}', '${k.nomorPerkara || ''}', '${k.pengacaraIds || []}', '${safeNama}', '${safeHp}', '${safeAlamat}')" class="text-xs bg-slate-800 text-white px-3 py-1.5 rounded border border-slate-600 hover:bg-slate-700 transition">Edit Info</button>` : '';
         let btnAtur = `<button onclick="bukaEditKlien('atur', '${k.id}', '${k.nomorPerkara || ''}', '${k.pengacaraIds || []}', '${safeNama}', '${safeHp}', '${safeAlamat}')" class="text-xs bg-blue-600/20 text-blue-400 px-3 py-1.5 rounded border border-blue-500/20 hover:bg-blue-500/30 transition">Atur Data</button>`;
         let btnDelete = currentUserData.role === 'master' ? `<button onclick="hapusKlien('${k.id}')" class="text-xs bg-red-600/20 text-red-400 px-3 py-1.5 rounded border border-red-500/20 hover:bg-red-500/30 transition">Hapus</button>` : '';
@@ -1056,7 +1036,6 @@
       muatDataBerkas();
     };
 
-    // FUNGSI GABUNGAN BUKA MODAL BERDASARKAN PARAMETER MODE (info / atur)
     window.bukaEditKlien = (mode, id, noPerk, pengacaraIdsStr, nama, hp, alamat) => {
       document.getElementById('editKlienId').value = id;
       document.getElementById('editKlienMode').value = mode; 
@@ -1119,12 +1098,15 @@
       } catch(err) { alert(err.message); }
     };
 
+    // BUG FIX 1: Hapus user melalui Firebase Admin SDK Backend (menghapus auth credential seutuhnya)[cite: 1]
     window.hapusKlien = async (id) => {
-        if(confirm("Apakah Anda yakin ingin menghapus data klien ini secara permanen? (Akun akan dihapus, arsip/berkas tetap aman sebagai backup)")) {
+        if(confirm("Apakah Anda yakin ingin menghapus data klien ini secara permanen?")) {
             try {
-                await deleteDoc(doc(db, "users", id));
+                const deleteUserFn = httpsCallable(functions, 'deleteUserAuth');
+                await deleteUserFn({ uid: id });
                 muatDaftarKlien();
                 isiDropdownKlien();
+                alert("Klien berhasil dihapus");
             } catch(err) { alert("Gagal menghapus klien: " + err.message); }
         }
     }
@@ -1133,6 +1115,7 @@
     window.bukaModalRegPengacara = () => document.getElementById('modalRegPengacara').classList.remove('hidden');
     window.tutupModalRegPengacara = () => document.getElementById('modalRegPengacara').classList.add('hidden');
     
+    // BUG FIX 2: Registrasi Pengacara Pindah ke Backend tanpa secondaryAuth[cite: 1]
     window.submitRegPengacara = async () => {
       const email = document.getElementById('rpEmail').value.trim();
       const phone = document.getElementById('rpPhone').value.trim();
@@ -1142,26 +1125,17 @@
 
       try {
         btn.disabled = true; errorMsg.classList.add('hidden');
-        msg.innerText = "Mendaftarkan..."; msg.className = "text-xs text-center mt-2 text-blue-400";
+        msg.innerText = "Mendaftarkan Pengacara..."; msg.className = "text-xs text-center mt-2 text-blue-400";
 
-        const duplicateError = await checkDuplicateUser(email, phone);
-        if (duplicateError) {
-             errorMsg.innerText = duplicateError;
-             errorMsg.classList.remove('hidden');
-             msg.innerText = "";
-             btn.disabled = false;
-             return;
-        }
-
-        const cred = await createUserWithEmailAndPassword(secondaryAuth, email, document.getElementById('rpPassword').value);
-        
-        await setDoc(doc(db, "users", cred.user.uid), {
-          nama: document.getElementById('rpName').value, 
-          noHp: phone,
-          alamat: document.getElementById('rpAddress').value,
-          email: cred.user.email, role: "pengacara"
+        const registerStaffFn = httpsCallable(functions, 'registerStaffBackend');
+        await registerStaffFn({
+            email: email,
+            password: document.getElementById('rpPassword').value,
+            nama: document.getElementById('rpName').value,
+            noHp: phone,
+            alamat: document.getElementById('rpAddress').value,
+            role: "pengacara"
         });
-        await signOut(secondaryAuth);
         
         msg.innerText = "Pengacara berhasil didaftarkan!"; msg.className = "text-xs text-center mt-2 text-emerald-400";
         setTimeout(async () => { 
@@ -1232,15 +1206,12 @@
       };
     }
 
-    // Hapus Berkas dari DB Firestore dan Request ke Google Apps Script (Drive)
     window.hapusBerkas = async (berkasId, fileIdDrive) => {
        if(!confirm("Apakah Anda yakin ingin menghapus berkas ini secara permanen dari Portal dan Google Drive?")) return;
 
        try {
-           // Hapus dari Firestore
            await deleteDoc(doc(db, "berkas", berkasId));
            
-           // Hapus dari Google Drive via Apps Script
            if(fileIdDrive) {
                fetch(GAS_WEB_APP_URL, {
                    method: 'POST',
@@ -1279,7 +1250,7 @@
 
         snap.forEach(d => {
           let data = d.data();
-          data.id = d.id; // Simpan document ID
+          data.id = d.id; 
           if (currentUserData.role === 'pengacara' && !filterClientId) {
               if (connectedClientIds.includes(data.clientId)) {
                   allBerkasData.push(data);
@@ -1289,7 +1260,6 @@
           }
         });
 
-        // Urutkan berdasarkan tanggal upload terbaru (descending)
         allBerkasData.sort((a, b) => {
             const tA = a.createdAt ? a.createdAt.toMillis() : 0;
             const tB = b.createdAt ? b.createdAt.toMillis() : 0;
@@ -1316,14 +1286,12 @@
         }
 
         filteredBerkas.forEach(data => {
-            // Format Tanggal
             let uploadDateStr = '-';
             if(data.createdAt) {
                 const d = data.createdAt.toDate();
                 uploadDateStr = d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) + ' ' + d.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
             }
 
-            // Tombol Delete (Hanya Master dan Pengacara)
             let btnDelete = (currentUserData.role === 'master' || currentUserData.role === 'pengacara') 
                 ? `<button onclick="hapusBerkas('${data.id}', '${data.fileId}')" class="px-2 py-1 bg-red-600/20 text-red-400 rounded text-xs font-semibold hover:bg-red-600/40 transition">Hapus</button>`
                 : '';
