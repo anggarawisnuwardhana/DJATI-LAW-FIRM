@@ -280,8 +280,8 @@
           <table class="w-full text-left border-collapse">
             <thead>
               <tr class="bg-slate-950/50 text-[11px] font-semibold text-slate-400 uppercase border-b border-slate-800">
-                <th class="py-3 px-4">Klien / Perkara</th>
-                <th class="py-3 px-4">Jumlah Tagihan</th>
+                <th class="py-3 px-4 w-1/4">Klien / Perkara</th>
+                <th class="py-3 px-4 w-1/4">Ket & Nominal Tagihan</th>
                 <th class="py-3 px-4">Status & Info Transaksi</th>
                 <th class="py-3 px-4 text-right">Aksi</th>
               </tr>
@@ -459,8 +459,9 @@
     <div class="bg-slate-900 border border-slate-700 rounded-2xl p-6 w-full max-w-md shadow-2xl relative">
       <h3 class="text-lg font-bold text-white mb-4">Buat Tagihan (Billing) Baru</h3>
       <form onsubmit="event.preventDefault(); simpanTambahBilling();" class="space-y-3">
-        <div><label class="block text-xs font-semibold text-slate-400 mb-1">Pilih Klien</label><select id="billClientId" required class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2 px-4 text-white text-sm"></select></div>
-        <div><label class="block text-xs font-semibold text-slate-400 mb-1">Jumlah Tagihan (Rp)</label><input type="number" id="billAmount" required min="1000" class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2 px-4 text-white text-sm"></div>
+        <div><label class="block text-xs font-semibold text-slate-400 mb-1">Pilih Klien <span class="text-red-500">*</span></label><select id="billClientId" required class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2 px-4 text-white text-sm"></select></div>
+        <div><label class="block text-xs font-semibold text-slate-400 mb-1">Keterangan Tagihan <span class="text-red-500">*</span></label><input type="text" id="billKeterangan" required placeholder="Contoh: Pembayaran Jasa Termin 1" class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2 px-4 text-white text-sm"></div>
+        <div><label class="block text-xs font-semibold text-slate-400 mb-1">Jumlah Tagihan (Rp) <span class="text-red-500">*</span></label><input type="number" id="billAmount" required min="1000" class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2 px-4 text-white text-sm"></div>
         <div class="mt-6 flex justify-end gap-3">
           <button type="button" onclick="document.getElementById('modalTambahBilling').classList.add('hidden')" class="px-4 py-2 bg-slate-800 text-slate-300 rounded-lg text-sm hover:bg-slate-700">Batal</button>
           <button type="submit" id="btnSimpanBill" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-500">Buat Tagihan</button>
@@ -475,10 +476,10 @@
       <h3 class="text-lg font-bold text-white mb-4">Konfirmasi Pembayaran</h3>
       <input type="hidden" id="payBillId">
       <div class="space-y-3">
-        <div><label class="block text-xs font-semibold text-slate-400 mb-1">Nama Pengirim Dana</label><input type="text" id="paySender" required class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2 px-4 text-white text-sm"></div>
-        <div><label class="block text-xs font-semibold text-slate-400 mb-1">Tanggal Transfer</label><input type="date" id="payDate" required class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2 px-4 text-white text-sm"></div>
-        <div><label class="block text-xs font-semibold text-slate-400 mb-1">Jumlah Ditransfer (Rp)</label><input type="number" id="payAmount" required class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2 px-4 text-white text-sm"></div>
-        <div><label class="block text-xs font-semibold text-slate-400 mb-1 mt-2">Upload Bukti Transaksi (Gambar/PDF)</label><input type="file" id="payFile" accept="image/*,.pdf" required class="w-full text-sm file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-blue-600 file:text-white cursor-pointer text-slate-400"></div>
+        <div><label class="block text-xs font-semibold text-slate-400 mb-1">Nama Pengirim Dana <span class="text-red-500">*</span></label><input type="text" id="paySender" required class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2 px-4 text-white text-sm"></div>
+        <div><label class="block text-xs font-semibold text-slate-400 mb-1">Tanggal Transfer <span class="text-red-500">*</span></label><input type="date" id="payDate" required class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2 px-4 text-white text-sm"></div>
+        <div><label class="block text-xs font-semibold text-slate-400 mb-1">Jumlah Ditransfer (Rp) <span class="text-red-500">*</span></label><input type="number" id="payAmount" required class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2 px-4 text-white text-sm"></div>
+        <div><label class="block text-xs font-semibold text-slate-400 mb-1 mt-2">Upload Bukti Transaksi (Gambar/PDF) <span class="text-red-500">*</span></label><input type="file" id="payFile" accept="image/*,.pdf" required class="w-full text-sm file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-blue-600 file:text-white cursor-pointer text-slate-400"></div>
       </div>
       <p id="msgUploadBayar" class="text-xs text-center mt-3 font-semibold"></p>
       <div class="mt-4 flex justify-end gap-3">
@@ -496,7 +497,7 @@
     import { getFirestore, doc, setDoc, getDoc, updateDoc, collection, addDoc, query, where, getDocs, orderBy, serverTimestamp, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
     import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-functions.js";
 
-    // ISI KEMBALI KONFIGURASI FIREBASE ANDA DI SINI
+    // KEMBALIKAN KONFIGURASI FIREBASE ANDA DISINI
     const firebaseConfig = {
       apiKey: "AIzaSyAjkJPfk4hQrPUjOgANu_ir2Q2Cuko-g9Q",
       authDomain: "djati-law-firm.firebaseapp.com",
@@ -1336,64 +1337,144 @@
         allBillingData.forEach(b => {
            let clientName = b.clientName || 'Klien';
            let statusBadge = ''; let btnAction = '';
+           
+           // Kalkulasi Tagihan & Transfer [Req 4]
+           let tagihan = parseInt(b.jumlahTagihan) || 0;
+           let trf = parseInt(b.jumlahTransfer) || 0;
+           let sisaTagihan = tagihan - trf;
+           let infoKekurangan = '';
 
            if (b.status === 'unpaid') {
               statusBadge = '<span class="px-2 py-1 bg-red-600/20 text-red-400 rounded text-[10px] font-bold">Belum Dibayar</span>';
-              if(currentUserData.role === 'client') btnAction = `<button onclick="bukaModalBayar('${b.id}')" class="px-3 py-1.5 bg-blue-600 text-white rounded text-xs">Upload Bukti</button>`;
+              if(currentUserData.role === 'client') btnAction = `<button onclick="bukaModalBayar('${b.id}')" class="px-3 py-1.5 bg-blue-600 text-white rounded text-xs hover:bg-blue-500">Upload Bukti</button>`;
            } else if (b.status === 'pending_validation') {
               statusBadge = '<span class="px-2 py-1 bg-orange-600/20 text-orange-400 rounded text-[10px] font-bold">Menunggu Validasi</span>';
               btnAction = `<a href="${b.buktiUploadUrl}" target="_blank" class="text-xs text-blue-400 hover:underline mr-2">Lihat Bukti</a>`;
-              if(currentUserData.role !== 'client') btnAction += `<button onclick="validasiBayar('${b.id}')" class="px-3 py-1.5 bg-emerald-600 text-white rounded text-xs">Validasi Transaksi</button>`;
+              if(currentUserData.role !== 'client') btnAction += `<button onclick="validasiBayar('${b.id}')" class="px-3 py-1.5 bg-emerald-600 text-white rounded text-xs hover:bg-emerald-500">Validasi Transaksi</button>`;
+              
+              if(sisaTagihan > 0) infoKekurangan = `<div class="mt-1 text-[10px] text-red-400 font-bold bg-red-900/30 px-2 py-1 rounded inline-block">Kurang: Rp ${sisaTagihan.toLocaleString('id-ID')}</div>`;
            } else if (b.status === 'paid') {
               statusBadge = '<span class="px-2 py-1 bg-emerald-600/20 text-emerald-400 rounded text-[10px] font-bold">LUNAS</span>';
               btnAction = `<a href="${b.buktiUploadUrl}" target="_blank" class="text-xs text-blue-400 hover:underline">Lihat Bukti</a>`;
+              if(sisaTagihan > 0) infoKekurangan = `<div class="mt-1 text-[10px] text-red-400 font-bold bg-red-900/30 px-2 py-1 rounded inline-block">Kurang: Rp ${sisaTagihan.toLocaleString('id-ID')}</div>`;
            }
 
            let tglTrf = b.tglTransfer ? `<br><span class="text-[10px] text-slate-400">Tgl TF: ${b.tglTransfer} | ${b.senderName}</span>` : '';
+           
+           // Hapus Transaksi (Hanya Master) [Req 2]
+           let btnDelete = '';
+           if(currentUserData.role === 'master') {
+               btnDelete = `<button onclick="hapusBilling('${b.id}', '${b.fileIdDrive || ''}')" class="px-2 py-1.5 bg-red-600/20 text-red-400 rounded text-xs hover:bg-red-600/40 ml-2">Hapus</button>`;
+           }
+
+           // Pelunasan Instant (Hanya Master, tampil jika ada kekurangan/unpaid) [Req 5]
+           let btnLunasInstant = '';
+           if(currentUserData.role === 'master' && (b.status === 'unpaid' || sisaTagihan > 0)) {
+               btnLunasInstant = `<button onclick="pelunasanInstant('${b.id}', ${tagihan})" class="px-2 py-1.5 bg-purple-600/20 text-purple-400 rounded text-xs hover:bg-purple-600/40 ml-2 mt-1 block">Pelunasan Instant</button>`;
+           }
 
            tbody.innerHTML += `
-            <tr class="hover:bg-slate-800/40">
+            <tr class="hover:bg-slate-800/40 transition">
               <td class="py-3 px-4"><div class="font-semibold text-white text-sm">${clientName}</div><div class="text-[10px] text-slate-400">Bill ID: ${b.id.substring(0,6)}</div></td>
-              <td class="py-3 px-4 font-mono text-white text-sm">Rp ${parseInt(b.jumlahTagihan).toLocaleString('id-ID')}</td>
+              <td class="py-3 px-4"><div class="font-semibold text-white text-xs">${b.keterangan || '-'}</div><div class="font-mono text-emerald-400 text-sm mt-1">Rp ${tagihan.toLocaleString('id-ID')}</div>${infoKekurangan}</td>
               <td class="py-3 px-4 text-xs">${statusBadge} ${tglTrf}</td>
-              <td class="py-3 px-4 text-right flex justify-end gap-2 items-center">${btnAction}</td>
+              <td class="py-3 px-4 text-right">
+                <div class="flex justify-end items-center flex-wrap gap-1">${btnAction} ${btnDelete}</div>
+                <div class="flex justify-end">${btnLunasInstant}</div>
+              </td>
             </tr>`;
         });
-      } catch(e) { tbody.innerHTML = '<tr><td colspan="4" class="text-center text-xs py-4 text-red-400">Error memuat billing</td></tr>'; }
+      } catch(e) { console.error(e); tbody.innerHTML = '<tr><td colspan="4" class="text-center text-xs py-4 text-red-400">Error memuat billing</td></tr>'; }
     }
 
+    // Filter Klien berdasarkan role pengacara saat buat tagihan [Req 1]
     window.bukaModalTambahBilling = async () => {
        const select = document.getElementById('billClientId');
        select.innerHTML = '<option value="">-- Pilih Klien --</option>';
-       const snap = await getDocs(query(collection(db, "users"), where("role", "==", "client")));
+       
+       let q;
+       if (currentUserData.role === 'master') {
+           q = query(collection(db, "users"), where("role", "==", "client"));
+       } else {
+           q = query(collection(db, "users"), where("role", "==", "client"), where("pengacaraIds", "array-contains", currentUserData.uid));
+       }
+       
+       const snap = await getDocs(q);
        snap.forEach(d => {
          let data = d.data(); select.innerHTML += `<option value="${d.id}" data-nama="${data.nama}">${data.nama}</option>`; 
        });
+       
+       document.getElementById('billKeterangan').value = '';
+       document.getElementById('billAmount').value = '';
        document.getElementById('modalTambahBilling').classList.remove('hidden');
     };
 
     window.simpanTambahBilling = async () => {
        const sel = document.getElementById('billClientId');
+       const keterangan = document.getElementById('billKeterangan').value.trim();
+       
        try {
           await addDoc(collection(db, "billing"), {
-             clientId: sel.value, clientName: sel.options[sel.selectedIndex].getAttribute('data-nama'), 
-             jumlahTagihan: document.getElementById('billAmount').value, status: 'unpaid', createdAt: serverTimestamp()
+             clientId: sel.value, 
+             clientName: sel.options[sel.selectedIndex].getAttribute('data-nama'), 
+             keterangan: keterangan,
+             jumlahTagihan: document.getElementById('billAmount').value, 
+             status: 'unpaid', 
+             createdAt: serverTimestamp()
           });
           document.getElementById('modalTambahBilling').classList.add('hidden'); muatDataBilling();
        } catch (e) { alert("Gagal buat tagihan: " + e.message); }
     };
 
+    // Hapus Billing (termasuk file drive jika ada) [Req 2]
+    window.hapusBilling = async (billId, fileIdDrive) => {
+        if(!confirm("Apakah Anda yakin ingin menghapus data tagihan ini permanen?")) return;
+        try {
+            await deleteDoc(doc(db, "billing", billId));
+            if(fileIdDrive) {
+                fetch(GAS_WEB_APP_URL, {
+                    method: 'POST', body: JSON.stringify({ action: "delete", fileId: fileIdDrive })
+                }).catch(e => console.log("Gagal menghapus di drive: ", e));
+            }
+            muatDataBilling();
+        } catch (e) { alert("Gagal menghapus tagihan: " + e.message); }
+    };
+
+    // Pelunasan Instant [Req 5]
+    window.pelunasanInstant = async (billId, totalTagihan) => {
+        if(!confirm("Proses Pelunasan Instant akan menandai tagihan ini menjadi LUNAS dan menyesuaikan jumlah transfer secara otomatis. Lanjutkan?")) return;
+        try {
+            await updateDoc(doc(db, "billing", billId), { 
+                status: 'paid',
+                jumlahTransfer: totalTagihan,
+                senderName: 'Pelunasan Instant (Master)'
+            });
+            muatDataBilling();
+        } catch(e) { alert("Gagal pelunasan instant: " + e.message); }
+    }
+
     window.bukaModalBayar = (billId) => {
        document.getElementById('payBillId').value = billId;
+       document.getElementById('paySender').value = '';
+       document.getElementById('payDate').value = '';
+       document.getElementById('payAmount').value = '';
+       document.getElementById('payFile').value = '';
        document.getElementById('msgUploadBayar').innerText = '';
        document.getElementById('modalBayarBilling').classList.remove('hidden');
     };
 
     window.prosesUploadBayar = async () => {
+       // Frontend validation check strict [Req 6]
+       const sender = document.getElementById('paySender').value.trim();
+       const date = document.getElementById('payDate').value;
+       const amount = document.getElementById('payAmount').value;
        const file = document.getElementById('payFile').files[0];
-       if(!file) return alert("Pilih file bukti transaksi!");
+
+       if(!sender || !date || !amount || !file) {
+           return alert("Seluruh data dengan tanda bintang (*) wajib diisi!");
+       }
+
        const msg = document.getElementById('msgUploadBayar'); const btn = document.getElementById('btnSubmitBayar');
-       
        msg.className = "text-xs text-center mt-3 font-semibold text-blue-400"; msg.innerText = "Mengunggah..."; btn.disabled = true;
 
        const reader = new FileReader(); reader.readAsDataURL(file);
@@ -1406,9 +1487,12 @@
             
             if(result.status === "success") {
                await updateDoc(doc(db, "billing", document.getElementById('payBillId').value), {
-                  status: 'pending_validation', buktiUploadUrl: result.fileUrl, fileIdDrive: result.fileId,
-                  senderName: document.getElementById('paySender').value, tglTransfer: document.getElementById('payDate').value,
-                  jumlahTransfer: document.getElementById('payAmount').value
+                  status: 'pending_validation', 
+                  buktiUploadUrl: result.fileUrl, 
+                  fileIdDrive: result.fileId,
+                  senderName: sender, 
+                  tglTransfer: date,
+                  jumlahTransfer: amount
                });
                msg.className = "text-xs text-center mt-3 font-semibold text-emerald-400"; msg.innerText = "Berhasil diupload!";
                setTimeout(() => { document.getElementById('modalBayarBilling').classList.add('hidden'); muatDataBilling(); btn.disabled=false; }, 1500);
@@ -1418,7 +1502,7 @@
     };
 
     window.validasiBayar = async (billId) => {
-       if(confirm("Validasi pembayaran ini sebagai LUNAS?")) {
+       if(confirm("Validasi pembayaran ini dan tandai sebagai LUNAS?")) {
           try { await updateDoc(doc(db, "billing", billId), { status: 'paid' }); muatDataBilling(); } 
           catch(e) { alert("Gagal memvalidasi: " + e.message); }
        }
