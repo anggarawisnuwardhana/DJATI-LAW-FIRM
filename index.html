@@ -1057,7 +1057,7 @@
         let safeNama = (k.nama||'').replace(/'/g, "&#39;");
 
         let btnEditInfo = currentUserData.role === 'master' ? `<button onclick="bukaEditKlienInfo('${k.id}')" class="text-xs bg-slate-800 text-white px-3 py-1.5 rounded border border-slate-600 hover:bg-slate-700 transition">Edit Info</button>` : '';
-        let btnAtur = `<button onclick="bukaEditKlienAtur('${k.id}')" class="text-xs bg-blue-600/20 text-blue-400 px-3 py-1.5 rounded border border-blue-500/20 hover:bg-blue-500/30 transition">Atur Data</button>` : '';
+        let btnAtur = `<button onclick="bukaEditKlienAtur('${k.id}')" class="text-xs bg-blue-600/20 text-blue-400 px-3 py-1.5 rounded border border-blue-500/20 hover:bg-blue-500/30 transition">Atur Data</button>`;
         let btnDelete = currentUserData.role === 'master' ? `<button onclick="hapusKlien('${k.id}')" class="text-xs bg-red-600/20 text-red-400 px-3 py-1.5 rounded border border-red-500/20 hover:bg-red-500/30 transition">Hapus</button>` : '';
 
         tbody.innerHTML += `
@@ -1332,7 +1332,6 @@
         if (currentUserData.role === 'client') {
             q = query(collection(db, "billing"), where("clientId", "==", currentUserData.uid));
         } else if (currentUserData.role === 'pengacara') {
-            // Ambil daftar klien yang di-assign ke pengacara ini terlebih dahulu agar pembatasan viewing akurat [Req 1]
             const clientSnap = await getDocs(query(collection(db, "users"), where("role", "==", "client"), where("pengacaraIds", "array-contains", currentUserData.uid)));
             clientSnap.forEach(c => pengacaraClientIds.push(c.id));
 
@@ -1361,7 +1360,6 @@
               if(currentUserData.role === 'client') {
                   btnAction = `<button onclick="bukaModalBayar('${b.id}', false)" class="px-3 py-1.5 bg-blue-600 text-white rounded text-xs hover:bg-blue-500">Upload Bukti</button>`;
               } else if(currentUserData.role === 'master') {
-                  // Tombol backup upload bukti untuk master [Req 2]
                   btnAction = `<button onclick="bukaModalBayar('${b.id}', true)" class="px-3 py-1.5 bg-purple-600 text-white rounded text-xs hover:bg-purple-500">Upload Bukti (Master)</button>`;
               }
            } else if (b.status === 'pending_validation') {
@@ -1404,7 +1402,6 @@
        
        document.getElementById('billKeterangan').value = '';
        document.getElementById('billAmount').value = '';
-       document.getElementById('modalTambahBilling').classList.add('hidden'); // Fix toggle modal state safety
        document.getElementById('modalTambahBilling').classList.remove('hidden');
     };
 
@@ -1433,7 +1430,6 @@
        document.getElementById('payFile').value = '';
        document.getElementById('msgUploadBayar').innerText = '';
        
-       // Ubah judul modal jika Master menggunakan backup upload [Req 2]
        const titleEl = document.getElementById('modalBayarTitle');
        if(isMasterMode) {
            titleEl.innerText = "Konfirmasi Pembayaran (Backup Master)";
@@ -1454,7 +1450,6 @@
        const reader = new FileReader(); reader.readAsDataURL(file);
        reader.onload = async () => {
           try {
-            // Fix Bug Missing Permission / Client Upload: Pastikan kirim clientName yang valid dari billing record jika di-trigger oleh master [Req 3]
             let currentBillId = document.getElementById('payBillId').value;
             let activeBill = allBillingData.find(b => b.id === currentBillId);
             let targetClientName = activeBill ? activeBill.clientName : currentUserData.nama;
