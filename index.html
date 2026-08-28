@@ -470,10 +470,10 @@
     </div>
   </div>
 
-  <!-- MODAL: BAYAR BILLING / UPLOAD BUKTI (Client) -->
+  <!-- MODAL: BAYAR BILLING / UPLOAD BUKTI (Client / Master Backup) -->
   <div id="modalBayarBilling" class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
     <div class="bg-slate-900 border border-slate-700 rounded-2xl p-6 w-full max-w-md shadow-2xl relative">
-      <h3 class="text-lg font-bold text-white mb-4">Konfirmasi Pembayaran</h3>
+      <h3 id="modalBayarTitle" class="text-lg font-bold text-white mb-4">Konfirmasi Pembayaran</h3>
       <input type="hidden" id="payBillId">
       <div class="space-y-3">
         <div><label class="block text-xs font-semibold text-slate-400 mb-1">Nama Pengirim Dana <span class="text-red-500">*</span></label><input type="text" id="paySender" required class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2 px-4 text-white text-sm"></div>
@@ -1057,7 +1057,7 @@
         let safeNama = (k.nama||'').replace(/'/g, "&#39;");
 
         let btnEditInfo = currentUserData.role === 'master' ? `<button onclick="bukaEditKlienInfo('${k.id}')" class="text-xs bg-slate-800 text-white px-3 py-1.5 rounded border border-slate-600 hover:bg-slate-700 transition">Edit Info</button>` : '';
-        let btnAtur = `<button onclick="bukaEditKlienAtur('${k.id}')" class="text-xs bg-blue-600/20 text-blue-400 px-3 py-1.5 rounded border border-blue-500/20 hover:bg-blue-500/30 transition">Atur Data</button>`;
+        let btnAtur = `<button onclick="bukaEditKlienAtur('${k.id}')" class="text-xs bg-blue-600/20 text-blue-400 px-3 py-1.5 rounded border border-blue-500/20 hover:bg-blue-500/30 transition">Atur Data</button>` : '';
         let btnDelete = currentUserData.role === 'master' ? `<button onclick="hapusKlien('${k.id}')" class="text-xs bg-red-600/20 text-red-400 px-3 py-1.5 rounded border border-red-500/20 hover:bg-red-500/30 transition">Hapus</button>` : '';
 
         tbody.innerHTML += `
@@ -1326,7 +1326,25 @@
       const tbody = document.getElementById('billingListBody');
       tbody.innerHTML = '<tr><td colspan="4" class="text-center text-xs py-4">Memuat data...</td></tr>';
       try {
-        let q = (currentUserData.role === 'client') ? query(collection(db, "billing"), where("clientId", "==", currentUserData.uid)) : collection(db, "billing");
+        let q;
+        let pengacaraClientIds = [];
+
+        if (currentUserData.role === 'client') {
+            q = query(collection(db, "billing"), where("clientId", "==", currentUserData.uid));
+        } else if (currentUserData.role === 'pengacara') {
+            // Ambil daftar klien yang di-assign ke pengacara ini terlebih dahulu agar pembatasan viewing akurat [Req 1]
+            const clientSnap = await getDocs(query(collection(db, "users"), where("role", "==", "client"), where("pengacaraIds", "array-contains", currentUserData.uid)));
+            clientSnap.forEach(c => pengacaraClientIds.push(c.id));
+
+            if (pengacaraClientIds.length === 0) {
+               tbody.innerHTML = '<tr><td colspan="4" class="text-center text-xs py-4 text-slate-500">Tidak ada data tagihan.</td></tr>';
+               return;
+            }
+            q = query(collection(db, "billing"), where("clientId", "in", pengacaraClientIds));
+        } else {
+            q = collection(db, "billing");
+        }
+
         const snap = await getDocs(q);
         allBillingData = [];
         snap.forEach(d => allBillingData.push({ id: d.id, ...d.data() }));
@@ -1337,57 +1355,37 @@
         allBillingData.forEach(b => {
            let clientName = b.clientName || 'Klien';
            let statusBadge = ''; let btnAction = '';
-           
-           // Kalkulasi Tagihan & Transfer [Req 4]
-           let tagihan = parseInt(b.jumlahTagihan) || 0;
-           let trf = parseInt(b.jumlahTransfer) || 0;
-           let sisaTagihan = tagihan - trf;
-           let infoKekurangan = '';
 
            if (b.status === 'unpaid') {
               statusBadge = '<span class="px-2 py-1 bg-red-600/20 text-red-400 rounded text-[10px] font-bold">Belum Dibayar</span>';
-              if(currentUserData.role === 'client') btnAction = `<button onclick="bukaModalBayar('${b.id}')" class="px-3 py-1.5 bg-blue-600 text-white rounded text-xs hover:bg-blue-500">Upload Bukti</button>`;
+              if(currentUserData.role === 'client') {
+                  btnAction = `<button onclick="bukaModalBayar('${b.id}', false)" class="px-3 py-1.5 bg-blue-600 text-white rounded text-xs hover:bg-blue-500">Upload Bukti</button>`;
+              } else if(currentUserData.role === 'master') {
+                  // Tombol backup upload bukti untuk master [Req 2]
+                  btnAction = `<button onclick="bukaModalBayar('${b.id}', true)" class="px-3 py-1.5 bg-purple-600 text-white rounded text-xs hover:bg-purple-500">Upload Bukti (Master)</button>`;
+              }
            } else if (b.status === 'pending_validation') {
               statusBadge = '<span class="px-2 py-1 bg-orange-600/20 text-orange-400 rounded text-[10px] font-bold">Menunggu Validasi</span>';
               btnAction = `<a href="${b.buktiUploadUrl}" target="_blank" class="text-xs text-blue-400 hover:underline mr-2">Lihat Bukti</a>`;
               if(currentUserData.role !== 'client') btnAction += `<button onclick="validasiBayar('${b.id}')" class="px-3 py-1.5 bg-emerald-600 text-white rounded text-xs hover:bg-emerald-500">Validasi Transaksi</button>`;
-              
-              if(sisaTagihan > 0) infoKekurangan = `<div class="mt-1 text-[10px] text-red-400 font-bold bg-red-900/30 px-2 py-1 rounded inline-block">Kurang: Rp ${sisaTagihan.toLocaleString('id-ID')}</div>`;
            } else if (b.status === 'paid') {
               statusBadge = '<span class="px-2 py-1 bg-emerald-600/20 text-emerald-400 rounded text-[10px] font-bold">LUNAS</span>';
               btnAction = `<a href="${b.buktiUploadUrl}" target="_blank" class="text-xs text-blue-400 hover:underline">Lihat Bukti</a>`;
-              if(sisaTagihan > 0) infoKekurangan = `<div class="mt-1 text-[10px] text-red-400 font-bold bg-red-900/30 px-2 py-1 rounded inline-block">Kurang: Rp ${sisaTagihan.toLocaleString('id-ID')}</div>`;
            }
 
            let tglTrf = b.tglTransfer ? `<br><span class="text-[10px] text-slate-400">Tgl TF: ${b.tglTransfer} | ${b.senderName}</span>` : '';
-           
-           // Hapus Transaksi (Hanya Master) [Req 2]
-           let btnDelete = '';
-           if(currentUserData.role === 'master') {
-               btnDelete = `<button onclick="hapusBilling('${b.id}', '${b.fileIdDrive || ''}')" class="px-2 py-1.5 bg-red-600/20 text-red-400 rounded text-xs hover:bg-red-600/40 ml-2">Hapus</button>`;
-           }
-
-           // Pelunasan Instant (Hanya Master, tampil jika ada kekurangan/unpaid) [Req 5]
-           let btnLunasInstant = '';
-           if(currentUserData.role === 'master' && (b.status === 'unpaid' || sisaTagihan > 0)) {
-               btnLunasInstant = `<button onclick="pelunasanInstant('${b.id}', ${tagihan})" class="px-2 py-1.5 bg-purple-600/20 text-purple-400 rounded text-xs hover:bg-purple-600/40 ml-2 mt-1 block">Pelunasan Instant</button>`;
-           }
 
            tbody.innerHTML += `
             <tr class="hover:bg-slate-800/40 transition">
               <td class="py-3 px-4"><div class="font-semibold text-white text-sm">${clientName}</div><div class="text-[10px] text-slate-400">Bill ID: ${b.id.substring(0,6)}</div></td>
-              <td class="py-3 px-4"><div class="font-semibold text-white text-xs">${b.keterangan || '-'}</div><div class="font-mono text-emerald-400 text-sm mt-1">Rp ${tagihan.toLocaleString('id-ID')}</div>${infoKekurangan}</td>
+              <td class="py-3 px-4"><div class="font-semibold text-white text-xs">${b.keterangan || '-'}</div><div class="font-mono text-emerald-400 text-sm mt-1">Rp ${parseInt(b.jumlahTagihan).toLocaleString('id-ID')}</div></td>
               <td class="py-3 px-4 text-xs">${statusBadge} ${tglTrf}</td>
-              <td class="py-3 px-4 text-right">
-                <div class="flex justify-end items-center flex-wrap gap-1">${btnAction} ${btnDelete}</div>
-                <div class="flex justify-end">${btnLunasInstant}</div>
-              </td>
+              <td class="py-3 px-4 text-right flex justify-end gap-2 items-center">${btnAction}</td>
             </tr>`;
         });
       } catch(e) { console.error(e); tbody.innerHTML = '<tr><td colspan="4" class="text-center text-xs py-4 text-red-400">Error memuat billing</td></tr>'; }
     }
 
-    // Filter Klien berdasarkan role pengacara saat buat tagihan [Req 1]
     window.bukaModalTambahBilling = async () => {
        const select = document.getElementById('billClientId');
        select.innerHTML = '<option value="">-- Pilih Klien --</option>';
@@ -1406,6 +1404,7 @@
        
        document.getElementById('billKeterangan').value = '';
        document.getElementById('billAmount').value = '';
+       document.getElementById('modalTambahBilling').classList.add('hidden'); // Fix toggle modal state safety
        document.getElementById('modalTambahBilling').classList.remove('hidden');
     };
 
@@ -1426,73 +1425,53 @@
        } catch (e) { alert("Gagal buat tagihan: " + e.message); }
     };
 
-    // Hapus Billing (termasuk file drive jika ada) [Req 2]
-    window.hapusBilling = async (billId, fileIdDrive) => {
-        if(!confirm("Apakah Anda yakin ingin menghapus data tagihan ini permanen?")) return;
-        try {
-            await deleteDoc(doc(db, "billing", billId));
-            if(fileIdDrive) {
-                fetch(GAS_WEB_APP_URL, {
-                    method: 'POST', body: JSON.stringify({ action: "delete", fileId: fileIdDrive })
-                }).catch(e => console.log("Gagal menghapus di drive: ", e));
-            }
-            muatDataBilling();
-        } catch (e) { alert("Gagal menghapus tagihan: " + e.message); }
-    };
-
-    // Pelunasan Instant [Req 5]
-    window.pelunasanInstant = async (billId, totalTagihan) => {
-        if(!confirm("Proses Pelunasan Instant akan menandai tagihan ini menjadi LUNAS dan menyesuaikan jumlah transfer secara otomatis. Lanjutkan?")) return;
-        try {
-            await updateDoc(doc(db, "billing", billId), { 
-                status: 'paid',
-                jumlahTransfer: totalTagihan,
-                senderName: 'Pelunasan Instant (Master)'
-            });
-            muatDataBilling();
-        } catch(e) { alert("Gagal pelunasan instant: " + e.message); }
-    }
-
-    window.bukaModalBayar = (billId) => {
+    window.bukaModalBayar = (billId, isMasterMode = false) => {
        document.getElementById('payBillId').value = billId;
        document.getElementById('paySender').value = '';
        document.getElementById('payDate').value = '';
        document.getElementById('payAmount').value = '';
        document.getElementById('payFile').value = '';
        document.getElementById('msgUploadBayar').innerText = '';
+       
+       // Ubah judul modal jika Master menggunakan backup upload [Req 2]
+       const titleEl = document.getElementById('modalBayarTitle');
+       if(isMasterMode) {
+           titleEl.innerText = "Konfirmasi Pembayaran (Backup Master)";
+       } else {
+           titleEl.innerText = "Konfirmasi Pembayaran";
+       }
+
        document.getElementById('modalBayarBilling').classList.remove('hidden');
     };
 
     window.prosesUploadBayar = async () => {
-       // Frontend validation check strict [Req 6]
-       const sender = document.getElementById('paySender').value.trim();
-       const date = document.getElementById('payDate').value;
-       const amount = document.getElementById('payAmount').value;
        const file = document.getElementById('payFile').files[0];
-
-       if(!sender || !date || !amount || !file) {
-           return alert("Seluruh data dengan tanda bintang (*) wajib diisi!");
-       }
-
+       if(!file) return alert("Pilih file bukti transaksi!");
        const msg = document.getElementById('msgUploadBayar'); const btn = document.getElementById('btnSubmitBayar');
+       
        msg.className = "text-xs text-center mt-3 font-semibold text-blue-400"; msg.innerText = "Mengunggah..."; btn.disabled = true;
 
        const reader = new FileReader(); reader.readAsDataURL(file);
        reader.onload = async () => {
           try {
+            // Fix Bug Missing Permission / Client Upload: Pastikan kirim clientName yang valid dari billing record jika di-trigger oleh master [Req 3]
+            let currentBillId = document.getElementById('payBillId').value;
+            let activeBill = allBillingData.find(b => b.id === currentBillId);
+            let targetClientName = activeBill ? activeBill.clientName : currentUserData.nama;
+
             const res = await fetch(GAS_WEB_APP_URL, {
-              method: 'POST', body: JSON.stringify({ fileName: file.name, fileData: reader.result, clientName: currentUserData.nama, isBilling: true })
+              method: 'POST', body: JSON.stringify({ fileName: file.name, fileData: reader.result, clientName: targetClientName, isBilling: true })
             });
             const result = await res.json();
             
             if(result.status === "success") {
-               await updateDoc(doc(db, "billing", document.getElementById('payBillId').value), {
+               await updateDoc(doc(db, "billing", currentBillId), {
                   status: 'pending_validation', 
                   buktiUploadUrl: result.fileUrl, 
                   fileIdDrive: result.fileId,
-                  senderName: sender, 
-                  tglTransfer: date,
-                  jumlahTransfer: amount
+                  senderName: document.getElementById('paySender').value, 
+                  tglTransfer: document.getElementById('payDate').value,
+                  jumlahTransfer: document.getElementById('payAmount').value
                });
                msg.className = "text-xs text-center mt-3 font-semibold text-emerald-400"; msg.innerText = "Berhasil diupload!";
                setTimeout(() => { document.getElementById('modalBayarBilling').classList.add('hidden'); muatDataBilling(); btn.disabled=false; }, 1500);
@@ -1502,7 +1481,7 @@
     };
 
     window.validasiBayar = async (billId) => {
-       if(confirm("Validasi pembayaran ini dan tandai sebagai LUNAS?")) {
+       if(confirm("Validasi pembayaran ini sebagai LUNAS?")) {
           try { await updateDoc(doc(db, "billing", billId), { status: 'paid' }); muatDataBilling(); } 
           catch(e) { alert("Gagal memvalidasi: " + e.message); }
        }
