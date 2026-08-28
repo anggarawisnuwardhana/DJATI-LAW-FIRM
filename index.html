@@ -17,7 +17,6 @@
 </head>
 <body class="bg-slate-900 text-slate-100 min-h-screen">
 
-  <!-- ================= AUTH CONTAINER ================= -->
   <div id="authSection" class="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-slate-950 via-slate-900 to-blue-950 relative overflow-hidden">
     <div class="absolute top-0 left-0 w-full h-full overflow-hidden z-0 pointer-events-none opacity-20">
       <div class="absolute -top-24 -right-24 w-96 h-96 bg-blue-600 rounded-full mix-blend-screen filter blur-[100px]"></div>
@@ -35,7 +34,6 @@
 
       <div id="authMsg" class="hidden mb-4 p-3 rounded-lg text-xs font-semibold text-center"></div>
 
-      <!-- LOGIN FORM -->
       <form id="formLogin" onsubmit="event.preventDefault(); loginApp();" class="space-y-4">
         <div>
           <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Email / No HP</label>
@@ -52,7 +50,6 @@
         <p class="text-center text-xs text-slate-400 mt-4">Belum punya akun? <a href="#" onclick="toggleAuth('register')" class="text-blue-400 font-semibold hover:underline">Daftar Klien Baru</a></p>
       </form>
 
-      <!-- REGISTER KLIEN FORM -->
       <form id="formRegister" onsubmit="event.preventDefault(); registerApp();" class="space-y-3 hidden">
         <div><input type="text" id="regName" required placeholder="Nama Lengkap Klien" class="w-full bg-slate-900 border border-slate-700 rounded-xl py-2 px-4 text-sm text-white"></div>
         <div><input type="tel" id="regPhone" required placeholder="Nomor WhatsApp (Cth: 08123456789)" class="w-full bg-slate-900 border border-slate-700 rounded-xl py-2 px-4 text-sm text-white"></div>
@@ -67,7 +64,6 @@
     </div>
   </div>
 
-  <!-- ================= DASHBOARD MAIN ================= -->
   <div id="dashboardSection" class="hidden min-h-screen flex flex-col md:flex-row bg-slate-950">
     <aside class="w-full md:w-64 bg-slate-900 border-r border-slate-800 flex flex-col justify-between">
       <div>
@@ -115,10 +111,8 @@
       </div>
     </aside>
 
-    <!-- Main Workspace -->
     <main class="flex-1 p-6 md:p-10 overflow-y-auto relative h-screen">
       
-      <!-- VIEW: PROFILE -->
       <div id="profileView" class="view-section hidden max-w-3xl">
         <h2 class="text-2xl font-bold text-white mb-6">Profil Pengguna</h2>
         <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl">
@@ -148,7 +142,6 @@
         </div>
       </div>
 
-      <!-- VIEW: MANAJEMEN MASTER -->
       <div id="masterView" class="view-section hidden">
         <div class="flex justify-between items-center mb-6">
           <h2 class="text-2xl font-bold text-white">Manajemen Master</h2>
@@ -166,7 +159,6 @@
         </div>
       </div>
 
-      <!-- VIEW: MANAJEMEN PENGACARA -->
       <div id="pengacaraView" class="view-section hidden">
         <div class="flex justify-between items-center mb-6">
           <h2 class="text-2xl font-bold text-white">Manajemen Pengacara</h2>
@@ -185,7 +177,6 @@
         </div>
       </div>
 
-      <!-- VIEW: DAFTAR KLIEN -->
       <div id="clientView" class="view-section hidden">
         <div class="flex justify-between items-center mb-6">
           <h2 class="text-2xl font-bold text-white">Manajemen Klien</h2>
@@ -206,7 +197,6 @@
         </div>
       </div>
 
-      <!-- VIEW: ARSIP DOKUMEN -->
       <div id="docView" class="view-section hidden">
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-3">
           <h2 class="text-2xl font-bold text-white">Arsip Dokumen Global</h2>
@@ -255,7 +245,6 @@
         </div>
       </div>
 
-      <!-- VIEW: BILLING / PEMBAYARAN -->
       <div id="billingView" class="view-section hidden">
         <div class="flex justify-between items-center mb-6">
           <h2 class="text-2xl font-bold text-white">Billing & Pembayaran</h2>
@@ -293,7 +282,6 @@
     </main>
   </div>
 
-  <!-- MODAL GANTI PASSWORD -->
   <div id="modalGantiPassword" class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
     <div class="bg-slate-900 border border-slate-700 rounded-2xl p-6 w-full max-w-md shadow-2xl relative">
       <h3 class="text-lg font-bold text-white mb-4">Ganti Password</h3>
@@ -310,7 +298,6 @@
     </div>
   </div>
 
-  <!-- MODAL UNGGAH BERKAS -->
   <div id="modalUploadBerkas" class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
     <div class="bg-slate-900 border border-slate-700 rounded-2xl p-6 w-full max-w-md shadow-2xl relative">
       <h3 class="text-lg font-bold text-white mb-4">Unggah Berkas Baru</h3>
@@ -327,7 +314,6 @@
     </div>
   </div>
 
-  <!-- MODAL: REGISTRASI PENGACARA BARU -->
   <div id="modalRegPengacara" class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
     <div class="bg-slate-900 border border-slate-700 rounded-2xl p-6 w-full max-w-md shadow-2xl relative">
       <h3 class="text-lg font-bold text-white mb-4">Registrasi Akun Pengacara</h3>
@@ -347,7 +333,6 @@
     </div>
   </div>
 
-  <!-- MODAL: REGISTRASI MASTER BARU -->
   <div id="modalRegMaster" class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
     <div class="bg-slate-900 border border-slate-700 rounded-2xl p-6 w-full max-w-md shadow-2xl relative">
       <h3 class="text-lg font-bold text-white mb-4">Registrasi Akun Master</h3>
@@ -367,7 +352,6 @@
     </div>
   </div>
 
-  <!-- MODAL: EDIT & ATUR KLIEN -->
   <div id="modalEditKlien" class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
     <div class="bg-slate-900 border border-slate-700 rounded-2xl p-6 w-full max-w-md shadow-2xl relative">
       <h3 id="titleModalEditKlien" class="text-lg font-bold text-white mb-4">Pengaturan Klien</h3>
@@ -405,7 +389,6 @@
     </div>
   </div>
 
-  <!-- MODAL: EDIT PENGACARA -->
   <div id="modalEditPengacara" class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
     <div class="bg-slate-900 border border-slate-700 rounded-2xl p-6 w-full max-w-md shadow-2xl relative">
       <h3 class="text-lg font-bold text-white mb-4">Edit Informasi Pengacara</h3>
@@ -422,7 +405,6 @@
     </div>
   </div>
 
-  <!-- MODAL: EDIT MASTER -->
   <div id="modalEditMaster" class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
     <div class="bg-slate-900 border border-slate-700 rounded-2xl p-6 w-full max-w-md shadow-2xl relative">
       <h3 class="text-lg font-bold text-white mb-4">Edit Informasi Master</h3>
@@ -439,7 +421,6 @@
     </div>
   </div>
 
-  <!-- MODAL: UNASSIGN KASUS -->
   <div id="modalUnassign" class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
     <div class="bg-slate-900 border border-slate-700 rounded-2xl p-6 w-full max-w-md shadow-2xl relative">
       <h3 class="text-lg font-bold text-white mb-2">Lepas Assign Kasus</h3>
@@ -454,7 +435,6 @@
     </div>
   </div>
 
-  <!-- MODAL: TAMBAH BILLING (Master/Pengacara) -->
   <div id="modalTambahBilling" class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
     <div class="bg-slate-900 border border-slate-700 rounded-2xl p-6 w-full max-w-md shadow-2xl relative">
       <h3 class="text-lg font-bold text-white mb-4">Buat Tagihan (Billing) Baru</h3>
@@ -470,11 +450,11 @@
     </div>
   </div>
 
-  <!-- MODAL: BAYAR BILLING / UPLOAD BUKTI (Client / Master Backup) -->
   <div id="modalBayarBilling" class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
     <div class="bg-slate-900 border border-slate-700 rounded-2xl p-6 w-full max-w-md shadow-2xl relative">
-      <h3 id="modalBayarTitle" class="text-lg font-bold text-white mb-4">Konfirmasi Pembayaran</h3>
+      <h3 class="text-lg font-bold text-white mb-4">Konfirmasi Pembayaran</h3>
       <input type="hidden" id="payBillId">
+      <input type="hidden" id="payClientName">
       <div class="space-y-3">
         <div><label class="block text-xs font-semibold text-slate-400 mb-1">Nama Pengirim Dana <span class="text-red-500">*</span></label><input type="text" id="paySender" required class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2 px-4 text-white text-sm"></div>
         <div><label class="block text-xs font-semibold text-slate-400 mb-1">Tanggal Transfer <span class="text-red-500">*</span></label><input type="date" id="payDate" required class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2 px-4 text-white text-sm"></div>
@@ -490,7 +470,6 @@
   </div>
 
 
-  <!-- Firebase & Logic Scripts -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged, updatePassword, EmailAuthProvider, reauthenticateWithCredential, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
@@ -1326,27 +1305,27 @@
       const tbody = document.getElementById('billingListBody');
       tbody.innerHTML = '<tr><td colspan="4" class="text-center text-xs py-4">Memuat data...</td></tr>';
       try {
-        let q;
-        let pengacaraClientIds = [];
-
-        if (currentUserData.role === 'client') {
-            q = query(collection(db, "billing"), where("clientId", "==", currentUserData.uid));
-        } else if (currentUserData.role === 'pengacara') {
+        let q = (currentUserData.role === 'client') ? query(collection(db, "billing"), where("clientId", "==", currentUserData.uid)) : collection(db, "billing");
+        const snap = await getDocs(q);
+        
+        // Cek client yang terhubung khusus untuk pengacara
+        let connectedClientIds = [];
+        if(currentUserData.role === 'pengacara') {
             const clientSnap = await getDocs(query(collection(db, "users"), where("role", "==", "client"), where("pengacaraIds", "array-contains", currentUserData.uid)));
-            clientSnap.forEach(c => pengacaraClientIds.push(c.id));
-
-            if (pengacaraClientIds.length === 0) {
-               tbody.innerHTML = '<tr><td colspan="4" class="text-center text-xs py-4 text-slate-500">Tidak ada data tagihan.</td></tr>';
-               return;
-            }
-            q = query(collection(db, "billing"), where("clientId", "in", pengacaraClientIds));
-        } else {
-            q = collection(db, "billing");
+            clientSnap.forEach(c => connectedClientIds.push(c.id));
         }
 
-        const snap = await getDocs(q);
         allBillingData = [];
-        snap.forEach(d => allBillingData.push({ id: d.id, ...d.data() }));
+        snap.forEach(d => {
+            let bData = { id: d.id, ...d.data() };
+            if(currentUserData.role === 'pengacara') {
+                if(connectedClientIds.includes(bData.clientId)) {
+                    allBillingData.push(bData);
+                }
+            } else {
+                allBillingData.push(bData);
+            }
+        });
         
         tbody.innerHTML = '';
         if(allBillingData.length === 0) return tbody.innerHTML = '<tr><td colspan="4" class="text-center text-xs py-4 text-slate-500">Tidak ada data tagihan.</td></tr>';
@@ -1354,36 +1333,60 @@
         allBillingData.forEach(b => {
            let clientName = b.clientName || 'Klien';
            let statusBadge = ''; let btnAction = '';
+           
+           // Kalkulasi Tagihan & Transfer [Req 4]
+           let tagihan = parseInt(b.jumlahTagihan) || 0;
+           let trf = parseInt(b.jumlahTransfer) || 0;
+           let sisaTagihan = tagihan - trf;
+           let infoKekurangan = '';
 
            if (b.status === 'unpaid') {
               statusBadge = '<span class="px-2 py-1 bg-red-600/20 text-red-400 rounded text-[10px] font-bold">Belum Dibayar</span>';
-              if(currentUserData.role === 'client') {
-                  btnAction = `<button onclick="bukaModalBayar('${b.id}', false)" class="px-3 py-1.5 bg-blue-600 text-white rounded text-xs hover:bg-blue-500">Upload Bukti</button>`;
-              } else if(currentUserData.role === 'master') {
-                  btnAction = `<button onclick="bukaModalBayar('${b.id}', true)" class="px-3 py-1.5 bg-purple-600 text-white rounded text-xs hover:bg-purple-500">Upload Bukti (Master)</button>`;
+              if(currentUserData.role === 'client' || currentUserData.role === 'master') {
+                  let safeClientName = clientName.replace(/'/g, "&#39;");
+                  btnAction = `<button onclick="bukaModalBayar('${b.id}', '${safeClientName}')" class="px-3 py-1.5 bg-blue-600 text-white rounded text-xs hover:bg-blue-500">Upload Bukti</button>`;
               }
            } else if (b.status === 'pending_validation') {
               statusBadge = '<span class="px-2 py-1 bg-orange-600/20 text-orange-400 rounded text-[10px] font-bold">Menunggu Validasi</span>';
               btnAction = `<a href="${b.buktiUploadUrl}" target="_blank" class="text-xs text-blue-400 hover:underline mr-2">Lihat Bukti</a>`;
               if(currentUserData.role !== 'client') btnAction += `<button onclick="validasiBayar('${b.id}')" class="px-3 py-1.5 bg-emerald-600 text-white rounded text-xs hover:bg-emerald-500">Validasi Transaksi</button>`;
+              
+              if(sisaTagihan > 0) infoKekurangan = `<div class="mt-1 text-[10px] text-red-400 font-bold bg-red-900/30 px-2 py-1 rounded inline-block">Kurang: Rp ${sisaTagihan.toLocaleString('id-ID')}</div>`;
            } else if (b.status === 'paid') {
               statusBadge = '<span class="px-2 py-1 bg-emerald-600/20 text-emerald-400 rounded text-[10px] font-bold">LUNAS</span>';
               btnAction = `<a href="${b.buktiUploadUrl}" target="_blank" class="text-xs text-blue-400 hover:underline">Lihat Bukti</a>`;
+              if(sisaTagihan > 0) infoKekurangan = `<div class="mt-1 text-[10px] text-red-400 font-bold bg-red-900/30 px-2 py-1 rounded inline-block">Kurang: Rp ${sisaTagihan.toLocaleString('id-ID')}</div>`;
            }
 
            let tglTrf = b.tglTransfer ? `<br><span class="text-[10px] text-slate-400">Tgl TF: ${b.tglTransfer} | ${b.senderName}</span>` : '';
+           
+           // Hapus Transaksi (Hanya Master) [Req 2]
+           let btnDelete = '';
+           if(currentUserData.role === 'master') {
+               btnDelete = `<button onclick="hapusBilling('${b.id}', '${b.fileIdDrive || ''}')" class="px-2 py-1.5 bg-red-600/20 text-red-400 rounded text-xs hover:bg-red-600/40 ml-2">Hapus</button>`;
+           }
+
+           // Pelunasan Instant (Hanya Master, tampil jika ada kekurangan/unpaid) [Req 5]
+           let btnLunasInstant = '';
+           if(currentUserData.role === 'master' && (b.status === 'unpaid' || sisaTagihan > 0)) {
+               btnLunasInstant = `<button onclick="pelunasanInstant('${b.id}', ${tagihan})" class="px-2 py-1.5 bg-purple-600/20 text-purple-400 rounded text-xs hover:bg-purple-600/40 ml-2 mt-1 block">Pelunasan Instant</button>`;
+           }
 
            tbody.innerHTML += `
             <tr class="hover:bg-slate-800/40 transition">
               <td class="py-3 px-4"><div class="font-semibold text-white text-sm">${clientName}</div><div class="text-[10px] text-slate-400">Bill ID: ${b.id.substring(0,6)}</div></td>
-              <td class="py-3 px-4"><div class="font-semibold text-white text-xs">${b.keterangan || '-'}</div><div class="font-mono text-emerald-400 text-sm mt-1">Rp ${parseInt(b.jumlahTagihan).toLocaleString('id-ID')}</div></td>
+              <td class="py-3 px-4"><div class="font-semibold text-white text-xs">${b.keterangan || '-'}</div><div class="font-mono text-emerald-400 text-sm mt-1">Rp ${tagihan.toLocaleString('id-ID')}</div>${infoKekurangan}</td>
               <td class="py-3 px-4 text-xs">${statusBadge} ${tglTrf}</td>
-              <td class="py-3 px-4 text-right flex justify-end gap-2 items-center">${btnAction}</td>
+              <td class="py-3 px-4 text-right">
+                <div class="flex justify-end items-center flex-wrap gap-1">${btnAction} ${btnDelete}</div>
+                <div class="flex justify-end">${btnLunasInstant}</div>
+              </td>
             </tr>`;
         });
       } catch(e) { console.error(e); tbody.innerHTML = '<tr><td colspan="4" class="text-center text-xs py-4 text-red-400">Error memuat billing</td></tr>'; }
     }
 
+    // Filter Klien berdasarkan role pengacara saat buat tagihan [Req 1]
     window.bukaModalTambahBilling = async () => {
        const select = document.getElementById('billClientId');
        select.innerHTML = '<option value="">-- Pilih Klien --</option>';
@@ -1422,51 +1425,75 @@
        } catch (e) { alert("Gagal buat tagihan: " + e.message); }
     };
 
-    window.bukaModalBayar = (billId, isMasterMode = false) => {
+    // Hapus Billing (termasuk file drive jika ada) [Req 2]
+    window.hapusBilling = async (billId, fileIdDrive) => {
+        if(!confirm("Apakah Anda yakin ingin menghapus data tagihan ini permanen?")) return;
+        try {
+            await deleteDoc(doc(db, "billing", billId));
+            if(fileIdDrive) {
+                fetch(GAS_WEB_APP_URL, {
+                    method: 'POST', body: JSON.stringify({ action: "delete", fileId: fileIdDrive })
+                }).catch(e => console.log("Gagal menghapus di drive: ", e));
+            }
+            muatDataBilling();
+        } catch (e) { alert("Gagal menghapus tagihan: " + e.message); }
+    };
+
+    // Pelunasan Instant [Req 5]
+    window.pelunasanInstant = async (billId, totalTagihan) => {
+        if(!confirm("Proses Pelunasan Instant akan menandai tagihan ini menjadi LUNAS dan menyesuaikan jumlah transfer secara otomatis. Lanjutkan?")) return;
+        try {
+            await updateDoc(doc(db, "billing", billId), { 
+                status: 'paid',
+                jumlahTransfer: totalTagihan,
+                senderName: 'Pelunasan Instant (Master)'
+            });
+            muatDataBilling();
+        } catch(e) { alert("Gagal pelunasan instant: " + e.message); }
+    }
+
+    window.bukaModalBayar = (billId, clientName = '') => {
        document.getElementById('payBillId').value = billId;
+       document.getElementById('payClientName').value = clientName || currentUserData.nama;
        document.getElementById('paySender').value = '';
        document.getElementById('payDate').value = '';
        document.getElementById('payAmount').value = '';
        document.getElementById('payFile').value = '';
        document.getElementById('msgUploadBayar').innerText = '';
-       
-       const titleEl = document.getElementById('modalBayarTitle');
-       if(isMasterMode) {
-           titleEl.innerText = "Konfirmasi Pembayaran (Backup Master)";
-       } else {
-           titleEl.innerText = "Konfirmasi Pembayaran";
-       }
-
        document.getElementById('modalBayarBilling').classList.remove('hidden');
     };
 
     window.prosesUploadBayar = async () => {
+       // Frontend validation check strict [Req 6]
+       const sender = document.getElementById('paySender').value.trim();
+       const date = document.getElementById('payDate').value;
+       const amount = document.getElementById('payAmount').value;
        const file = document.getElementById('payFile').files[0];
-       if(!file) return alert("Pilih file bukti transaksi!");
+       const clientName = document.getElementById('payClientName').value;
+
+       if(!sender || !date || !amount || !file) {
+           return alert("Seluruh data dengan tanda bintang (*) wajib diisi!");
+       }
+
        const msg = document.getElementById('msgUploadBayar'); const btn = document.getElementById('btnSubmitBayar');
-       
        msg.className = "text-xs text-center mt-3 font-semibold text-blue-400"; msg.innerText = "Mengunggah..."; btn.disabled = true;
 
        const reader = new FileReader(); reader.readAsDataURL(file);
        reader.onload = async () => {
           try {
-            let currentBillId = document.getElementById('payBillId').value;
-            let activeBill = allBillingData.find(b => b.id === currentBillId);
-            let targetClientName = activeBill ? activeBill.clientName : currentUserData.nama;
-
             const res = await fetch(GAS_WEB_APP_URL, {
-              method: 'POST', body: JSON.stringify({ fileName: file.name, fileData: reader.result, clientName: targetClientName, isBilling: true })
+              method: 'POST', body: JSON.stringify({ fileName: file.name, fileData: reader.result, clientName: clientName, isBilling: true })
             });
             const result = await res.json();
             
             if(result.status === "success") {
-               await updateDoc(doc(db, "billing", currentBillId), {
+               await updateDoc(doc(db, "billing", document.getElementById('payBillId').value), {
                   status: 'pending_validation', 
                   buktiUploadUrl: result.fileUrl, 
                   fileIdDrive: result.fileId,
-                  senderName: document.getElementById('paySender').value, 
-                  tglTransfer: document.getElementById('payDate').value,
-                  jumlahTransfer: document.getElementById('payAmount').value
+                  senderName: sender, 
+                  tglTransfer: date,
+                  jumlahTransfer: amount
                });
                msg.className = "text-xs text-center mt-3 font-semibold text-emerald-400"; msg.innerText = "Berhasil diupload!";
                setTimeout(() => { document.getElementById('modalBayarBilling').classList.add('hidden'); muatDataBilling(); btn.disabled=false; }, 1500);
@@ -1476,7 +1503,7 @@
     };
 
     window.validasiBayar = async (billId) => {
-       if(confirm("Validasi pembayaran ini sebagai LUNAS?")) {
+       if(confirm("Validasi pembayaran ini dan tandai sebagai LUNAS?")) {
           try { await updateDoc(doc(db, "billing", billId), { status: 'paid' }); muatDataBilling(); } 
           catch(e) { alert("Gagal memvalidasi: " + e.message); }
        }
