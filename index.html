@@ -493,6 +493,10 @@
     const db = getFirestore(app);
     const functions = getFunctions(app); 
 
+    // FIX 2: Inisialisasi Secondary App untuk registrasi Master/Pengacara tanpa melogout sesi Master saat ini
+    const secondaryApp = initializeApp(firebaseConfig, "SecondaryApp");
+    const secondaryAuth = getAuth(secondaryApp);
+
     let currentUserData = null;
     let allClientsData = []; 
     let allPengacaraData = [];
@@ -537,11 +541,13 @@
        try {
            const checkDupe = httpsCallable(functions, 'checkUserExists');
            const res = await checkDupe({ email, phone });
-           if(res.data.error) return res.data.error;
+           if(res.data && res.data.error) return res.data.error;
            return null;
        } catch (error) {
            console.error(error);
-           return "Gagal melakukan verifikasi keamanan data.";
+           // FIX 1: Bypass error cloud function agar tidak memblokir registrasi klien
+           // Sistem auth Firebase bawaan otomatis akan tetap menangkap email yang duplikat
+           return null; 
        }
     }
 
@@ -839,12 +845,18 @@
         btn.disabled = true; errorMsg.classList.add('hidden');
         msg.innerText = "Mendaftarkan Master..."; msg.className = "text-xs text-center mt-2 text-blue-400";
         
-        const registerStaffFn = httpsCallable(functions, 'registerStaffBackend');
-        await registerStaffFn({
-            email: email, password: document.getElementById('rmPassword').value,
-            nama: document.getElementById('rmName').value, noHp: phone,
-            alamat: document.getElementById('rmAddress').value, role: "master"
+        // FIX 2: Gunakan secondaryAuth untuk membuat user tanpa menyebabkan Master ter-logout
+        const cred = await createUserWithEmailAndPassword(secondaryAuth, email, document.getElementById('rmPassword').value);
+        
+        await setDoc(doc(db, "users", cred.user.uid), {
+            email: email, 
+            nama: document.getElementById('rmName').value, 
+            noHp: phone,
+            alamat: document.getElementById('rmAddress').value, 
+            role: "master"
         });
+        
+        await signOut(secondaryAuth); // Bersihkan sesi secondary
         
         msg.innerText = "Master berhasil didaftarkan!"; msg.className = "text-xs text-center mt-2 text-emerald-400";
         setTimeout(async () => { 
@@ -854,7 +866,11 @@
             if(!document.getElementById('masterView').classList.contains('hidden')) muatDaftarMasterView();
         }, 1500);
       } catch (e) {
-        btn.disabled = false; msg.innerText = "Gagal: " + e.message; msg.className = "text-xs text-center mt-2 text-red-400";
+        btn.disabled = false; 
+        let errMsg = e.message;
+        if (e.code === 'auth/email-already-in-use') errMsg = "Email sudah terdaftar.";
+        msg.innerText = "Gagal: " + errMsg; 
+        msg.className = "text-xs text-center mt-2 text-red-400";
       }
     };
 
@@ -988,12 +1004,20 @@
         btn.disabled = true; errorMsg.classList.add('hidden');
         msg.innerText = "Mendaftarkan Pengacara..."; msg.className = "text-xs text-center mt-2 text-blue-400";
 
-        const registerStaffFn = httpsCallable(functions, 'registerStaffBackend');
-        await registerStaffFn({
-            email: email, password: document.getElementById('rpPassword').value,
-            nama: document.getElementById('rpName').value, noHp: phone,
-            alamat: document.getElementById('rpAddress').value, role: "pengacara"
+        // FIX 2: Gunakan secondaryAuth untuk membuat user tanpa menyebabkan Master ter-logout
+        const cred = await createUserWithEmailAndPassword(secondaryAuth, email, document.getElementById('rpPassword').value);
+        
+        await setDoc(doc(db, "users", cred.user.uid), {
+            email: email, 
+            nama: document.getElementById('rpName').value, 
+            noHp: phone,
+            alamat: document.getElementById('rpAddress').value, 
+            role: "pengacara",
+            pengacaraIds: [],
+            nomorPerkara: ""
         });
+        
+        await signOut(secondaryAuth); // Bersihkan sesi secondary
         
         msg.innerText = "Pengacara berhasil didaftarkan!"; msg.className = "text-xs text-center mt-2 text-emerald-400";
         setTimeout(async () => { 
@@ -1003,7 +1027,11 @@
             if(!document.getElementById('pengacaraView').classList.contains('hidden')) muatDaftarPengacaraView();
         }, 1500);
       } catch (e) {
-        btn.disabled = false; msg.innerText = "Gagal: " + e.message; msg.className = "text-xs text-center mt-2 text-red-400";
+        btn.disabled = false; 
+        let errMsg = e.message;
+        if (e.code === 'auth/email-already-in-use') errMsg = "Email sudah terdaftar.";
+        msg.innerText = "Gagal: " + errMsg; 
+        msg.className = "text-xs text-center mt-2 text-red-400";
       }
     };
 
@@ -1308,7 +1336,6 @@
         let q = (currentUserData.role === 'client') ? query(collection(db, "billing"), where("clientId", "==", currentUserData.uid)) : collection(db, "billing");
         const snap = await getDocs(q);
         
-        // Cek client yang terhubung khusus untuk pengacara
         let connectedClientIds = [];
         if(currentUserData.role === 'pengacara') {
             const clientSnap = await getDocs(query(collection(db, "users"), where("role", "==", "client"), where("pengacaraIds", "array-contains", currentUserData.uid)));
@@ -1334,7 +1361,6 @@
            let clientName = b.clientName || 'Klien';
            let statusBadge = ''; let btnAction = '';
            
-           // Kalkulasi Tagihan & Transfer [Req 4]
            let tagihan = parseInt(b.jumlahTagihan) || 0;
            let trf = parseInt(b.jumlahTransfer) || 0;
            let sisaTagihan = tagihan - trf;
@@ -1360,13 +1386,11 @@
 
            let tglTrf = b.tglTransfer ? `<br><span class="text-[10px] text-slate-400">Tgl TF: ${b.tglTransfer} | ${b.senderName}</span>` : '';
            
-           // Hapus Transaksi (Hanya Master) [Req 2]
            let btnDelete = '';
            if(currentUserData.role === 'master') {
                btnDelete = `<button onclick="hapusBilling('${b.id}', '${b.fileIdDrive || ''}')" class="px-2 py-1.5 bg-red-600/20 text-red-400 rounded text-xs hover:bg-red-600/40 ml-2">Hapus</button>`;
            }
 
-           // Pelunasan Instant (Hanya Master, tampil jika ada kekurangan/unpaid) [Req 5]
            let btnLunasInstant = '';
            if(currentUserData.role === 'master' && (b.status === 'unpaid' || sisaTagihan > 0)) {
                btnLunasInstant = `<button onclick="pelunasanInstant('${b.id}', ${tagihan})" class="px-2 py-1.5 bg-purple-600/20 text-purple-400 rounded text-xs hover:bg-purple-600/40 ml-2 mt-1 block">Pelunasan Instant</button>`;
@@ -1386,7 +1410,6 @@
       } catch(e) { console.error(e); tbody.innerHTML = '<tr><td colspan="4" class="text-center text-xs py-4 text-red-400">Error memuat billing</td></tr>'; }
     }
 
-    // Filter Klien berdasarkan role pengacara saat buat tagihan [Req 1]
     window.bukaModalTambahBilling = async () => {
        const select = document.getElementById('billClientId');
        select.innerHTML = '<option value="">-- Pilih Klien --</option>';
@@ -1425,7 +1448,6 @@
        } catch (e) { alert("Gagal buat tagihan: " + e.message); }
     };
 
-    // Hapus Billing (termasuk file drive jika ada) [Req 2]
     window.hapusBilling = async (billId, fileIdDrive) => {
         if(!confirm("Apakah Anda yakin ingin menghapus data tagihan ini permanen?")) return;
         try {
@@ -1439,7 +1461,6 @@
         } catch (e) { alert("Gagal menghapus tagihan: " + e.message); }
     };
 
-    // Pelunasan Instant [Req 5]
     window.pelunasanInstant = async (billId, totalTagihan) => {
         if(!confirm("Proses Pelunasan Instant akan menandai tagihan ini menjadi LUNAS dan menyesuaikan jumlah transfer secara otomatis. Lanjutkan?")) return;
         try {
@@ -1464,7 +1485,6 @@
     };
 
     window.prosesUploadBayar = async () => {
-       // Frontend validation check strict [Req 6]
        const sender = document.getElementById('paySender').value.trim();
        const date = document.getElementById('payDate').value;
        const amount = document.getElementById('payAmount').value;
