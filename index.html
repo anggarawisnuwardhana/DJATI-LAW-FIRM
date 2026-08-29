@@ -5,107 +5,123 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>DJATI LAW FIRM - Enterprise Legal Portal</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+    }
+  </script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/lucide@latest"></script>
   <style>
     body { font-family: 'Inter', sans-serif; }
-    .glass { background: rgba(30, 41, 59, 0.85); backdrop-filter: blur(16px); }
+    .glass { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(16px); }
+    .dark .glass { background: rgba(30, 41, 59, 0.85); backdrop-filter: blur(16px); }
     ::-webkit-scrollbar { width: 6px; }
     ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+    .dark ::-webkit-scrollbar-thumb { background: #475569; }
   </style>
 </head>
-<body class="bg-slate-900 text-slate-100 min-h-screen">
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 min-h-screen transition-colors duration-300">
 
-  <div id="authSection" class="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-slate-950 via-slate-900 to-blue-950 relative overflow-hidden">
+  <!-- Toast Container -->
+  <div id="toast-container" class="fixed bottom-5 right-5 z-[9999] flex flex-col space-y-3 pointer-events-none"></div>
+
+  <!-- Auth Section -->
+  <div id="authSection" class="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-slate-100 via-white to-blue-50 dark:from-slate-950 dark:via-slate-900 dark:to-blue-950 relative overflow-hidden transition-colors duration-300">
     <div class="absolute top-0 left-0 w-full h-full overflow-hidden z-0 pointer-events-none opacity-20">
       <div class="absolute -top-24 -right-24 w-96 h-96 bg-blue-600 rounded-full mix-blend-screen filter blur-[100px]"></div>
       <div class="absolute bottom-0 left-0 w-72 h-72 bg-emerald-600 rounded-full mix-blend-screen filter blur-[100px]"></div>
     </div>
 
-    <div class="w-full max-w-md border border-slate-700/50 rounded-2xl p-8 shadow-2xl glass z-10 relative">
+    <div class="w-full max-w-md border border-slate-200 dark:border-slate-700/50 rounded-2xl p-8 shadow-2xl glass z-10 relative">
       <div class="text-center mb-8">
-        <div class="inline-flex p-3 bg-blue-600/20 text-blue-400 rounded-xl mb-3 border border-blue-500/30">
+        <div class="inline-flex p-3 bg-blue-100 dark:bg-blue-600/20 text-blue-600 dark:text-blue-400 rounded-xl mb-3 border border-blue-200 dark:border-blue-500/30">
           <i data-lucide="scale" class="w-8 h-8"></i>
         </div>
-        <h2 class="text-2xl font-bold text-white tracking-wide">DJATI LAW FIRM</h2>
-        <p class="text-slate-400 text-sm mt-1">Portal Manajemen Berkas & Klien</p>
+        <h2 class="text-2xl font-bold text-slate-900 dark:text-white tracking-wide">DJATI LAW FIRM</h2>
+        <p class="text-slate-500 dark:text-slate-400 text-sm mt-1">Portal Manajemen Berkas & Klien</p>
       </div>
 
       <div id="authMsg" class="hidden mb-4 p-3 rounded-lg text-xs font-semibold text-center"></div>
 
       <form id="formLogin" onsubmit="event.preventDefault(); loginApp();" class="space-y-4">
         <div>
-          <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">Email / No HP</label>
-          <input type="text" id="loginIdentifier" required class="w-full bg-slate-900/90 border border-slate-700 rounded-xl py-2.5 px-4 text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 text-sm">
+          <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider mb-2">Email / No HP</label>
+          <input type="text" id="loginIdentifier" required class="w-full bg-white dark:bg-slate-900/90 border border-slate-300 dark:border-slate-700 rounded-xl py-2.5 px-4 text-slate-800 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-blue-500 text-sm transition-colors">
         </div>
         <div>
           <div class="flex justify-between items-center mb-2">
-            <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider">Kata Sandi</label>
-            <a href="#" onclick="lupaPassword()" class="text-xs text-blue-400 hover:underline">Lupa sandi?</a>
+            <label class="block text-xs font-semibold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Kata Sandi</label>
+            <a href="#" onclick="lupaPassword()" class="text-xs text-blue-600 dark:text-blue-400 hover:underline">Lupa sandi?</a>
           </div>
-          <input type="password" id="loginPassword" required class="w-full bg-slate-900/90 border border-slate-700 rounded-xl py-2.5 px-4 text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 text-sm">
+          <input type="password" id="loginPassword" required class="w-full bg-white dark:bg-slate-900/90 border border-slate-300 dark:border-slate-700 rounded-xl py-2.5 px-4 text-slate-800 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-blue-500 text-sm transition-colors">
         </div>
         <button type="submit" id="btnLoginSubmit" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold py-3 rounded-xl transition shadow-lg shadow-blue-600/30 text-sm">Masuk</button>
-        <p class="text-center text-xs text-slate-400 mt-4">Belum punya akun? <a href="#" onclick="toggleAuth('register')" class="text-blue-400 font-semibold hover:underline">Daftar Klien Baru</a></p>
+        <p class="text-center text-xs text-slate-500 dark:text-slate-400 mt-4">Belum punya akun? <a href="#" onclick="toggleAuth('register')" class="text-blue-600 dark:text-blue-400 font-semibold hover:underline">Daftar Klien Baru</a></p>
       </form>
 
       <form id="formRegister" onsubmit="event.preventDefault(); registerApp();" class="space-y-3 hidden">
-        <div><input type="text" id="regName" required placeholder="Nama Lengkap Klien" class="w-full bg-slate-900 border border-slate-700 rounded-xl py-2 px-4 text-sm text-white"></div>
-        <div><input type="tel" id="regPhone" required placeholder="Nomor WhatsApp (Cth: 08123456789)" class="w-full bg-slate-900 border border-slate-700 rounded-xl py-2 px-4 text-sm text-white"></div>
-        <div><textarea id="regAddress" required placeholder="Alamat Lengkap" class="w-full bg-slate-900 border border-slate-700 rounded-xl py-2 px-4 text-sm text-white resize-none" rows="2"></textarea></div>
-        <div><input type="email" id="regEmail" required placeholder="Email" class="w-full bg-slate-900 border border-slate-700 rounded-xl py-2 px-4 text-sm text-white"></div>
-        <div><input type="password" id="regPassword" required placeholder="Buat Kata Sandi (Min 6)" class="w-full bg-slate-900 border border-slate-700 rounded-xl py-2 px-4 text-sm text-white"></div>
-        <div id="regErrorMsg" class="text-red-400 text-xs text-center hidden"></div>
+        <div><input type="text" id="regName" required placeholder="Nama Lengkap Klien" class="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl py-2 px-4 text-sm text-slate-800 dark:text-white"></div>
+        <div><input type="tel" id="regPhone" required placeholder="Nomor WhatsApp (Cth: 08123456789)" class="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl py-2 px-4 text-sm text-slate-800 dark:text-white"></div>
+        <div><textarea id="regAddress" required placeholder="Alamat Lengkap" class="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl py-2 px-4 text-sm text-slate-800 dark:text-white resize-none" rows="2"></textarea></div>
+        <div><input type="email" id="regEmail" required placeholder="Email" class="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl py-2 px-4 text-sm text-slate-800 dark:text-white"></div>
+        <div><input type="password" id="regPassword" required placeholder="Buat Kata Sandi (Min 6)" class="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl py-2 px-4 text-sm text-slate-800 dark:text-white"></div>
+        <div id="regErrorMsg" class="text-red-500 dark:text-red-400 text-xs text-center hidden"></div>
         
         <button type="submit" id="btnRegSubmit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-3 rounded-xl transition text-sm">Daftar Klien</button>
-        <p class="text-center text-xs text-slate-400">Sudah terdaftar? <a href="#" onclick="toggleAuth('login')" class="text-blue-400 font-semibold hover:underline">Kembali Login</a></p>
+        <p class="text-center text-xs text-slate-500 dark:text-slate-400">Sudah terdaftar? <a href="#" onclick="toggleAuth('login')" class="text-blue-600 dark:text-blue-400 font-semibold hover:underline">Kembali Login</a></p>
       </form>
     </div>
   </div>
 
-  <div id="dashboardSection" class="hidden min-h-screen flex flex-col md:flex-row bg-slate-950">
-    <aside class="w-full md:w-64 bg-slate-900 border-r border-slate-800 flex flex-col justify-between">
+  <div id="dashboardSection" class="hidden min-h-screen flex flex-col md:flex-row bg-white dark:bg-slate-950 transition-colors duration-300">
+    <aside class="w-full md:w-64 bg-slate-50 dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 flex flex-col justify-between">
       <div>
-        <div class="flex items-center space-x-3 px-6 py-6 border-b border-slate-800 mb-4">
+        <div class="flex items-center space-x-3 px-6 py-6 border-b border-slate-200 dark:border-slate-800 mb-4">
           <div class="p-2 bg-blue-600 rounded-lg text-white"><i data-lucide="scale" class="w-5 h-5"></i></div>
           <div>
-            <h1 class="font-bold text-sm tracking-wider text-white">DJATI LAW FIRM</h1>
-            <p class="text-[10px] text-slate-400 uppercase font-semibold">Portal System</p>
+            <h1 class="font-bold text-sm tracking-wider text-slate-900 dark:text-white">DJATI LAW FIRM</h1>
+            <p class="text-[10px] text-slate-500 dark:text-slate-400 uppercase font-semibold">Portal System</p>
           </div>
         </div>
 
         <nav class="space-y-1 px-3">
-          <button onclick="switchView('profileView')" id="nav-profile" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white font-medium text-sm transition menu-btn">
+          <button onclick="switchView('profileView')" id="nav-profile" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white font-medium text-sm transition menu-btn">
             <i data-lucide="user" class="w-4 h-4"></i><span>Profil & Case Info</span>
           </button>
           
-          <button onclick="switchView('masterView')" id="nav-master" class="hidden w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white font-medium text-sm transition menu-btn">
+          <button onclick="switchView('masterView')" id="nav-master" class="hidden w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white font-medium text-sm transition menu-btn">
             <i data-lucide="shield" class="w-4 h-4"></i><span>Manajemen Master</span>
           </button>
 
-          <button onclick="switchView('pengacaraView')" id="nav-pengacara" class="hidden w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white font-medium text-sm transition menu-btn">
+          <button onclick="switchView('pengacaraView')" id="nav-pengacara" class="hidden w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white font-medium text-sm transition menu-btn">
             <i data-lucide="briefcase" class="w-4 h-4"></i><span>Manajemen Pengacara</span>
           </button>
-          <button onclick="switchView('clientView')" id="nav-clients" class="hidden w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white font-medium text-sm transition menu-btn">
+          <button onclick="switchView('clientView')" id="nav-clients" class="hidden w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white font-medium text-sm transition menu-btn">
             <i data-lucide="users" class="w-4 h-4"></i><span>Daftar Klien</span>
           </button>
-          <button onclick="switchView('docView')" id="nav-docs" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white font-medium text-sm transition menu-btn">
+          <button onclick="switchView('docView')" id="nav-docs" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white font-medium text-sm transition menu-btn">
             <i data-lucide="folder-open" class="w-4 h-4"></i><span>Arsip Dokumen</span>
           </button>
-          <button onclick="switchView('billingView')" id="nav-billing" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-white font-medium text-sm transition menu-btn">
+          <button onclick="switchView('billingView')" id="nav-billing" class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white font-medium text-sm transition menu-btn">
             <i data-lucide="credit-card" class="w-4 h-4"></i><span>Billing / Pembayaran</span>
           </button>
         </nav>
       </div>
-      <div class="p-4 border-t border-slate-800 space-y-2">
-        <button id="btnRegMaster" onclick="bukaModalRegMaster()" class="hidden w-full bg-blue-600/20 hover:bg-blue-600/30 text-blue-400 border border-blue-500/30 font-medium py-2 rounded-xl transition text-xs flex items-center justify-center space-x-2">
+      <div class="p-4 border-t border-slate-200 dark:border-slate-800 space-y-2">
+        <button onclick="toggleTheme()" class="w-full bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-medium py-2 rounded-xl transition text-xs flex items-center justify-center space-x-2">
+            <i data-lucide="moon" class="w-4 h-4 hidden dark:block"></i>
+            <i data-lucide="sun" class="w-4 h-4 block dark:hidden"></i>
+            <span>Ganti Tema</span>
+        </button>
+        <button id="btnRegMaster" onclick="bukaModalRegMaster()" class="hidden w-full bg-blue-100 dark:bg-blue-600/20 hover:bg-blue-200 dark:hover:bg-blue-600/30 text-blue-600 dark:text-blue-400 border border-blue-300 dark:border-blue-500/30 font-medium py-2 rounded-xl transition text-xs flex items-center justify-center space-x-2">
           <i data-lucide="shield-plus" class="w-4 h-4"></i><span>Registrasi Master</span>
         </button>
-        <button id="btnRegPengacara" onclick="bukaModalRegPengacara()" class="hidden w-full bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-400 border border-emerald-500/30 font-medium py-2 rounded-xl transition text-xs flex items-center justify-center space-x-2">
+        <button id="btnRegPengacara" onclick="bukaModalRegPengacara()" class="hidden w-full bg-emerald-100 dark:bg-emerald-600/20 hover:bg-emerald-200 dark:hover:bg-emerald-600/30 text-emerald-600 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-500/30 font-medium py-2 rounded-xl transition text-xs flex items-center justify-center space-x-2">
           <i data-lucide="user-plus" class="w-4 h-4"></i><span>Registrasi Pengacara</span>
         </button>
-        <button onclick="logoutApp()" class="w-full bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 font-medium py-2 rounded-xl transition text-xs flex items-center justify-center space-x-2">
+        <button onclick="logoutApp()" class="w-full bg-red-100 dark:bg-red-500/10 hover:bg-red-200 dark:hover:bg-red-500/20 text-red-600 dark:text-red-400 border border-red-300 dark:border-red-500/20 font-medium py-2 rounded-xl transition text-xs flex items-center justify-center space-x-2">
           <i data-lucide="log-out" class="w-4 h-4"></i><span>Keluar Portal</span>
         </button>
       </div>
@@ -114,14 +130,14 @@
     <main class="flex-1 p-6 md:p-10 overflow-y-auto relative h-screen">
       
       <div id="profileView" class="view-section hidden max-w-3xl">
-        <h2 class="text-2xl font-bold text-white mb-6">Profil Pengguna</h2>
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl">
+        <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-6">Profil Pengguna</h2>
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-xl">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div><label class="block text-xs font-semibold text-slate-400 mb-1">NAMA LENGKAP</label><input type="text" id="profName" disabled class="w-full bg-slate-950 border border-slate-800 rounded-lg py-2 px-4 text-white text-sm disabled:opacity-50"></div>
-            <div><label class="block text-xs font-semibold text-slate-400 mb-1">NOMOR HP</label><input type="tel" id="profPhone" disabled class="w-full bg-slate-950 border border-slate-800 rounded-lg py-2 px-4 text-white text-sm disabled:opacity-50"></div>
-            <div class="md:col-span-2"><label class="block text-xs font-semibold text-slate-400 mb-1">ALAMAT</label><textarea id="profAddress" disabled class="w-full bg-slate-950 border border-slate-800 rounded-lg py-2 px-4 text-white text-sm resize-none disabled:opacity-50" rows="2"></textarea></div>
-            <div><label class="block text-xs font-semibold text-slate-400 mb-1">EMAIL</label><input type="email" id="profEmail" disabled class="w-full bg-slate-950/50 border border-slate-800/50 rounded-lg py-2 px-4 text-slate-500 text-sm"></div>
-            <div><label class="block text-xs font-semibold text-slate-400 mb-1">ROLE</label><input type="text" id="profRole" disabled class="w-full bg-slate-950/50 border border-slate-800/50 rounded-lg py-2 px-4 text-blue-400 uppercase font-bold text-sm"></div>
+            <div><label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">NAMA LENGKAP</label><input type="text" id="profName" disabled class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg py-2 px-4 text-slate-800 dark:text-white text-sm disabled:opacity-50 transition-colors"></div>
+            <div><label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">NOMOR HP</label><input type="tel" id="profPhone" disabled class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg py-2 px-4 text-slate-800 dark:text-white text-sm disabled:opacity-50 transition-colors"></div>
+            <div class="md:col-span-2"><label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">ALAMAT</label><textarea id="profAddress" disabled class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg py-2 px-4 text-slate-800 dark:text-white text-sm resize-none disabled:opacity-50 transition-colors" rows="2"></textarea></div>
+            <div><label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">EMAIL</label><input type="email" id="profEmail" disabled class="w-full bg-slate-100 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800/50 rounded-lg py-2 px-4 text-slate-500 text-sm transition-colors"></div>
+            <div><label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">ROLE</label><input type="text" id="profRole" disabled class="w-full bg-slate-100 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800/50 rounded-lg py-2 px-4 text-blue-600 dark:text-blue-400 uppercase font-bold text-sm transition-colors"></div>
           </div>
           <div class="mt-6 flex flex-wrap gap-3">
             <button id="btnEditProfile" onclick="toggleEditProfile(true)" class="bg-slate-700 hover:bg-slate-600 text-white font-semibold py-2 px-6 rounded-lg text-sm transition">Edit Informasi</button>
@@ -131,97 +147,97 @@
           <p id="profMsg" class="mt-3 text-xs font-medium"></p>
         </div>
         
-        <div id="profCaseInfoPanel" class="hidden mt-6 bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl">
-           <h3 class="text-lg font-bold text-white mb-4 border-b border-slate-800 pb-2"><i data-lucide="gavel" class="inline w-5 h-5 mr-2"></i>Case Information</h3>
+        <div id="profCaseInfoPanel" class="hidden mt-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-xl">
+           <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-4 border-b border-slate-200 dark:border-slate-800 pb-2"><i data-lucide="gavel" class="inline w-5 h-5 mr-2"></i>Case Information</h3>
            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-              <div><span class="text-slate-400 block text-xs font-semibold uppercase mb-1">Nama Perkara</span> <span id="pciNamaPerkara" class="text-white font-medium"></span></div>
-              <div><span class="text-slate-400 block text-xs font-semibold uppercase mb-1">Nomor Perkara</span> <span id="pciNoPerkara" class="text-white font-medium"></span></div>
-              <div><span class="text-slate-400 block text-xs font-semibold uppercase mb-1">Lokasi Sidang</span> <span id="pciLokasiSidang" class="text-white font-medium"></span></div>
-              <div><span class="text-slate-400 block text-xs font-semibold uppercase mb-1">Tanggal TTD Surat Kuasa</span> <span id="pciTglKuasa" class="text-white font-medium"></span></div>
+              <div><span class="text-slate-500 dark:text-slate-400 block text-xs font-semibold uppercase mb-1">Nama Perkara</span> <span id="pciNamaPerkara" class="text-slate-800 dark:text-white font-medium"></span></div>
+              <div><span class="text-slate-500 dark:text-slate-400 block text-xs font-semibold uppercase mb-1">Nomor Perkara</span> <span id="pciNoPerkara" class="text-slate-800 dark:text-white font-medium"></span></div>
+              <div><span class="text-slate-500 dark:text-slate-400 block text-xs font-semibold uppercase mb-1">Lokasi Sidang</span> <span id="pciLokasiSidang" class="text-slate-800 dark:text-white font-medium"></span></div>
+              <div><span class="text-slate-500 dark:text-slate-400 block text-xs font-semibold uppercase mb-1">Tanggal TTD Surat Kuasa</span> <span id="pciTglKuasa" class="text-slate-800 dark:text-white font-medium"></span></div>
            </div>
         </div>
       </div>
 
       <div id="masterView" class="view-section hidden">
         <div class="flex justify-between items-center mb-6">
-          <h2 class="text-2xl font-bold text-white">Manajemen Master</h2>
+          <h2 class="text-2xl font-bold text-slate-900 dark:text-white">Manajemen Master</h2>
         </div>
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-xl">
           <table class="w-full text-left border-collapse">
             <thead>
-              <tr class="bg-slate-950/50 text-[11px] font-semibold text-slate-400 uppercase border-b border-slate-800">
+              <tr class="bg-slate-100 dark:bg-slate-950/50 text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase border-b border-slate-200 dark:border-slate-800">
                 <th class="py-3 px-4">Nama & Kontak</th>
                 <th class="py-3 px-4 text-right">Aksi</th>
               </tr>
             </thead>
-            <tbody id="masterListBody" class="divide-y divide-slate-800/60 text-sm text-slate-300"></tbody>
+            <tbody id="masterListBody" class="divide-y divide-slate-200 dark:divide-slate-800/60 text-sm text-slate-700 dark:text-slate-300"></tbody>
           </table>
         </div>
       </div>
 
       <div id="pengacaraView" class="view-section hidden">
         <div class="flex justify-between items-center mb-6">
-          <h2 class="text-2xl font-bold text-white">Manajemen Pengacara</h2>
+          <h2 class="text-2xl font-bold text-slate-900 dark:text-white">Manajemen Pengacara</h2>
         </div>
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-xl">
           <table class="w-full text-left border-collapse">
             <thead>
-              <tr class="bg-slate-950/50 text-[11px] font-semibold text-slate-400 uppercase border-b border-slate-800">
+              <tr class="bg-slate-100 dark:bg-slate-950/50 text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase border-b border-slate-200 dark:border-slate-800">
                 <th class="py-3 px-4">Nama & Kontak</th>
                 <th class="py-3 px-4">Kasus / Perkara yang Ditangani</th>
                 <th class="py-3 px-4 text-right">Aksi</th>
               </tr>
             </thead>
-            <tbody id="pengacaraListBody" class="divide-y divide-slate-800/60 text-sm text-slate-300"></tbody>
+            <tbody id="pengacaraListBody" class="divide-y divide-slate-200 dark:divide-slate-800/60 text-sm text-slate-700 dark:text-slate-300"></tbody>
           </table>
         </div>
       </div>
 
       <div id="clientView" class="view-section hidden">
         <div class="flex justify-between items-center mb-6">
-          <h2 class="text-2xl font-bold text-white">Manajemen Klien</h2>
-          <input type="text" id="searchClient" onkeyup="filterClients()" placeholder="Cari nama klien..." class="bg-slate-900 border border-slate-800 rounded-xl py-2 px-4 text-sm text-white">
+          <h2 class="text-2xl font-bold text-slate-900 dark:text-white">Manajemen Klien</h2>
+          <input type="text" id="searchClient" onkeyup="filterClients()" placeholder="Cari nama klien..." class="bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-800 rounded-xl py-2 px-4 text-sm text-slate-800 dark:text-white transition-colors">
         </div>
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-xl">
           <table class="w-full text-left border-collapse">
             <thead>
-              <tr class="bg-slate-950/50 text-[11px] font-semibold text-slate-400 uppercase border-b border-slate-800">
+              <tr class="bg-slate-100 dark:bg-slate-950/50 text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase border-b border-slate-200 dark:border-slate-800">
                 <th class="py-3 px-4">Nama & Kontak</th>
                 <th class="py-3 px-4">Nomor & Nama Perkara</th>
                 <th class="py-3 px-4">Pengacara</th> 
                 <th class="py-3 px-4 text-right">Aksi</th>
               </tr>
             </thead>
-            <tbody id="clientListBody" class="divide-y divide-slate-800/60 text-sm text-slate-300"></tbody>
+            <tbody id="clientListBody" class="divide-y divide-slate-200 dark:divide-slate-800/60 text-sm text-slate-700 dark:text-slate-300"></tbody>
           </table>
         </div>
       </div>
 
       <div id="docView" class="view-section hidden">
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-3">
-          <h2 class="text-2xl font-bold text-white">Arsip Dokumen Global</h2>
-          <input type="text" id="searchArsip" onkeyup="renderTabelBerkas()" placeholder="Cari nama dokumen..." class="bg-slate-900 border border-slate-800 rounded-xl py-2 px-4 text-sm text-white max-w-xs w-full">
+          <h2 class="text-2xl font-bold text-slate-900 dark:text-white">Arsip Dokumen Global</h2>
+          <input type="text" id="searchArsip" onkeyup="renderTabelBerkas()" placeholder="Cari nama dokumen..." class="bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-800 rounded-xl py-2 px-4 text-sm text-slate-800 dark:text-white max-w-xs w-full transition-colors">
         </div>
         
-        <div id="filterInfo" class="hidden mb-4 p-3 bg-blue-900/30 border border-blue-800 rounded-lg flex justify-between items-center">
-          <span class="text-sm text-blue-200" id="filterText">Menampilkan arsip terfilter</span>
+        <div id="filterInfo" class="hidden mb-4 p-3 bg-blue-100 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 rounded-lg flex justify-between items-center">
+          <span class="text-sm text-blue-800 dark:text-blue-200" id="filterText">Menampilkan arsip terfilter</span>
           <button onclick="hapusFilterArsip()" class="text-xs bg-blue-600 hover:bg-blue-500 px-3 py-1 rounded text-white">Tampilkan Semua</button>
         </div>
 
-        <div id="clientInfoPanel" class="hidden bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl mb-6">
-           <h3 class="text-base font-bold text-white mb-3 border-b border-slate-800 pb-2"><i data-lucide="user" class="inline w-4 h-4 mr-2"></i>Informasi Klien</h3>
+        <div id="clientInfoPanel" class="hidden bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-xl mb-6">
+           <h3 class="text-base font-bold text-slate-900 dark:text-white mb-3 border-b border-slate-200 dark:border-slate-800 pb-2"><i data-lucide="user" class="inline w-4 h-4 mr-2"></i>Informasi Klien</h3>
            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm mb-4">
-              <div><span class="text-slate-400 block text-xs">Nama Lengkap</span> <span id="ciName" class="text-white font-medium"></span></div>
-              <div><span class="text-slate-400 block text-xs">No HP</span> <span id="ciPhone" class="text-white font-medium"></span></div>
-              <div><span class="text-slate-400 block text-xs">Email</span> <span id="ciEmail" class="text-white font-medium"></span></div>
-              <div><span class="text-slate-400 block text-xs">Alamat</span> <span id="ciAddress" class="text-white font-medium"></span></div>
+              <div><span class="text-slate-500 dark:text-slate-400 block text-xs">Nama Lengkap</span> <span id="ciName" class="text-slate-800 dark:text-white font-medium"></span></div>
+              <div><span class="text-slate-500 dark:text-slate-400 block text-xs">No HP</span> <span id="ciPhone" class="text-slate-800 dark:text-white font-medium"></span></div>
+              <div><span class="text-slate-500 dark:text-slate-400 block text-xs">Email</span> <span id="ciEmail" class="text-slate-800 dark:text-white font-medium"></span></div>
+              <div><span class="text-slate-500 dark:text-slate-400 block text-xs">Alamat</span> <span id="ciAddress" class="text-slate-800 dark:text-white font-medium"></span></div>
            </div>
-           <h3 class="text-base font-bold text-white mb-3 border-b border-slate-800 pb-2"><i data-lucide="file-text" class="inline w-4 h-4 mr-2"></i>Case Information</h3>
+           <h3 class="text-base font-bold text-slate-900 dark:text-white mb-3 border-b border-slate-200 dark:border-slate-800 pb-2"><i data-lucide="file-text" class="inline w-4 h-4 mr-2"></i>Case Information</h3>
            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
-              <div><span class="text-slate-400 block text-xs">Nama Perkara</span> <span id="ciNamaPerkara" class="text-white font-medium"></span></div>
-              <div><span class="text-slate-400 block text-xs">Nomor Perkara</span> <span id="ciNoPerkara" class="text-white font-medium"></span></div>
-              <div><span class="text-slate-400 block text-xs">Lokasi Sidang</span> <span id="ciLokasiSidang" class="text-white font-medium"></span></div>
-              <div><span class="text-slate-400 block text-xs">Tgl TTD Surat Kuasa</span> <span id="ciTglKuasa" class="text-white font-medium"></span></div>
+              <div><span class="text-slate-500 dark:text-slate-400 block text-xs">Nama Perkara</span> <span id="ciNamaPerkara" class="text-slate-800 dark:text-white font-medium"></span></div>
+              <div><span class="text-slate-500 dark:text-slate-400 block text-xs">Nomor Perkara</span> <span id="ciNoPerkara" class="text-slate-800 dark:text-white font-medium"></span></div>
+              <div><span class="text-slate-500 dark:text-slate-400 block text-xs">Lokasi Sidang</span> <span id="ciLokasiSidang" class="text-slate-800 dark:text-white font-medium"></span></div>
+              <div><span class="text-slate-500 dark:text-slate-400 block text-xs">Tgl TTD Surat Kuasa</span> <span id="ciTglKuasa" class="text-slate-800 dark:text-white font-medium"></span></div>
            </div>
         </div>
 
@@ -231,66 +247,94 @@
           </button>
         </div>
 
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-xl">
           <table class="w-full text-left border-collapse">
             <thead>
-              <tr class="bg-slate-950/50 text-[11px] font-semibold text-slate-400 uppercase border-b border-slate-800">
+              <tr class="bg-slate-100 dark:bg-slate-950/50 text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase border-b border-slate-200 dark:border-slate-800">
                 <th class="py-3 px-4">Nama Dokumen</th>
                 <th class="py-3 px-4">Detail Info</th>
                 <th class="py-3 px-4 text-right">Aksi</th>
               </tr>
             </thead>
-            <tbody id="tableBerkas" class="divide-y divide-slate-800/60 text-sm text-slate-300"></tbody>
+            <tbody id="tableBerkas" class="divide-y divide-slate-200 dark:divide-slate-800/60 text-sm text-slate-700 dark:text-slate-300"></tbody>
           </table>
         </div>
       </div>
 
       <div id="billingView" class="view-section hidden">
         <div class="flex justify-between items-center mb-6">
-          <h2 class="text-2xl font-bold text-white">Billing & Pembayaran</h2>
+          <h2 class="text-2xl font-bold text-slate-900 dark:text-white">Billing & Pembayaran</h2>
           <button id="btnTambahBilling" onclick="bukaModalTambahBilling()" class="hidden bg-blue-600 hover:bg-blue-500 text-white font-semibold py-2 px-4 rounded-xl text-sm transition">
             + Buat Tagihan Baru
           </button>
         </div>
         
-        <div id="billingInfoClient" class="hidden mb-6 bg-slate-900 border border-emerald-500/50 rounded-2xl p-5 shadow-xl">
-            <h3 class="text-base font-bold text-white mb-2"><i data-lucide="info" class="inline w-4 h-4 mr-2 text-emerald-400"></i>Informasi Rekening Pembayaran</h3>
-            <p class="text-sm text-slate-300 mb-2">Silakan transfer tagihan ke nomor rekening berikut:</p>
-            <div class="flex items-center space-x-3 bg-slate-950 p-3 rounded-lg w-fit border border-slate-800">
-                <span class="font-mono text-emerald-400 text-lg font-bold" id="rekText">0181831145</span>
-                <span class="text-slate-300 text-sm">a/n <b>Anggara Wisnu Wardhana (BCA)</b></span>
-                <button onclick="navigator.clipboard.writeText('0181831145'); alert('Nomor Rekening disalin!')" class="ml-4 p-1.5 bg-slate-800 rounded hover:bg-slate-700 text-slate-300" title="Copy Rekening">
+        <div id="billingInfoClient" class="hidden mb-6 bg-white dark:bg-slate-900 border border-emerald-500/50 rounded-2xl p-5 shadow-xl">
+            <h3 class="text-base font-bold text-slate-900 dark:text-white mb-2"><i data-lucide="info" class="inline w-4 h-4 mr-2 text-emerald-500 dark:text-emerald-400"></i>Informasi Rekening Pembayaran</h3>
+            <p class="text-sm text-slate-600 dark:text-slate-300 mb-2">Silakan transfer tagihan ke nomor rekening berikut:</p>
+            <div class="flex items-center space-x-3 bg-slate-50 dark:bg-slate-950 p-3 rounded-lg w-fit border border-slate-200 dark:border-slate-800">
+                <span class="font-mono text-emerald-600 dark:text-emerald-400 text-lg font-bold" id="rekText">0181831145</span>
+                <span class="text-slate-700 dark:text-slate-300 text-sm">a/n <b>Anggara Wisnu Wardhana (BCA)</b></span>
+                <button onclick="navigator.clipboard.writeText('0181831145'); showToast('Nomor Rekening disalin!', 'success')" class="ml-4 p-1.5 bg-slate-200 dark:bg-slate-800 rounded hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition-colors" title="Copy Rekening">
                    <i data-lucide="copy" class="w-4 h-4"></i>
                 </button>
             </div>
         </div>
 
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-xl">
           <table class="w-full text-left border-collapse">
             <thead>
-              <tr class="bg-slate-950/50 text-[11px] font-semibold text-slate-400 uppercase border-b border-slate-800">
+              <tr class="bg-slate-100 dark:bg-slate-950/50 text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase border-b border-slate-200 dark:border-slate-800">
                 <th class="py-3 px-4 w-1/4">Klien / Perkara</th>
                 <th class="py-3 px-4 w-1/4">Ket & Nominal Tagihan</th>
                 <th class="py-3 px-4">Status & Info Transaksi</th>
                 <th class="py-3 px-4 text-right">Aksi</th>
               </tr>
             </thead>
-            <tbody id="billingListBody" class="divide-y divide-slate-800/60 text-sm text-slate-300"></tbody>
+            <tbody id="billingListBody" class="divide-y divide-slate-200 dark:divide-slate-800/60 text-sm text-slate-700 dark:text-slate-300"></tbody>
           </table>
         </div>
       </div>
     </main>
   </div>
 
+  <!-- Custom Confirm Modal -->
+  <div id="modalCustomConfirm" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-[9999] flex items-center justify-center p-4 transition-opacity">
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl p-6 w-full max-w-sm shadow-2xl relative">
+      <div class="flex items-center space-x-3 mb-4">
+        <div class="p-2 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-lg"><i data-lucide="help-circle" class="w-6 h-6"></i></div>
+        <h3 class="text-lg font-bold text-slate-800 dark:text-white">Konfirmasi</h3>
+      </div>
+      <p id="customConfirmMsg" class="text-sm text-slate-600 dark:text-slate-300 mb-6"></p>
+      <div class="flex justify-end gap-3">
+        <button id="btnConfirmNo" class="px-4 py-2 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-lg text-sm hover:bg-slate-200 dark:hover:bg-slate-700 transition">Batal</button>
+        <button id="btnConfirmYes" class="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-sm transition">Ya, Lanjutkan</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Custom Prompt Modal -->
+  <div id="modalCustomPrompt" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-[9999] flex items-center justify-center p-4 transition-opacity">
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl p-6 w-full max-w-sm shadow-2xl relative">
+      <h3 class="text-lg font-bold text-slate-800 dark:text-white mb-2">Input Diperlukan</h3>
+      <p id="customPromptMsg" class="text-sm text-slate-600 dark:text-slate-400 mb-4"></p>
+      <input type="text" id="customPromptInput" class="w-full bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl py-2 px-4 text-slate-800 dark:text-white text-sm focus:outline-none focus:border-blue-500 mb-6">
+      <div class="flex justify-end gap-3">
+        <button id="btnPromptNo" class="px-4 py-2 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-lg text-sm hover:bg-slate-200 dark:hover:bg-slate-700 transition">Batal</button>
+        <button id="btnPromptYes" class="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-sm transition">Kirim</button>
+      </div>
+    </div>
+  </div>
+
   <div id="modalGantiPassword" class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-    <div class="bg-slate-900 border border-slate-700 rounded-2xl p-6 w-full max-w-md shadow-2xl relative">
-      <h3 class="text-lg font-bold text-white mb-4">Ganti Password</h3>
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl p-6 w-full max-w-md shadow-2xl relative">
+      <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-4">Ganti Password</h3>
       <form id="formGantiPassword" onsubmit="event.preventDefault(); submitGantiPassword();" class="space-y-3">
-        <div><label class="block text-xs font-semibold text-slate-400 mb-1">Password Lama</label><input type="password" id="oldPassword" required class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2 px-4 text-sm text-white"></div>
-        <div><label class="block text-xs font-semibold text-slate-400 mb-1">Password Baru</label><input type="password" id="newPassword" required class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2 px-4 text-sm text-white"></div>
-        <div><label class="block text-xs font-semibold text-slate-400 mb-1">Konfirmasi Password Baru</label><input type="password" id="confirmPassword" required class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2 px-4 text-sm text-white"></div>
+        <div><label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">Password Lama</label><input type="password" id="oldPassword" required class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl py-2 px-4 text-sm text-slate-800 dark:text-white"></div>
+        <div><label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">Password Baru</label><input type="password" id="newPassword" required class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl py-2 px-4 text-sm text-slate-800 dark:text-white"></div>
+        <div><label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">Konfirmasi Password Baru</label><input type="password" id="confirmPassword" required class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl py-2 px-4 text-sm text-slate-800 dark:text-white"></div>
         <div class="mt-6 flex justify-end gap-3">
-          <button type="button" onclick="document.getElementById('modalGantiPassword').classList.add('hidden')" class="px-4 py-2 bg-slate-800 text-slate-300 rounded-lg text-sm hover:bg-slate-700">Batal</button>
+          <button type="button" onclick="document.getElementById('modalGantiPassword').classList.add('hidden')" class="px-4 py-2 bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-lg text-sm hover:bg-slate-300 dark:hover:bg-slate-700">Batal</button>
           <button type="submit" id="btnSubmitGantiPassword" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-500">Simpan Password</button>
         </div>
         <p id="msgGantiPassword" class="text-xs text-center mt-2"></p>
@@ -299,15 +343,15 @@
   </div>
 
   <div id="modalUploadBerkas" class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-    <div class="bg-slate-900 border border-slate-700 rounded-2xl p-6 w-full max-w-md shadow-2xl relative">
-      <h3 class="text-lg font-bold text-white mb-4">Unggah Berkas Baru</h3>
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl p-6 w-full max-w-md shadow-2xl relative">
+      <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-4">Unggah Berkas Baru</h3>
       <div class="grid grid-cols-1 gap-4 mb-4">
-        <div><label class="block text-xs font-semibold text-slate-400 mb-1">Judul Dokumen</label><input type="text" id="docName" class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2 px-4 text-white text-sm"></div>
-        <div><label class="block text-xs font-semibold text-slate-400 mb-1">Pilih Klien</label><select id="docClientId" class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2 px-4 text-white text-sm"></select></div>
-        <div><input type="file" id="fileInput" class="w-full text-sm file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-blue-600 file:text-white cursor-pointer text-slate-400 mt-2"></div>
+        <div><label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">Judul Dokumen</label><input type="text" id="docName" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl py-2 px-4 text-slate-800 dark:text-white text-sm"></div>
+        <div><label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">Pilih Klien</label><select id="docClientId" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl py-2 px-4 text-slate-800 dark:text-white text-sm"></select></div>
+        <div><input type="file" id="fileInput" class="w-full text-sm file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-blue-600 file:text-white cursor-pointer text-slate-600 dark:text-slate-400 mt-2"></div>
       </div>
       <div class="mt-6 flex justify-end gap-3">
-        <button onclick="tutupModalUpload()" class="px-4 py-2 bg-slate-800 text-slate-300 rounded-lg text-sm hover:bg-slate-700">Batal</button>
+        <button onclick="tutupModalUpload()" class="px-4 py-2 bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-lg text-sm hover:bg-slate-300 dark:hover:bg-slate-700">Batal</button>
         <button onclick="simpanDokumen()" id="btnUpload" class="bg-emerald-600 hover:bg-emerald-500 text-white font-semibold px-4 py-2 rounded-lg text-sm">Sinkronkan ke Drive</button>
       </div>
       <p id="statusSimpan" class="text-xs font-medium mt-3 text-center"></p>
@@ -315,17 +359,17 @@
   </div>
 
   <div id="modalRegPengacara" class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-    <div class="bg-slate-900 border border-slate-700 rounded-2xl p-6 w-full max-w-md shadow-2xl relative">
-      <h3 class="text-lg font-bold text-white mb-4">Registrasi Akun Pengacara</h3>
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl p-6 w-full max-w-md shadow-2xl relative">
+      <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-4">Registrasi Akun Pengacara</h3>
       <form id="formRegPengacara" onsubmit="event.preventDefault(); submitRegPengacara();" class="space-y-3">
-        <input type="text" id="rpName" required placeholder="Nama Lengkap Pengacara" class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2 px-4 text-sm text-white">
-        <input type="tel" id="rpPhone" required placeholder="Nomor Handphone (Cth: 08123456789)" class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2 px-4 text-sm text-white">
-        <textarea id="rpAddress" required placeholder="Alamat Pengacara" class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2 px-4 text-sm text-white resize-none" rows="2"></textarea>
-        <input type="email" id="rpEmail" required placeholder="Email Pengacara" class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2 px-4 text-sm text-white">
-        <input type="password" id="rpPassword" required placeholder="Password Sementara" class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2 px-4 text-sm text-white">
-        <div id="regPengacaraErrorMsg" class="text-red-400 text-xs text-center hidden"></div>
+        <input type="text" id="rpName" required placeholder="Nama Lengkap Pengacara" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl py-2 px-4 text-sm text-slate-800 dark:text-white">
+        <input type="tel" id="rpPhone" required placeholder="Nomor Handphone (Cth: 08123456789)" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl py-2 px-4 text-sm text-slate-800 dark:text-white">
+        <textarea id="rpAddress" required placeholder="Alamat Pengacara" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl py-2 px-4 text-sm text-slate-800 dark:text-white resize-none" rows="2"></textarea>
+        <input type="email" id="rpEmail" required placeholder="Email Pengacara" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl py-2 px-4 text-sm text-slate-800 dark:text-white">
+        <input type="password" id="rpPassword" required placeholder="Password Sementara" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl py-2 px-4 text-sm text-slate-800 dark:text-white">
+        <div id="regPengacaraErrorMsg" class="text-red-500 dark:text-red-400 text-xs text-center hidden"></div>
         <div class="mt-6 flex justify-end gap-3">
-          <button type="button" onclick="tutupModalRegPengacara()" class="px-4 py-2 bg-slate-800 text-slate-300 rounded-lg text-sm hover:bg-slate-700">Batal</button>
+          <button type="button" onclick="tutupModalRegPengacara()" class="px-4 py-2 bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-lg text-sm hover:bg-slate-300 dark:hover:bg-slate-700">Batal</button>
           <button type="submit" id="btnSubmitPengacara" class="px-4 py-2 bg-emerald-600 text-white rounded-lg text-sm hover:bg-emerald-500">Daftarkan</button>
         </div>
         <p id="msgRegPengacara" class="text-xs text-center mt-2"></p>
@@ -334,17 +378,17 @@
   </div>
 
   <div id="modalRegMaster" class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-    <div class="bg-slate-900 border border-slate-700 rounded-2xl p-6 w-full max-w-md shadow-2xl relative">
-      <h3 class="text-lg font-bold text-white mb-4">Registrasi Akun Master</h3>
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl p-6 w-full max-w-md shadow-2xl relative">
+      <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-4">Registrasi Akun Master</h3>
       <form id="formRegMaster" onsubmit="event.preventDefault(); submitRegMaster();" class="space-y-3">
-        <input type="text" id="rmName" required placeholder="Nama Lengkap Master" class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2 px-4 text-sm text-white">
-        <input type="tel" id="rmPhone" required placeholder="Nomor Handphone (Cth: 08123456789)" class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2 px-4 text-sm text-white">
-        <textarea id="rmAddress" required placeholder="Alamat Master" class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2 px-4 text-sm text-white resize-none" rows="2"></textarea>
-        <input type="email" id="rmEmail" required placeholder="Email Master" class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2 px-4 text-sm text-white">
-        <input type="password" id="rmPassword" required placeholder="Password Sementara" class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2 px-4 text-sm text-white">
-        <div id="regMasterErrorMsg" class="text-red-400 text-xs text-center hidden"></div>
+        <input type="text" id="rmName" required placeholder="Nama Lengkap Master" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl py-2 px-4 text-sm text-slate-800 dark:text-white">
+        <input type="tel" id="rmPhone" required placeholder="Nomor Handphone (Cth: 08123456789)" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl py-2 px-4 text-sm text-slate-800 dark:text-white">
+        <textarea id="rmAddress" required placeholder="Alamat Master" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl py-2 px-4 text-sm text-slate-800 dark:text-white resize-none" rows="2"></textarea>
+        <input type="email" id="rmEmail" required placeholder="Email Master" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl py-2 px-4 text-sm text-slate-800 dark:text-white">
+        <input type="password" id="rmPassword" required placeholder="Password Sementara" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl py-2 px-4 text-sm text-slate-800 dark:text-white">
+        <div id="regMasterErrorMsg" class="text-red-500 dark:text-red-400 text-xs text-center hidden"></div>
         <div class="mt-6 flex justify-end gap-3">
-          <button type="button" onclick="tutupModalRegMaster()" class="px-4 py-2 bg-slate-800 text-slate-300 rounded-lg text-sm hover:bg-slate-700">Batal</button>
+          <button type="button" onclick="tutupModalRegMaster()" class="px-4 py-2 bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-lg text-sm hover:bg-slate-300 dark:hover:bg-slate-700">Batal</button>
           <button type="submit" id="btnSubmitMaster" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-500">Daftarkan</button>
         </div>
         <p id="msgRegMaster" class="text-xs text-center mt-2"></p>
@@ -353,97 +397,97 @@
   </div>
 
   <div id="modalEditKlien" class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-    <div class="bg-slate-900 border border-slate-700 rounded-2xl p-6 w-full max-w-md shadow-2xl relative">
-      <h3 id="titleModalEditKlien" class="text-lg font-bold text-white mb-4">Pengaturan Klien</h3>
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl p-6 w-full max-w-md shadow-2xl relative">
+      <h3 id="titleModalEditKlien" class="text-lg font-bold text-slate-900 dark:text-white mb-4">Pengaturan Klien</h3>
       <input type="hidden" id="editKlienId">
       <input type="hidden" id="editKlienMode">
       <div class="space-y-3">
         <div id="divEditDetailKlien" class="hidden space-y-3">
-          <div><label class="block text-xs font-semibold text-slate-400 mb-1">Nama Lengkap</label><input type="text" id="editNamaKlien" class="w-full bg-slate-950 border border-slate-800 rounded-lg py-2 px-3 text-white text-sm"></div>
-          <div><label class="block text-xs font-semibold text-slate-400 mb-1">Nomor HP</label><input type="text" id="editHpKlien" class="w-full bg-slate-950 border border-slate-800 rounded-lg py-2 px-3 text-white text-sm"></div>
-          <div><label class="block text-xs font-semibold text-slate-400 mb-1">Alamat</label><textarea id="editAlamatKlien" class="w-full bg-slate-950 border border-slate-800 rounded-lg py-2 px-3 text-white text-sm resize-none" rows="2"></textarea></div>
+          <div><label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">Nama Lengkap</label><input type="text" id="editNamaKlien" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-lg py-2 px-3 text-slate-800 dark:text-white text-sm"></div>
+          <div><label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">Nomor HP</label><input type="text" id="editHpKlien" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-lg py-2 px-3 text-slate-800 dark:text-white text-sm"></div>
+          <div><label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">Alamat</label><textarea id="editAlamatKlien" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-lg py-2 px-3 text-slate-800 dark:text-white text-sm resize-none" rows="2"></textarea></div>
         </div>
         
         <div id="divCaseManagement" class="hidden space-y-3">
-          <div class="p-3 bg-blue-900/10 border border-blue-500/20 rounded-lg mb-2">
-             <h4 class="text-xs font-bold text-blue-400 uppercase mb-2">Case Management</h4>
+          <div class="p-3 bg-blue-50 dark:bg-blue-900/10 border border-blue-200 dark:border-blue-500/20 rounded-lg mb-2">
+             <h4 class="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase mb-2">Case Management</h4>
              <div class="space-y-2">
-                <div><label class="block text-[11px] font-semibold text-slate-400 mb-1">Nomor Perkara</label><input type="text" id="editNoPerkara" class="w-full bg-slate-950 border border-slate-800 rounded-lg py-1.5 px-3 text-white text-sm"></div>
-                <div><label class="block text-[11px] font-semibold text-slate-400 mb-1">Nama Perkara</label><input type="text" id="editNamaPerkara" class="w-full bg-slate-950 border border-slate-800 rounded-lg py-1.5 px-3 text-white text-sm"></div>
-                <div><label class="block text-[11px] font-semibold text-slate-400 mb-1">Lokasi Sidang</label><input type="text" id="editLokasiSidang" class="w-full bg-slate-950 border border-slate-800 rounded-lg py-1.5 px-3 text-white text-sm"></div>
-                <div><label class="block text-[11px] font-semibold text-slate-400 mb-1">Tanggal TTD Surat Kuasa</label><input type="date" id="editTglKuasa" class="w-full bg-slate-950 border border-slate-800 rounded-lg py-1.5 px-3 text-white text-sm"></div>
+                <div><label class="block text-[11px] font-semibold text-slate-500 dark:text-slate-400 mb-1">Nomor Perkara</label><input type="text" id="editNoPerkara" class="w-full bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-lg py-1.5 px-3 text-slate-800 dark:text-white text-sm"></div>
+                <div><label class="block text-[11px] font-semibold text-slate-500 dark:text-slate-400 mb-1">Nama Perkara</label><input type="text" id="editNamaPerkara" class="w-full bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-lg py-1.5 px-3 text-slate-800 dark:text-white text-sm"></div>
+                <div><label class="block text-[11px] font-semibold text-slate-500 dark:text-slate-400 mb-1">Lokasi Sidang</label><input type="text" id="editLokasiSidang" class="w-full bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-lg py-1.5 px-3 text-slate-800 dark:text-white text-sm"></div>
+                <div><label class="block text-[11px] font-semibold text-slate-500 dark:text-slate-400 mb-1">Tanggal TTD Surat Kuasa</label><input type="date" id="editTglKuasa" class="w-full bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-lg py-1.5 px-3 text-slate-800 dark:text-white text-sm"></div>
              </div>
           </div>
         </div>
 
         <div id="divEditPengacara" class="hidden">
-          <label class="block text-xs font-semibold text-slate-400 mb-1 mt-3">Assign Pengacara (Bisa lebih dari 1)</label>
-          <div id="listCheckboxPengacara" class="max-h-32 overflow-y-auto bg-slate-950 border border-slate-800 rounded-lg p-2 space-y-2">
+          <label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1 mt-3">Assign Pengacara (Bisa lebih dari 1)</label>
+          <div id="listCheckboxPengacara" class="max-h-32 overflow-y-auto bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-lg p-2 space-y-2">
           </div>
         </div>
       </div>
       <div class="mt-6 flex justify-end gap-3">
-        <button onclick="tutupModalEdit()" class="px-4 py-2 bg-slate-800 text-slate-300 rounded-lg text-sm">Batal</button>
+        <button onclick="tutupModalEdit()" class="px-4 py-2 bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-lg text-sm">Batal</button>
         <button onclick="simpanEditKlien()" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm">Simpan</button>
       </div>
     </div>
   </div>
 
   <div id="modalEditPengacara" class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-    <div class="bg-slate-900 border border-slate-700 rounded-2xl p-6 w-full max-w-md shadow-2xl relative">
-      <h3 class="text-lg font-bold text-white mb-4">Edit Informasi Pengacara</h3>
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl p-6 w-full max-w-md shadow-2xl relative">
+      <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-4">Edit Informasi Pengacara</h3>
       <input type="hidden" id="editPengacaraId">
       <div class="space-y-3">
-        <div><label class="block text-xs font-semibold text-slate-400 mb-1">Nama Lengkap</label><input type="text" id="editNamaPengacara" class="w-full bg-slate-950 border border-slate-800 rounded-lg py-2 px-3 text-white text-sm"></div>
-        <div><label class="block text-xs font-semibold text-slate-400 mb-1">Nomor HP</label><input type="text" id="editHpPengacara" class="w-full bg-slate-950 border border-slate-800 rounded-lg py-2 px-3 text-white text-sm"></div>
-        <div><label class="block text-xs font-semibold text-slate-400 mb-1">Alamat</label><textarea id="editAlamatPengacara" class="w-full bg-slate-950 border border-slate-800 rounded-lg py-2 px-3 text-white text-sm resize-none" rows="2"></textarea></div>
+        <div><label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">Nama Lengkap</label><input type="text" id="editNamaPengacara" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-lg py-2 px-3 text-slate-800 dark:text-white text-sm"></div>
+        <div><label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">Nomor HP</label><input type="text" id="editHpPengacara" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-lg py-2 px-3 text-slate-800 dark:text-white text-sm"></div>
+        <div><label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">Alamat</label><textarea id="editAlamatPengacara" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-lg py-2 px-3 text-slate-800 dark:text-white text-sm resize-none" rows="2"></textarea></div>
       </div>
       <div class="mt-6 flex justify-end gap-3">
-        <button onclick="tutupModalEditPengacara()" class="px-4 py-2 bg-slate-800 text-slate-300 rounded-lg text-sm">Batal</button>
+        <button onclick="tutupModalEditPengacara()" class="px-4 py-2 bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-lg text-sm">Batal</button>
         <button onclick="simpanEditPengacara()" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm">Simpan</button>
       </div>
     </div>
   </div>
 
   <div id="modalEditMaster" class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-    <div class="bg-slate-900 border border-slate-700 rounded-2xl p-6 w-full max-w-md shadow-2xl relative">
-      <h3 class="text-lg font-bold text-white mb-4">Edit Informasi Master</h3>
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl p-6 w-full max-w-md shadow-2xl relative">
+      <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-4">Edit Informasi Master</h3>
       <input type="hidden" id="editMasterId">
       <div class="space-y-3">
-        <div><label class="block text-xs font-semibold text-slate-400 mb-1">Nama Lengkap</label><input type="text" id="editNamaMaster" class="w-full bg-slate-950 border border-slate-800 rounded-lg py-2 px-3 text-white text-sm"></div>
-        <div><label class="block text-xs font-semibold text-slate-400 mb-1">Nomor HP</label><input type="text" id="editHpMaster" class="w-full bg-slate-950 border border-slate-800 rounded-lg py-2 px-3 text-white text-sm"></div>
-        <div><label class="block text-xs font-semibold text-slate-400 mb-1">Alamat</label><textarea id="editAlamatMaster" class="w-full bg-slate-950 border border-slate-800 rounded-lg py-2 px-3 text-white text-sm resize-none" rows="2"></textarea></div>
+        <div><label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">Nama Lengkap</label><input type="text" id="editNamaMaster" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-lg py-2 px-3 text-slate-800 dark:text-white text-sm"></div>
+        <div><label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">Nomor HP</label><input type="text" id="editHpMaster" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-lg py-2 px-3 text-slate-800 dark:text-white text-sm"></div>
+        <div><label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">Alamat</label><textarea id="editAlamatMaster" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-lg py-2 px-3 text-slate-800 dark:text-white text-sm resize-none" rows="2"></textarea></div>
       </div>
       <div class="mt-6 flex justify-end gap-3">
-        <button onclick="tutupModalEditMaster()" class="px-4 py-2 bg-slate-800 text-slate-300 rounded-lg text-sm">Batal</button>
+        <button onclick="tutupModalEditMaster()" class="px-4 py-2 bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-lg text-sm">Batal</button>
         <button onclick="simpanEditMaster()" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm">Simpan</button>
       </div>
     </div>
   </div>
 
   <div id="modalUnassign" class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-    <div class="bg-slate-900 border border-slate-700 rounded-2xl p-6 w-full max-w-md shadow-2xl relative">
-      <h3 class="text-lg font-bold text-white mb-2">Lepas Assign Kasus</h3>
-      <p class="text-xs text-slate-400 mb-4">Pilih kasus yang akan <span class="font-bold text-red-400">dilepas</span> dari pengacara <span id="namaPengacaraUnassign" class="text-white font-semibold"></span>:</p>
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl p-6 w-full max-w-md shadow-2xl relative">
+      <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">Lepas Assign Kasus</h3>
+      <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">Pilih kasus yang akan <span class="font-bold text-red-500 dark:text-red-400">dilepas</span> dari pengacara <span id="namaPengacaraUnassign" class="text-slate-900 dark:text-white font-semibold"></span>:</p>
       <input type="hidden" id="unassignPengacaraId">
-      <div id="listUnassignClients" class="max-h-48 overflow-y-auto space-y-2 mb-4 bg-slate-950 p-2 rounded-lg border border-slate-800">
+      <div id="listUnassignClients" class="max-h-48 overflow-y-auto space-y-2 mb-4 bg-slate-50 dark:bg-slate-950 p-2 rounded-lg border border-slate-300 dark:border-slate-800">
       </div>
       <div class="mt-6 flex justify-end gap-3">
-        <button onclick="tutupModalUnassign()" class="px-4 py-2 bg-slate-800 text-slate-300 rounded-lg text-sm hover:bg-slate-700">Batal</button>
+        <button onclick="tutupModalUnassign()" class="px-4 py-2 bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-lg text-sm hover:bg-slate-300 dark:hover:bg-slate-700">Batal</button>
         <button onclick="simpanUnassign()" class="px-4 py-2 bg-orange-600 text-white rounded-lg text-sm hover:bg-orange-500">Lepas Terpilih</button>
       </div>
     </div>
   </div>
 
   <div id="modalTambahBilling" class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-    <div class="bg-slate-900 border border-slate-700 rounded-2xl p-6 w-full max-w-md shadow-2xl relative">
-      <h3 class="text-lg font-bold text-white mb-4">Buat Tagihan (Billing) Baru</h3>
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl p-6 w-full max-w-md shadow-2xl relative">
+      <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-4">Buat Tagihan (Billing) Baru</h3>
       <form onsubmit="event.preventDefault(); simpanTambahBilling();" class="space-y-3">
-        <div><label class="block text-xs font-semibold text-slate-400 mb-1">Pilih Klien <span class="text-red-500">*</span></label><select id="billClientId" required class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2 px-4 text-white text-sm"></select></div>
-        <div><label class="block text-xs font-semibold text-slate-400 mb-1">Keterangan Tagihan <span class="text-red-500">*</span></label><input type="text" id="billKeterangan" required placeholder="Contoh: Pembayaran Jasa Termin 1" class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2 px-4 text-white text-sm"></div>
-        <div><label class="block text-xs font-semibold text-slate-400 mb-1">Jumlah Tagihan (Rp) <span class="text-red-500">*</span></label><input type="number" id="billAmount" required min="1000" class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2 px-4 text-white text-sm"></div>
+        <div><label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">Pilih Klien <span class="text-red-500">*</span></label><select id="billClientId" required class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl py-2 px-4 text-slate-800 dark:text-white text-sm"></select></div>
+        <div><label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">Keterangan Tagihan <span class="text-red-500">*</span></label><input type="text" id="billKeterangan" required placeholder="Contoh: Pembayaran Jasa Termin 1" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl py-2 px-4 text-slate-800 dark:text-white text-sm"></div>
+        <div><label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">Jumlah Tagihan (Rp) <span class="text-red-500">*</span></label><input type="number" id="billAmount" required min="1000" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl py-2 px-4 text-slate-800 dark:text-white text-sm"></div>
         <div class="mt-6 flex justify-end gap-3">
-          <button type="button" onclick="document.getElementById('modalTambahBilling').classList.add('hidden')" class="px-4 py-2 bg-slate-800 text-slate-300 rounded-lg text-sm hover:bg-slate-700">Batal</button>
+          <button type="button" onclick="document.getElementById('modalTambahBilling').classList.add('hidden')" class="px-4 py-2 bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-lg text-sm hover:bg-slate-300 dark:hover:bg-slate-700">Batal</button>
           <button type="submit" id="btnSimpanBill" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-500">Buat Tagihan</button>
         </div>
       </form>
@@ -451,30 +495,114 @@
   </div>
 
   <div id="modalBayarBilling" class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-    <div class="bg-slate-900 border border-slate-700 rounded-2xl p-6 w-full max-w-md shadow-2xl relative">
-      <h3 class="text-lg font-bold text-white mb-4">Konfirmasi Pembayaran</h3>
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl p-6 w-full max-w-md shadow-2xl relative">
+      <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-4">Konfirmasi Pembayaran</h3>
       <input type="hidden" id="payBillId">
       <input type="hidden" id="payClientName">
       <div class="space-y-3">
-        <div><label class="block text-xs font-semibold text-slate-400 mb-1">Nama Pengirim Dana <span class="text-red-500">*</span></label><input type="text" id="paySender" required class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2 px-4 text-white text-sm"></div>
-        <div><label class="block text-xs font-semibold text-slate-400 mb-1">Tanggal Transfer <span class="text-red-500">*</span></label><input type="date" id="payDate" required class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2 px-4 text-white text-sm"></div>
-        <div><label class="block text-xs font-semibold text-slate-400 mb-1">Jumlah Ditransfer (Rp) <span class="text-red-500">*</span></label><input type="number" id="payAmount" required class="w-full bg-slate-950 border border-slate-800 rounded-xl py-2 px-4 text-white text-sm"></div>
-        <div><label class="block text-xs font-semibold text-slate-400 mb-1 mt-2">Upload Bukti Transaksi (Gambar/PDF) <span class="text-red-500">*</span></label><input type="file" id="payFile" accept="image/*,.pdf" required class="w-full text-sm file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-blue-600 file:text-white cursor-pointer text-slate-400"></div>
+        <div><label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">Nama Pengirim Dana <span class="text-red-500">*</span></label><input type="text" id="paySender" required class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl py-2 px-4 text-slate-800 dark:text-white text-sm"></div>
+        <div><label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">Tanggal Transfer <span class="text-red-500">*</span></label><input type="date" id="payDate" required class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl py-2 px-4 text-slate-800 dark:text-white text-sm"></div>
+        <div><label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">Jumlah Ditransfer (Rp) <span class="text-red-500">*</span></label><input type="number" id="payAmount" required class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl py-2 px-4 text-slate-800 dark:text-white text-sm"></div>
+        <div><label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1 mt-2">Upload Bukti Transaksi (Gambar/PDF) <span class="text-red-500">*</span></label><input type="file" id="payFile" accept="image/*,.pdf" required class="w-full text-sm file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-blue-600 file:text-white cursor-pointer text-slate-600 dark:text-slate-400"></div>
       </div>
       <p id="msgUploadBayar" class="text-xs text-center mt-3 font-semibold"></p>
       <div class="mt-4 flex justify-end gap-3">
-        <button type="button" onclick="document.getElementById('modalBayarBilling').classList.add('hidden')" class="px-4 py-2 bg-slate-800 text-slate-300 rounded-lg text-sm hover:bg-slate-700">Batal</button>
+        <button type="button" onclick="document.getElementById('modalBayarBilling').classList.add('hidden')" class="px-4 py-2 bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-lg text-sm hover:bg-slate-300 dark:hover:bg-slate-700">Batal</button>
         <button type="button" onclick="prosesUploadBayar()" id="btnSubmitBayar" class="px-4 py-2 bg-emerald-600 text-white rounded-lg text-sm hover:bg-emerald-500">Upload & Konfirmasi</button>
       </div>
     </div>
   </div>
-
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged, updatePassword, EmailAuthProvider, reauthenticateWithCredential, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
     import { getFirestore, doc, setDoc, getDoc, updateDoc, collection, addDoc, query, where, getDocs, orderBy, serverTimestamp, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
     import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-functions.js";
+
+    // Theme logic
+    if (localStorage.getItem('theme') === 'dark') {
+      document.documentElement.classList.add('dark');
+    }
+    
+    window.toggleTheme = () => {
+      const isDark = document.documentElement.classList.toggle('dark');
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    };
+
+    // Custom Toast
+    window.showToast = (message, type = 'info') => {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      const bgColors = {
+        success: 'bg-emerald-600',
+        error: 'bg-red-600',
+        info: 'bg-blue-600'
+      };
+      const bgColor = bgColors[type] || bgColors.info;
+      toast.className = `flex items-center text-white px-5 py-3 rounded-xl shadow-lg transition-all duration-300 transform translate-y-10 opacity-0 ${bgColor}`;
+      toast.innerHTML = `<span class="text-sm font-medium">${message}</span>`;
+      container.appendChild(toast);
+
+      requestAnimationFrame(() => {
+        setTimeout(() => toast.classList.remove('translate-y-10', 'opacity-0'), 10);
+      });
+
+      setTimeout(() => {
+        toast.classList.add('translate-y-10', 'opacity-0');
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
+    };
+
+    // Custom Confirm
+    window.customConfirm = (message) => {
+      return new Promise((resolve) => {
+        const modal = document.getElementById('modalCustomConfirm');
+        document.getElementById('customConfirmMsg').innerText = message;
+        modal.classList.remove('hidden');
+
+        const btnYes = document.getElementById('btnConfirmYes');
+        const btnNo = document.getElementById('btnConfirmNo');
+
+        const cleanup = () => {
+          modal.classList.add('hidden');
+          btnYes.removeEventListener('click', onYes);
+          btnNo.removeEventListener('click', onNo);
+        };
+
+        const onYes = () => { cleanup(); resolve(true); };
+        const onNo = () => { cleanup(); resolve(false); };
+
+        btnYes.addEventListener('click', onYes);
+        btnNo.addEventListener('click', onNo);
+      });
+    };
+
+    // Custom Prompt
+    window.customPrompt = (message, defaultValue = '') => {
+      return new Promise((resolve) => {
+        const modal = document.getElementById('modalCustomPrompt');
+        document.getElementById('customPromptMsg').innerText = message;
+        const input = document.getElementById('customPromptInput');
+        input.value = defaultValue;
+        modal.classList.remove('hidden');
+        input.focus();
+
+        const btnYes = document.getElementById('btnPromptYes');
+        const btnNo = document.getElementById('btnPromptNo');
+
+        const cleanup = () => {
+          modal.classList.add('hidden');
+          btnYes.removeEventListener('click', onYes);
+          btnNo.removeEventListener('click', onNo);
+        };
+
+        const onYes = () => { cleanup(); resolve(input.value); };
+        const onNo = () => { cleanup(); resolve(null); };
+
+        btnYes.addEventListener('click', onYes);
+        btnNo.addEventListener('click', onNo);
+      });
+    };
 
     // KEMBALIKAN KONFIGURASI FIREBASE ANDA DISINI
     const firebaseConfig = {
@@ -493,7 +621,6 @@
     const db = getFirestore(app);
     const functions = getFunctions(app); 
 
-    // FIX 2: Inisialisasi Secondary App untuk registrasi Master/Pengacara tanpa melogout sesi Master saat ini
     const secondaryApp = initializeApp(firebaseConfig, "SecondaryApp");
     const secondaryAuth = getAuth(secondaryApp);
 
@@ -518,15 +645,15 @@
       document.getElementById(viewId).classList.remove('hidden');
       
       document.querySelectorAll('.menu-btn').forEach(btn => {
-         btn.classList.remove('bg-blue-600/10', 'text-blue-400', 'border', 'border-blue-500/20');
-         btn.classList.add('text-slate-400');
+         btn.classList.remove('bg-blue-100', 'dark:bg-blue-600/10', 'text-blue-600', 'dark:text-blue-400', 'border', 'border-blue-200', 'dark:border-blue-500/20');
+         btn.classList.add('text-slate-600', 'dark:text-slate-400');
       });
       
       const activeMap = { profileView: 'nav-profile', clientView: 'nav-clients', docView: 'nav-docs', pengacaraView: 'nav-pengacara', masterView: 'nav-master', billingView: 'nav-billing' };
       let btn = document.getElementById(activeMap[viewId]);
       if(btn) {
-         btn.classList.remove('text-slate-400');
-         btn.classList.add('bg-blue-600/10', 'text-blue-400', 'border', 'border-blue-500/20');
+         btn.classList.remove('text-slate-600', 'dark:text-slate-400');
+         btn.classList.add('bg-blue-100', 'dark:bg-blue-600/10', 'text-blue-600', 'dark:text-blue-400', 'border', 'border-blue-200', 'dark:border-blue-500/20');
       }
 
       if (viewId === 'docView') muatDataBerkas(currentArsipFilter);
@@ -545,8 +672,6 @@
            return null;
        } catch (error) {
            console.error(error);
-           // FIX 1: Bypass error cloud function agar tidak memblokir registrasi klien
-           // Sistem auth Firebase bawaan otomatis akan tetap menangkap email yang duplikat
            return null; 
        }
     }
@@ -572,7 +697,7 @@
         await signInWithEmailAndPassword(auth, loginEmail, password); 
       } 
       catch (err) { 
-          alert("Gagal Login! Periksa kembali kredensial Anda."); 
+          showToast("Gagal Login! Periksa kembali kredensial Anda.", "error"); 
       }
       finally { btn.disabled = false; }
     };
@@ -602,7 +727,7 @@
           nomorPerkara: "", pengacaraIds: []
         });
         
-        alert("Daftar berhasil!");
+        showToast("Daftar berhasil!", "success");
       } catch (err) { 
           let errMsg = err.message;
           if (err.code === 'auth/email-already-in-use') errMsg = "Pendaftaran Gagal: Email sudah terdaftar.";
@@ -617,7 +742,7 @@
 
     window.lupaPassword = async () => {
       let identifier = document.getElementById('loginIdentifier').value;
-      const input = identifier ? identifier : window.prompt("Masukkan Email atau Nomor HP yang terdaftar untuk link reset sandi:");
+      const input = identifier ? identifier : await customPrompt("Masukkan Email atau Nomor HP yang terdaftar untuk link reset sandi:");
       if (!input) return;
       
       try {
@@ -630,9 +755,9 @@
              }
         }
         sendPasswordResetEmail(auth, emailTarget).catch(e => { console.log("Silent drop"); });
-        alert("Jika data tersebut terdaftar dalam sistem, instruksi reset password telah dikirim ke email atau kontak terkait.");
+        showToast("Jika data tersebut terdaftar dalam sistem, instruksi reset password telah dikirim ke email atau kontak terkait.", "info");
       } catch (err) {
-        alert("Jika data tersebut terdaftar dalam sistem, instruksi reset password telah dikirim ke email atau kontak terkait.");
+        showToast("Jika data tersebut terdaftar dalam sistem, instruksi reset password telah dikirim ke email atau kontak terkait.", "info");
       }
     };
 
@@ -648,8 +773,8 @@
                await signOut(auth);
                let authMsg = document.getElementById('authMsg');
                authMsg.innerText = "Akun Anda telah dinonaktifkan atau dihapus.";
-               authMsg.classList.remove('hidden', 'bg-blue-600/20', 'text-blue-400');
-               authMsg.classList.add('bg-red-600/20', 'text-red-400', 'border', 'border-red-500/30');
+               authMsg.classList.remove('hidden', 'bg-blue-100', 'dark:bg-blue-600/20', 'text-blue-600', 'dark:text-blue-400');
+               authMsg.classList.add('bg-red-100', 'dark:bg-red-600/20', 'text-red-600', 'dark:text-red-400', 'border', 'border-red-300', 'dark:border-red-500/30');
                document.getElementById('authSection').classList.remove('hidden');
                document.getElementById('dashboardSection').classList.add('hidden');
                return;
@@ -723,9 +848,9 @@
           noHp: document.getElementById('profPhone').value, 
           alamat: document.getElementById('profAddress').value
         });
-        alert("Informasi Berhasil Disimpan!");
+        showToast("Informasi Berhasil Disimpan!", "success");
         toggleEditProfile(false);
-      } catch (err) { alert(err.message); }
+      } catch (err) { showToast(err.message, "error"); }
     };
 
     window.bukaModalGantiPassword = () => {
@@ -743,23 +868,23 @@
 
       if(newPw !== confPw) {
           msg.innerText = "Konfirmasi password baru tidak cocok!";
-          msg.className = "text-xs text-center mt-2 text-red-400"; return;
+          msg.className = "text-xs text-center mt-2 text-red-500 dark:text-red-400"; return;
       }
       if(newPw.length < 6) {
           msg.innerText = "Password baru minimal 6 karakter!";
-          msg.className = "text-xs text-center mt-2 text-red-400"; return;
+          msg.className = "text-xs text-center mt-2 text-red-500 dark:text-red-400"; return;
       }
 
       try {
-          btn.disabled = true; msg.innerText = "Memproses..."; msg.className = "text-xs text-center mt-2 text-blue-400";
+          btn.disabled = true; msg.innerText = "Memproses..."; msg.className = "text-xs text-center mt-2 text-blue-600 dark:text-blue-400";
           const user = auth.currentUser;
           const credential = EmailAuthProvider.credential(user.email, oldPw);
           await reauthenticateWithCredential(user, credential);
           await updatePassword(user, newPw);
-          msg.innerText = "Password berhasil diubah!"; msg.className = "text-xs text-center mt-2 text-emerald-400";
+          msg.innerText = "Password berhasil diubah!"; msg.className = "text-xs text-center mt-2 text-emerald-600 dark:text-emerald-400";
           setTimeout(() => { document.getElementById('modalGantiPassword').classList.add('hidden'); btn.disabled = false; }, 1500);
       } catch(err) {
-          btn.disabled = false; msg.innerText = "Gagal: Password lama salah."; msg.className = "text-xs text-center mt-2 text-red-400";
+          btn.disabled = false; msg.innerText = "Gagal: Password lama salah."; msg.className = "text-xs text-center mt-2 text-red-500 dark:text-red-400";
       }
     };
 
@@ -777,14 +902,14 @@
       if (allMasterData.length === 0) return tbody.innerHTML = '<tr><td colspan="2" class="py-4 text-center text-slate-500 text-xs">Kosong</td></tr>';
 
       allMasterData.forEach(p => {
-        let btnEdit = `<button onclick="bukaEditMaster('${p.id}')" class="text-xs bg-slate-800 text-white px-3 py-1.5 rounded border border-slate-600 hover:bg-slate-700 transition">Edit</button>`;
-        let btnDelete = (p.id !== currentUserData.uid) ? `<button onclick="hapusMaster('${p.id}')" class="text-xs bg-red-600/20 text-red-400 px-3 py-1.5 rounded border border-red-500/20 hover:bg-red-500/30 transition">Hapus</button>` : `<span class="text-xs text-slate-500 border border-slate-700 px-3 py-1.5 rounded">Anda</span>`;
+        let btnEdit = `<button onclick="bukaEditMaster('${p.id}')" class="text-xs bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-white px-3 py-1.5 rounded border border-slate-300 dark:border-slate-600 hover:bg-slate-300 dark:hover:bg-slate-700 transition">Edit</button>`;
+        let btnDelete = (p.id !== currentUserData.uid) ? `<button onclick="hapusMaster('${p.id}')" class="text-xs bg-red-100 dark:bg-red-600/20 text-red-600 dark:text-red-400 px-3 py-1.5 rounded border border-red-200 dark:border-red-500/20 hover:bg-red-200 dark:hover:bg-red-500/30 transition">Hapus</button>` : `<span class="text-xs text-slate-500 border border-slate-300 dark:border-slate-700 px-3 py-1.5 rounded">Anda</span>`;
 
         tbody.innerHTML += `
-          <tr class="hover:bg-slate-800/40 transition">
+          <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition">
             <td class="py-3 px-4">
-              <div class="font-semibold text-white text-sm block">${p.nama}</div>
-              <div class="text-xs text-slate-400">${p.email} | ${p.noHp || '-'}</div>
+              <div class="font-semibold text-slate-900 dark:text-white text-sm block">${p.nama}</div>
+              <div class="text-xs text-slate-500 dark:text-slate-400">${p.email} | ${p.noHp || '-'}</div>
             </td>
             <td class="py-3 px-4 text-right flex justify-end gap-2 flex-wrap">
               ${btnEdit} ${btnDelete}
@@ -816,18 +941,18 @@
             tutupModalEditMaster();
             await ambilDaftarMaster();
             muatDaftarMasterView();
-        } catch(err) { alert("Gagal edit: " + err.message); }
+        } catch(err) { showToast("Gagal edit: " + err.message, "error"); }
     }
 
     window.hapusMaster = async (id) => {
-        if(confirm("Apakah Anda yakin ingin menghapus data master ini?")) {
+        if(await customConfirm("Apakah Anda yakin ingin menghapus data master ini?")) {
             try {
                 const deleteUserFn = httpsCallable(functions, 'deleteUserAuth');
                 await deleteUserFn({ uid: id });
                 await ambilDaftarMaster();
                 muatDaftarMasterView();
-                alert("Master berhasil dihapus");
-            } catch(err) { alert("Gagal menghapus master: " + err.message); }
+                showToast("Master berhasil dihapus", "success");
+            } catch(err) { showToast("Gagal menghapus master: " + err.message, "error"); }
         }
     }
 
@@ -843,9 +968,8 @@
       
       try {
         btn.disabled = true; errorMsg.classList.add('hidden');
-        msg.innerText = "Mendaftarkan Master..."; msg.className = "text-xs text-center mt-2 text-blue-400";
+        msg.innerText = "Mendaftarkan Master..."; msg.className = "text-xs text-center mt-2 text-blue-600 dark:text-blue-400";
         
-        // FIX 2: Gunakan secondaryAuth untuk membuat user tanpa menyebabkan Master ter-logout
         const cred = await createUserWithEmailAndPassword(secondaryAuth, email, document.getElementById('rmPassword').value);
         
         await setDoc(doc(db, "users", cred.user.uid), {
@@ -856,9 +980,9 @@
             role: "master"
         });
         
-        await signOut(secondaryAuth); // Bersihkan sesi secondary
+        await signOut(secondaryAuth); 
         
-        msg.innerText = "Master berhasil didaftarkan!"; msg.className = "text-xs text-center mt-2 text-emerald-400";
+        msg.innerText = "Master berhasil didaftarkan!"; msg.className = "text-xs text-center mt-2 text-emerald-600 dark:text-emerald-400";
         setTimeout(async () => { 
             tutupModalRegMaster(); document.getElementById('formRegMaster').reset(); 
             msg.innerText=""; btn.disabled=false; 
@@ -870,7 +994,7 @@
         let errMsg = e.message;
         if (e.code === 'auth/email-already-in-use') errMsg = "Email sudah terdaftar.";
         msg.innerText = "Gagal: " + errMsg; 
-        msg.className = "text-xs text-center mt-2 text-red-400";
+        msg.className = "text-xs text-center mt-2 text-red-500 dark:text-red-400";
       }
     };
 
@@ -891,24 +1015,24 @@
 
       allPengacaraData.forEach(p => {
         let clientsHandled = allClientsData.filter(c => c.pengacaraIds && c.pengacaraIds.includes(p.id));
-        let listKasus = clientsHandled.map(c => `<span class="block mb-1 text-emerald-400">• ${c.nomorPerkara || 'Menunggu No Perkara'} <span class="text-slate-400">(${c.nama})</span></span>`).join('');
-        if(!listKasus) listKasus = '<span class="text-slate-500 italic">Belum menangani kasus</span>';
+        let listKasus = clientsHandled.map(c => `<span class="block mb-1 text-emerald-600 dark:text-emerald-400">• ${c.nomorPerkara || 'Menunggu No Perkara'} <span class="text-slate-500 dark:text-slate-400">(${c.nama})</span></span>`).join('');
+        if(!listKasus) listKasus = '<span class="text-slate-400 dark:text-slate-500 italic">Belum menangani kasus</span>';
 
         let safeNama = (p.nama||'').replace(/'/g, "&#39;");
         let btnUnassign = clientsHandled.length > 0 
-           ? `<button onclick="bukaModalUnassign('${p.id}', '${safeNama}')" class="text-xs bg-orange-600/20 text-orange-400 px-3 py-1.5 rounded border border-orange-500/20 hover:bg-orange-500/30 transition">Lepas Assign</button>` : '';
+           ? `<button onclick="bukaModalUnassign('${p.id}', '${safeNama}')" class="text-xs bg-orange-100 dark:bg-orange-600/20 text-orange-600 dark:text-orange-400 px-3 py-1.5 rounded border border-orange-200 dark:border-orange-500/20 hover:bg-orange-200 dark:hover:bg-orange-500/30 transition">Lepas Assign</button>` : '';
 
         tbody.innerHTML += `
-          <tr class="hover:bg-slate-800/40 transition">
+          <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition">
             <td class="py-3 px-4">
-              <div class="font-semibold text-white text-sm block">${p.nama}</div>
-              <div class="text-xs text-slate-400">${p.email} | ${p.noHp || '-'}</div>
+              <div class="font-semibold text-slate-900 dark:text-white text-sm block">${p.nama}</div>
+              <div class="text-xs text-slate-500 dark:text-slate-400">${p.email} | ${p.noHp || '-'}</div>
             </td>
             <td class="py-3 px-4 text-xs">${listKasus}</td>
             <td class="py-3 px-4 text-right flex justify-end gap-2 flex-wrap">
               ${btnUnassign}
-              <button onclick="bukaEditPengacara('${p.id}')" class="text-xs bg-slate-800 text-white px-3 py-1.5 rounded border border-slate-600 hover:bg-slate-700 transition">Edit</button>
-              <button onclick="hapusPengacara('${p.id}')" class="text-xs bg-red-600/20 text-red-400 px-3 py-1.5 rounded border border-red-500/20 hover:bg-red-500/30 transition">Hapus</button>
+              <button onclick="bukaEditPengacara('${p.id}')" class="text-xs bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-white px-3 py-1.5 rounded border border-slate-300 dark:border-slate-600 hover:bg-slate-300 dark:hover:bg-slate-700 transition">Edit</button>
+              <button onclick="hapusPengacara('${p.id}')" class="text-xs bg-red-100 dark:bg-red-600/20 text-red-600 dark:text-red-400 px-3 py-1.5 rounded border border-red-200 dark:border-red-500/20 hover:bg-red-200 dark:hover:bg-red-500/30 transition">Hapus</button>
             </td>
           </tr>`;
       });
@@ -920,12 +1044,12 @@
        let clientsHandled = allClientsData.filter(c => c.pengacaraIds && c.pengacaraIds.includes(pid));
        let html = '';
        if(clientsHandled.length === 0) {
-          html = '<p class="text-xs text-slate-400">Tidak ada kasus yang ditangani.</p>';
+          html = '<p class="text-xs text-slate-500 dark:text-slate-400">Tidak ada kasus yang ditangani.</p>';
        } else {
           clientsHandled.forEach(c => {
-             html += `<label class="flex items-center space-x-2 text-sm text-slate-300 bg-slate-800 p-2 rounded cursor-pointer hover:bg-slate-700 transition">
-                        <input type="checkbox" class="chk-unassign rounded bg-slate-900 border-slate-700 text-red-600" value="${c.id}">
-                        <span>${c.nama} - <span class="text-emerald-400">${c.nomorPerkara || 'Menunggu No Perkara'}</span></span>
+             html += `<label class="flex items-center space-x-2 text-sm text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-800 p-2 rounded cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-700 border border-slate-200 dark:border-transparent transition">
+                        <input type="checkbox" class="chk-unassign rounded bg-slate-50 dark:bg-slate-900 border-slate-300 dark:border-slate-700 text-red-600" value="${c.id}">
+                        <span>${c.nama} - <span class="text-emerald-600 dark:text-emerald-400">${c.nomorPerkara || 'Menunggu No Perkara'}</span></span>
                       </label>`;
           });
        }
@@ -940,7 +1064,8 @@
        let checkedBoxes = document.querySelectorAll('.chk-unassign:checked');
        let clientIdsToUnassign = Array.from(checkedBoxes).map(cb => cb.value);
        if(clientIdsToUnassign.length === 0) return tutupModalUnassign(); 
-       if(!confirm(`Yakin ingin melepas ${clientIdsToUnassign.length} kasus dari pengacara ini?`)) return;
+       
+       if(!(await customConfirm(`Yakin ingin melepas ${clientIdsToUnassign.length} kasus dari pengacara ini?`))) return;
 
        try {
           let promises = clientIdsToUnassign.map(cid => {
@@ -952,7 +1077,7 @@
           });
           await Promise.all(promises);
           await muatDaftarKlien(); muatDaftarPengacaraView(); tutupModalUnassign();
-       } catch(err) { alert("Gagal melepas assign: " + err.message); }
+       } catch(err) { showToast("Gagal melepas assign: " + err.message, "error"); }
     }
 
     window.bukaEditPengacara = (id) => {
@@ -976,17 +1101,17 @@
         try {
             await updateDoc(doc(db, "users", uid), updates);
             tutupModalEditPengacara(); await ambilDaftarPengacara(); muatDaftarPengacaraView();
-        } catch(err) { alert("Gagal edit: " + err.message); }
+        } catch(err) { showToast("Gagal edit: " + err.message, "error"); }
     }
 
     window.hapusPengacara = async (id) => {
-        if(confirm("Apakah Anda yakin ingin menghapus data pengacara ini dari sistem?")) {
+        if(await customConfirm("Apakah Anda yakin ingin menghapus data pengacara ini dari sistem?")) {
             try {
                 const deleteUserFn = httpsCallable(functions, 'deleteUserAuth');
                 await deleteUserFn({ uid: id });
                 await ambilDaftarPengacara(); muatDaftarPengacaraView(); muatDaftarKlien(); 
-                alert("Pengacara berhasil dihapus");
-            } catch(err) { alert("Gagal menghapus pengacara: " + err.message); }
+                showToast("Pengacara berhasil dihapus", "success");
+            } catch(err) { showToast("Gagal menghapus pengacara: " + err.message, "error"); }
         }
     }
 
@@ -1002,9 +1127,8 @@
 
       try {
         btn.disabled = true; errorMsg.classList.add('hidden');
-        msg.innerText = "Mendaftarkan Pengacara..."; msg.className = "text-xs text-center mt-2 text-blue-400";
+        msg.innerText = "Mendaftarkan Pengacara..."; msg.className = "text-xs text-center mt-2 text-blue-600 dark:text-blue-400";
 
-        // FIX 2: Gunakan secondaryAuth untuk membuat user tanpa menyebabkan Master ter-logout
         const cred = await createUserWithEmailAndPassword(secondaryAuth, email, document.getElementById('rpPassword').value);
         
         await setDoc(doc(db, "users", cred.user.uid), {
@@ -1017,9 +1141,9 @@
             nomorPerkara: ""
         });
         
-        await signOut(secondaryAuth); // Bersihkan sesi secondary
+        await signOut(secondaryAuth);
         
-        msg.innerText = "Pengacara berhasil didaftarkan!"; msg.className = "text-xs text-center mt-2 text-emerald-400";
+        msg.innerText = "Pengacara berhasil didaftarkan!"; msg.className = "text-xs text-center mt-2 text-emerald-600 dark:text-emerald-400";
         setTimeout(async () => { 
             tutupModalRegPengacara(); document.getElementById('formRegPengacara').reset(); 
             msg.innerText=""; btn.disabled=false; 
@@ -1031,7 +1155,7 @@
         let errMsg = e.message;
         if (e.code === 'auth/email-already-in-use') errMsg = "Email sudah terdaftar.";
         msg.innerText = "Gagal: " + errMsg; 
-        msg.className = "text-xs text-center mt-2 text-red-400";
+        msg.className = "text-xs text-center mt-2 text-red-500 dark:text-red-400";
       }
     };
 
@@ -1044,7 +1168,7 @@
         allClientsData = [];
         snapshot.forEach(d => allClientsData.push({ id: d.id, ...d.data() }));
         renderTabelKlien(allClientsData);
-      } catch (err) { tbody.innerHTML = '<tr><td colspan="4" class="py-4 text-center text-red-400">Gagal memuat</td></tr>'; }
+      } catch (err) { tbody.innerHTML = '<tr><td colspan="4" class="py-4 text-center text-red-500 dark:text-red-400">Gagal memuat</td></tr>'; }
     }
 
     window.renderTabelKlien = (dataArray) => {
@@ -1060,24 +1184,24 @@
                 if(p) pengacaraNames.push(p.nama);
             });
         }
-        let pengacaraText = pengacaraNames.length > 0 ? pengacaraNames.join(', ') : '<span class="text-slate-500 italic">Belum diset</span>';
+        let pengacaraText = pengacaraNames.length > 0 ? pengacaraNames.join(', ') : '<span class="text-slate-400 dark:text-slate-500 italic">Belum diset</span>';
         let safeNama = (k.nama||'').replace(/'/g, "&#39;");
 
-        let btnEditInfo = currentUserData.role === 'master' ? `<button onclick="bukaEditKlienInfo('${k.id}')" class="text-xs bg-slate-800 text-white px-3 py-1.5 rounded border border-slate-600 hover:bg-slate-700 transition">Edit Info</button>` : '';
-        let btnAtur = `<button onclick="bukaEditKlienAtur('${k.id}')" class="text-xs bg-blue-600/20 text-blue-400 px-3 py-1.5 rounded border border-blue-500/20 hover:bg-blue-500/30 transition">Atur Data</button>`;
-        let btnDelete = currentUserData.role === 'master' ? `<button onclick="hapusKlien('${k.id}')" class="text-xs bg-red-600/20 text-red-400 px-3 py-1.5 rounded border border-red-500/20 hover:bg-red-500/30 transition">Hapus</button>` : '';
+        let btnEditInfo = currentUserData.role === 'master' ? `<button onclick="bukaEditKlienInfo('${k.id}')" class="text-xs bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-white px-3 py-1.5 rounded border border-slate-300 dark:border-slate-600 hover:bg-slate-300 dark:hover:bg-slate-700 transition">Edit Info</button>` : '';
+        let btnAtur = `<button onclick="bukaEditKlienAtur('${k.id}')" class="text-xs bg-blue-100 dark:bg-blue-600/20 text-blue-600 dark:text-blue-400 px-3 py-1.5 rounded border border-blue-200 dark:border-blue-500/20 hover:bg-blue-200 dark:hover:bg-blue-500/30 transition">Atur Data</button>`;
+        let btnDelete = currentUserData.role === 'master' ? `<button onclick="hapusKlien('${k.id}')" class="text-xs bg-red-100 dark:bg-red-600/20 text-red-600 dark:text-red-400 px-3 py-1.5 rounded border border-red-200 dark:border-red-500/20 hover:bg-red-200 dark:hover:bg-red-500/30 transition">Hapus</button>` : '';
 
         tbody.innerHTML += `
-          <tr class="hover:bg-slate-800/40 transition">
+          <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition">
             <td class="py-3 px-4">
-              <a href="#" onclick="filterArsipKlien('${k.id}', '${safeNama}')" class="font-semibold text-blue-400 hover:underline text-sm block">${k.nama}</a>
-              <div class="text-xs text-slate-400">${k.noHp || '-'}</div>
+              <a href="#" onclick="filterArsipKlien('${k.id}', '${safeNama}')" class="font-semibold text-blue-600 dark:text-blue-400 hover:underline text-sm block">${k.nama}</a>
+              <div class="text-xs text-slate-500 dark:text-slate-400">${k.noHp || '-'}</div>
             </td>
             <td class="py-3 px-4 text-xs">
-              <span class="text-emerald-400 font-mono">${k.nomorPerkara || 'N/A'}</span><br/>
-              <span class="text-slate-400">${k.namaPerkara || ''}</span>
+              <span class="text-emerald-600 dark:text-emerald-400 font-mono">${k.nomorPerkara || 'N/A'}</span><br/>
+              <span class="text-slate-500 dark:text-slate-400">${k.namaPerkara || ''}</span>
             </td>
-            <td class="py-3 px-4 text-xs text-slate-300">${pengacaraText}</td>
+            <td class="py-3 px-4 text-xs text-slate-700 dark:text-slate-300">${pengacaraText}</td>
             <td class="py-3 px-4 text-right flex justify-end gap-2 flex-wrap">
               ${btnEditInfo} ${btnAtur} ${btnDelete}
             </td>
@@ -1129,7 +1253,7 @@
             let listHtml = '';
             allPengacaraData.forEach(p => {
               let checked = assigned.includes(p.id) ? 'checked' : '';
-              listHtml += `<label class="flex items-center space-x-2 text-sm text-slate-300"><input type="checkbox" class="chk-pengacara rounded bg-slate-900 border-slate-700 text-blue-600" value="${p.id}" ${checked}><span>${p.nama}</span></label>`;
+              listHtml += `<label class="flex items-center space-x-2 text-sm text-slate-700 dark:text-slate-300"><input type="checkbox" class="chk-pengacara rounded bg-slate-50 dark:bg-slate-900 border-slate-300 dark:border-slate-700 text-blue-600" value="${p.id}" ${checked}><span>${p.nama}</span></label>`;
             });
             document.getElementById('listCheckboxPengacara').innerHTML = listHtml;
         } else {
@@ -1164,16 +1288,17 @@
       try {
         await updateDoc(doc(db, "users", uid), updates);
         tutupModalEdit(); muatDaftarKlien(); isiDropdownKlien();
-      } catch(err) { alert(err.message); }
+        showToast("Data klien berhasil diperbarui.", "success");
+      } catch(err) { showToast(err.message, "error"); }
     };
 
     window.hapusKlien = async (id) => {
-        if(confirm("Apakah Anda yakin ingin menghapus data klien ini secara permanen?")) {
+        if(await customConfirm("Apakah Anda yakin ingin menghapus data klien ini secara permanen?")) {
             try {
                 const deleteUserFn = httpsCallable(functions, 'deleteUserAuth');
                 await deleteUserFn({ uid: id });
-                muatDaftarKlien(); isiDropdownKlien(); alert("Klien berhasil dihapus");
-            } catch(err) { alert("Gagal menghapus klien: " + err.message); }
+                muatDaftarKlien(); isiDropdownKlien(); showToast("Klien berhasil dihapus", "success");
+            } catch(err) { showToast("Gagal menghapus klien: " + err.message, "error"); }
         }
     }
 
@@ -1229,14 +1354,14 @@
     window.simpanDokumen = async () => {
       const docName = document.getElementById('docName').value; const sel = document.getElementById('docClientId');
       const file = document.getElementById('fileInput').files[0];
-      if (!docName || !sel.value || !file) return alert("Lengkapi form!");
+      if (!docName || !sel.value || !file) return showToast("Lengkapi form!", "error");
       
       const opt = sel.options[sel.selectedIndex];
       uploadKeDrive(file, docName, sel.value, opt.getAttribute('data-nama'), opt.getAttribute('data-perkara'), document.getElementById('statusSimpan'), document.getElementById('btnUpload'));
     };
 
     async function uploadKeDrive(file, docName, clientId, clientName, noPerkara, statusEl, btnEl) {
-      statusEl.className = "text-xs mt-2 text-blue-400"; statusEl.innerText = "Mengunggah..."; btnEl.disabled = true;
+      statusEl.className = "text-xs mt-2 text-blue-600 dark:text-blue-400"; statusEl.innerText = "Mengunggah..."; btnEl.disabled = true;
       const reader = new FileReader();
       reader.readAsDataURL(file);
       reader.onload = async () => {
@@ -1252,16 +1377,16 @@
             };
             
             await addDoc(collection(db, "berkas"), dataBerkas);
-            statusEl.className = "text-xs mt-2 text-emerald-400"; statusEl.innerText = "Berhasil!";
+            statusEl.className = "text-xs mt-2 text-emerald-600 dark:text-emerald-400"; statusEl.innerText = "Berhasil!";
             muatDataBerkas(currentArsipFilter); setTimeout(() => { tutupModalUpload(); }, 1500);
           } else throw new Error(result.message);
-        } catch (err) { statusEl.className = "text-xs mt-2 text-red-400"; statusEl.innerText = err.message; }
+        } catch (err) { statusEl.className = "text-xs mt-2 text-red-500 dark:text-red-400"; statusEl.innerText = err.message; }
         finally { btnEl.disabled = false; setTimeout(()=>{statusEl.innerText="";},3000); }
       };
     }
 
     window.hapusBerkas = async (berkasId, fileIdDrive) => {
-       if(!confirm("Apakah Anda yakin ingin menghapus berkas ini secara permanen dari Portal dan Google Drive?")) return;
+       if(!(await customConfirm("Apakah Anda yakin ingin menghapus berkas ini secara permanen dari Portal dan Google Drive?"))) return;
        try {
            await deleteDoc(doc(db, "berkas", berkasId));
            if(fileIdDrive) {
@@ -1269,8 +1394,8 @@
                    method: 'POST', body: JSON.stringify({ action: "delete", fileId: fileIdDrive })
                }).catch(e => console.log("Gagal menghapus di drive: ", e));
            }
-           alert("Berkas berhasil dihapus."); muatDataBerkas(currentArsipFilter);
-       } catch (err) { alert("Gagal menghapus berkas: " + err.message); }
+           showToast("Berkas berhasil dihapus.", "success"); muatDataBerkas(currentArsipFilter);
+       } catch (err) { showToast("Gagal menghapus berkas: " + err.message, "error"); }
     };
 
     window.muatDataBerkas = async (filterClientId = null) => {
@@ -1300,7 +1425,7 @@
             return tB - tA;
         });
         renderTabelBerkas();
-      } catch(e) { tbody.innerHTML = '<tr><td colspan="3" class="py-6 text-center text-xs text-red-400">Gagal memuat</td></tr>'; }
+      } catch(e) { tbody.innerHTML = '<tr><td colspan="3" class="py-6 text-center text-xs text-red-500 dark:text-red-400">Gagal memuat</td></tr>'; }
     };
 
     window.renderTabelBerkas = () => {
@@ -1314,14 +1439,14 @@
         filteredBerkas.forEach(data => {
             let uploadDateStr = data.createdAt ? data.createdAt.toDate().toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) + ' ' + data.createdAt.toDate().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) : '-';
             let btnDelete = (currentUserData.role === 'master' || currentUserData.role === 'pengacara') 
-                ? `<button onclick="hapusBerkas('${data.id}', '${data.fileId}')" class="px-2 py-1 bg-red-600/20 text-red-400 rounded text-xs font-semibold hover:bg-red-600/40 transition">Hapus</button>` : '';
+                ? `<button onclick="hapusBerkas('${data.id}', '${data.fileId}')" class="px-2 py-1 bg-red-100 dark:bg-red-600/20 text-red-600 dark:text-red-400 rounded text-xs font-semibold hover:bg-red-200 dark:hover:bg-red-600/40 transition">Hapus</button>` : '';
 
             tbody.innerHTML += `
-            <tr class="hover:bg-slate-800/40">
-              <td class="py-3 px-4"><div class="font-semibold text-white text-sm">${data.namaBerkas}</div><div class="text-[10px] text-slate-500 mt-0.5">Diunggah: ${uploadDateStr}</div></td>
-              <td class="py-3 px-4 text-xs text-slate-400">${data.folderName}</td>
+            <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40">
+              <td class="py-3 px-4"><div class="font-semibold text-slate-900 dark:text-white text-sm">${data.namaBerkas}</div><div class="text-[10px] text-slate-500 mt-0.5">Diunggah: ${uploadDateStr}</div></td>
+              <td class="py-3 px-4 text-xs text-slate-500 dark:text-slate-400">${data.folderName}</td>
               <td class="py-3 px-4 text-right flex justify-end gap-2 items-center">
-                  <a href="${data.linkDrive}" target="_blank" class="px-3 py-1 bg-blue-600/20 text-blue-400 rounded text-xs font-semibold hover:bg-blue-600/40 transition">Lihat File</a>
+                  <a href="${data.linkDrive}" target="_blank" class="px-3 py-1 bg-blue-100 dark:bg-blue-600/20 text-blue-600 dark:text-blue-400 rounded text-xs font-semibold hover:bg-blue-200 dark:hover:bg-blue-600/40 transition">Lihat File</a>
                   ${btnDelete}
               </td>
             </tr>`;
@@ -1367,39 +1492,39 @@
            let infoKekurangan = '';
 
            if (b.status === 'unpaid') {
-              statusBadge = '<span class="px-2 py-1 bg-red-600/20 text-red-400 rounded text-[10px] font-bold">Belum Dibayar</span>';
+              statusBadge = '<span class="px-2 py-1 bg-red-100 dark:bg-red-600/20 text-red-600 dark:text-red-400 rounded text-[10px] font-bold">Belum Dibayar</span>';
               if(currentUserData.role === 'client' || currentUserData.role === 'master') {
                   let safeClientName = clientName.replace(/'/g, "&#39;");
                   btnAction = `<button onclick="bukaModalBayar('${b.id}', '${safeClientName}')" class="px-3 py-1.5 bg-blue-600 text-white rounded text-xs hover:bg-blue-500">Upload Bukti</button>`;
               }
            } else if (b.status === 'pending_validation') {
-              statusBadge = '<span class="px-2 py-1 bg-orange-600/20 text-orange-400 rounded text-[10px] font-bold">Menunggu Validasi</span>';
-              btnAction = `<a href="${b.buktiUploadUrl}" target="_blank" class="text-xs text-blue-400 hover:underline mr-2">Lihat Bukti</a>`;
+              statusBadge = '<span class="px-2 py-1 bg-orange-100 dark:bg-orange-600/20 text-orange-600 dark:text-orange-400 rounded text-[10px] font-bold">Menunggu Validasi</span>';
+              btnAction = `<a href="${b.buktiUploadUrl}" target="_blank" class="text-xs text-blue-600 dark:text-blue-400 hover:underline mr-2">Lihat Bukti</a>`;
               if(currentUserData.role !== 'client') btnAction += `<button onclick="validasiBayar('${b.id}')" class="px-3 py-1.5 bg-emerald-600 text-white rounded text-xs hover:bg-emerald-500">Validasi Transaksi</button>`;
               
-              if(sisaTagihan > 0) infoKekurangan = `<div class="mt-1 text-[10px] text-red-400 font-bold bg-red-900/30 px-2 py-1 rounded inline-block">Kurang: Rp ${sisaTagihan.toLocaleString('id-ID')}</div>`;
+              if(sisaTagihan > 0) infoKekurangan = `<div class="mt-1 text-[10px] text-red-600 dark:text-red-400 font-bold bg-red-100 dark:bg-red-900/30 px-2 py-1 rounded inline-block">Kurang: Rp ${sisaTagihan.toLocaleString('id-ID')}</div>`;
            } else if (b.status === 'paid') {
-              statusBadge = '<span class="px-2 py-1 bg-emerald-600/20 text-emerald-400 rounded text-[10px] font-bold">LUNAS</span>';
-              btnAction = `<a href="${b.buktiUploadUrl}" target="_blank" class="text-xs text-blue-400 hover:underline">Lihat Bukti</a>`;
-              if(sisaTagihan > 0) infoKekurangan = `<div class="mt-1 text-[10px] text-red-400 font-bold bg-red-900/30 px-2 py-1 rounded inline-block">Kurang: Rp ${sisaTagihan.toLocaleString('id-ID')}</div>`;
+              statusBadge = '<span class="px-2 py-1 bg-emerald-100 dark:bg-emerald-600/20 text-emerald-600 dark:text-emerald-400 rounded text-[10px] font-bold">LUNAS</span>';
+              btnAction = `<a href="${b.buktiUploadUrl}" target="_blank" class="text-xs text-blue-600 dark:text-blue-400 hover:underline">Lihat Bukti</a>`;
+              if(sisaTagihan > 0) infoKekurangan = `<div class="mt-1 text-[10px] text-red-600 dark:text-red-400 font-bold bg-red-100 dark:bg-red-900/30 px-2 py-1 rounded inline-block">Kurang: Rp ${sisaTagihan.toLocaleString('id-ID')}</div>`;
            }
 
-           let tglTrf = b.tglTransfer ? `<br><span class="text-[10px] text-slate-400">Tgl TF: ${b.tglTransfer} | ${b.senderName}</span>` : '';
+           let tglTrf = b.tglTransfer ? `<br><span class="text-[10px] text-slate-500 dark:text-slate-400">Tgl TF: ${b.tglTransfer} | ${b.senderName}</span>` : '';
            
            let btnDelete = '';
            if(currentUserData.role === 'master') {
-               btnDelete = `<button onclick="hapusBilling('${b.id}', '${b.fileIdDrive || ''}')" class="px-2 py-1.5 bg-red-600/20 text-red-400 rounded text-xs hover:bg-red-600/40 ml-2">Hapus</button>`;
+               btnDelete = `<button onclick="hapusBilling('${b.id}', '${b.fileIdDrive || ''}')" class="px-2 py-1.5 bg-red-100 dark:bg-red-600/20 text-red-600 dark:text-red-400 rounded text-xs hover:bg-red-200 dark:hover:bg-red-600/40 ml-2">Hapus</button>`;
            }
 
            let btnLunasInstant = '';
            if(currentUserData.role === 'master' && (b.status === 'unpaid' || sisaTagihan > 0)) {
-               btnLunasInstant = `<button onclick="pelunasanInstant('${b.id}', ${tagihan})" class="px-2 py-1.5 bg-purple-600/20 text-purple-400 rounded text-xs hover:bg-purple-600/40 ml-2 mt-1 block">Pelunasan Instant</button>`;
+               btnLunasInstant = `<button onclick="pelunasanInstant('${b.id}', ${tagihan})" class="px-2 py-1.5 bg-purple-100 dark:bg-purple-600/20 text-purple-600 dark:text-purple-400 rounded text-xs hover:bg-purple-200 dark:hover:bg-purple-600/40 ml-2 mt-1 block">Pelunasan Instant</button>`;
            }
 
            tbody.innerHTML += `
-            <tr class="hover:bg-slate-800/40 transition">
-              <td class="py-3 px-4"><div class="font-semibold text-white text-sm">${clientName}</div><div class="text-[10px] text-slate-400">Bill ID: ${b.id.substring(0,6)}</div></td>
-              <td class="py-3 px-4"><div class="font-semibold text-white text-xs">${b.keterangan || '-'}</div><div class="font-mono text-emerald-400 text-sm mt-1">Rp ${tagihan.toLocaleString('id-ID')}</div>${infoKekurangan}</td>
+            <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition">
+              <td class="py-3 px-4"><div class="font-semibold text-slate-900 dark:text-white text-sm">${clientName}</div><div class="text-[10px] text-slate-500 dark:text-slate-400">Bill ID: ${b.id.substring(0,6)}</div></td>
+              <td class="py-3 px-4"><div class="font-semibold text-slate-900 dark:text-white text-xs">${b.keterangan || '-'}</div><div class="font-mono text-emerald-600 dark:text-emerald-400 text-sm mt-1">Rp ${tagihan.toLocaleString('id-ID')}</div>${infoKekurangan}</td>
               <td class="py-3 px-4 text-xs">${statusBadge} ${tglTrf}</td>
               <td class="py-3 px-4 text-right">
                 <div class="flex justify-end items-center flex-wrap gap-1">${btnAction} ${btnDelete}</div>
@@ -1407,7 +1532,7 @@
               </td>
             </tr>`;
         });
-      } catch(e) { console.error(e); tbody.innerHTML = '<tr><td colspan="4" class="text-center text-xs py-4 text-red-400">Error memuat billing</td></tr>'; }
+      } catch(e) { console.error(e); tbody.innerHTML = '<tr><td colspan="4" class="text-center text-xs py-4 text-red-500 dark:text-red-400">Error memuat billing</td></tr>'; }
     }
 
     window.bukaModalTambahBilling = async () => {
@@ -1445,11 +1570,12 @@
              createdAt: serverTimestamp()
           });
           document.getElementById('modalTambahBilling').classList.add('hidden'); muatDataBilling();
-       } catch (e) { alert("Gagal buat tagihan: " + e.message); }
+          showToast("Tagihan berhasil dibuat.", "success");
+       } catch (e) { showToast("Gagal buat tagihan: " + e.message, "error"); }
     };
 
     window.hapusBilling = async (billId, fileIdDrive) => {
-        if(!confirm("Apakah Anda yakin ingin menghapus data tagihan ini permanen?")) return;
+        if(!(await customConfirm("Apakah Anda yakin ingin menghapus data tagihan ini permanen?"))) return;
         try {
             await deleteDoc(doc(db, "billing", billId));
             if(fileIdDrive) {
@@ -1458,11 +1584,12 @@
                 }).catch(e => console.log("Gagal menghapus di drive: ", e));
             }
             muatDataBilling();
-        } catch (e) { alert("Gagal menghapus tagihan: " + e.message); }
+            showToast("Tagihan dihapus.", "success");
+        } catch (e) { showToast("Gagal menghapus tagihan: " + e.message, "error"); }
     };
 
     window.pelunasanInstant = async (billId, totalTagihan) => {
-        if(!confirm("Proses Pelunasan Instant akan menandai tagihan ini menjadi LUNAS dan menyesuaikan jumlah transfer secara otomatis. Lanjutkan?")) return;
+        if(!(await customConfirm("Proses Pelunasan Instant akan menandai tagihan ini menjadi LUNAS dan menyesuaikan jumlah transfer secara otomatis. Lanjutkan?"))) return;
         try {
             await updateDoc(doc(db, "billing", billId), { 
                 status: 'paid',
@@ -1470,7 +1597,8 @@
                 senderName: 'Pelunasan Instant (Master)'
             });
             muatDataBilling();
-        } catch(e) { alert("Gagal pelunasan instant: " + e.message); }
+            showToast("Pelunasan instant berhasil.", "success");
+        } catch(e) { showToast("Gagal pelunasan instant: " + e.message, "error"); }
     }
 
     window.bukaModalBayar = (billId, clientName = '') => {
@@ -1492,11 +1620,11 @@
        const clientName = document.getElementById('payClientName').value;
 
        if(!sender || !date || !amount || !file) {
-           return alert("Seluruh data dengan tanda bintang (*) wajib diisi!");
+           return showToast("Seluruh data dengan tanda bintang (*) wajib diisi!", "error");
        }
 
        const msg = document.getElementById('msgUploadBayar'); const btn = document.getElementById('btnSubmitBayar');
-       msg.className = "text-xs text-center mt-3 font-semibold text-blue-400"; msg.innerText = "Mengunggah..."; btn.disabled = true;
+       msg.className = "text-xs text-center mt-3 font-semibold text-blue-600 dark:text-blue-400"; msg.innerText = "Mengunggah..."; btn.disabled = true;
 
        const reader = new FileReader(); reader.readAsDataURL(file);
        reader.onload = async () => {
@@ -1515,17 +1643,17 @@
                   tglTransfer: date,
                   jumlahTransfer: amount
                });
-               msg.className = "text-xs text-center mt-3 font-semibold text-emerald-400"; msg.innerText = "Berhasil diupload!";
+               msg.className = "text-xs text-center mt-3 font-semibold text-emerald-600 dark:text-emerald-400"; msg.innerText = "Berhasil diupload!";
                setTimeout(() => { document.getElementById('modalBayarBilling').classList.add('hidden'); muatDataBilling(); btn.disabled=false; }, 1500);
             } else throw new Error(result.message);
-          } catch(e) { msg.className = "text-xs text-center mt-3 font-semibold text-red-400"; msg.innerText = e.message; btn.disabled = false;}
+          } catch(e) { msg.className = "text-xs text-center mt-3 font-semibold text-red-500 dark:text-red-400"; msg.innerText = e.message; btn.disabled = false;}
        };
     };
 
     window.validasiBayar = async (billId) => {
-       if(confirm("Validasi pembayaran ini dan tandai sebagai LUNAS?")) {
-          try { await updateDoc(doc(db, "billing", billId), { status: 'paid' }); muatDataBilling(); } 
-          catch(e) { alert("Gagal memvalidasi: " + e.message); }
+       if(await customConfirm("Validasi pembayaran ini dan tandai sebagai LUNAS?")) {
+          try { await updateDoc(doc(db, "billing", billId), { status: 'paid' }); muatDataBilling(); showToast("Pembayaran divalidasi.", "success"); } 
+          catch(e) { showToast("Gagal memvalidasi: " + e.message, "error"); }
        }
     };
   </script>
